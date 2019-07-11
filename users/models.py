@@ -13,6 +13,7 @@ class TeacherProfile(models.Model):
     def __str__(self):
         return self.user.username
 
+
 class Class_id(models.Model):
     name = models.CharField(max_length = 100, default = "class_name")
     teacher = models.ForeignKey(TeacherProfile, on_delete = models.CASCADE)
