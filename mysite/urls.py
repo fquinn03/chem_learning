@@ -21,6 +21,7 @@ urlpatterns = [
 
     path('admin/', admin.site.urls),
     path('class_list/<user_id>', class_list),
-    path('not_teacher', class_list)
+    path('not_teacher', class_list),
+    
 
 ]

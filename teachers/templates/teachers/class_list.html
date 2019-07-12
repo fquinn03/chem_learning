@@ -1,11 +1,9 @@
-<p>
-{% for user in users %}
-<h1>  {{user.username}} registered classes  </h1>
-{% endfor %}
-</p>
+<h1>Welcome {{user.username}} </h1>
+
+<p>Click on class below to view your student's progress</p>
 
 <ul>
 {% for class in classes %}
-<li>{{class.name}}</li>
+<li><a href = "{{teachers.show_students}}">{{class.name}}</a></li>
 {% endfor %}
 </ul>
