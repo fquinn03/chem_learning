@@ -1,4 +1,8 @@
-<h1>Class List</h1>
+<p>
+{% for user in users %}
+<h1>  {{user.username}} registered classes  </h1>
+{% endfor %}
+</p>
 
 <ul>
 {% for class in classes %}
