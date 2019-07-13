@@ -21,6 +21,7 @@ class Class_id(models.Model):
     def __str__(self):
         return self.name
 
+
 class StudentProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
     teacher = models.ForeignKey(TeacherProfile, on_delete = models.CASCADE)

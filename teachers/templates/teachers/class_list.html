@@ -4,6 +4,6 @@
 
 <ul>
 {% for class in classes %}
-<li><a href = "{{teachers.show_students}}">{{class.name}}</a></li>
+<li><a href ="{% url 'show_students' class_name=class.name %}">{{class.name}}</a></li>
 {% endfor %}
 </ul>
