@@ -20,7 +20,7 @@ from users.views import show_students, welcome
 
 urlpatterns = [
     path('show_students/<class_name>', show_students, name = 'show_students'),
-    path('class_list/<user_id>', class_list),
+    path('class_list/<user_id>', class_list, name = 'class_list'),
     path('admin/', admin.site.urls),
     path('not_teacher', class_list),
     path('', welcome),
