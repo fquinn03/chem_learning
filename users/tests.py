@@ -2,8 +2,6 @@ from django.urls import reverse
 from django.test import TestCase, Client
 from users.models import User, Class_id, StudentProfile, TeacherProfile
 
-
-
 class UserTest(TestCase):
     def setUp(cls):
         User.objects.create(id = 1, username ="teacher", is_student = False, is_teacher = True)

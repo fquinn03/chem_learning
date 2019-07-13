@@ -1,3 +1,6 @@
+{% extends 'teachers/base.html' %}
+
+{% block content %}
 <h1>Welcome {{user.username}} </h1>
 
 <p>Click on class below to view your student's progress</p>
@@ -7,3 +10,4 @@
 <li><a href ="{% url 'show_students' class_name=class.name teacher_id=teacher.id %}">{{class.name}}</a></li>
 {% endfor %}
 </ul>
+{% endblock %}
