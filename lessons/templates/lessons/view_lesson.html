@@ -1,0 +1,8 @@
+{% extends 'teachers/base.html' %}
+
+{% block content %}
+<h1>Lesson Title: {{lesson.title}}</h1>
+<div class="powerpoint"> </div>
+    {{lesson.link|safe}}
+ </div>
+{% endblock %}

@@ -26,8 +26,5 @@ class StudentProfile(models.Model):
     teacher = models.ForeignKey(TeacherProfile, on_delete = models.CASCADE)
     class_id = models.ForeignKey(Class_id, on_delete = models.CASCADE)
 
-    class Meta:
-       unique_together = ("teacher", "class_id")
-
     def __str__(self):
         return self.user.username
