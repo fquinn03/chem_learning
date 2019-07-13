@@ -1,0 +1,41 @@
+body {
+  background-color: AntiqueWhite;
+}
+h1 {
+  color: navy;
+  font-family: sans-serif;
+  font-weight: bold;
+}
+p {
+  color: navy;
+  font-family: sans-serif;
+}
+
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+td, th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
+th {
+  background-color: #dddddd;
+}
+
+a:link, a:visited {
+  background-color: navy;
+  color: white;
+  padding: 14px 25px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+}
+
+a:hover, a:active {
+  background-color: red;
+}
