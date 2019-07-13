@@ -45,6 +45,6 @@ class UserTest(TestCase):
     def test_show_students(self):
         teacher = User.objects.get(id=1)
         client = Client()
-        response = client.get(reverse('show_students', args=['9y3']))
+        response = client.get(reverse('show_students', args=['9y3', 1]))
         self.assertEquals(response.status_code, 200)
         self.assertTemplateUsed(response, "users/show_students.html")
