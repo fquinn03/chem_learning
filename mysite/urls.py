@@ -16,13 +16,13 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from teachers.views import class_list
-from users.views import show_students
+from users.views import show_students, welcome
 
 urlpatterns = [
-
-    path('admin/', admin.site.urls),
+    path('show_students/<class_name>', show_students, name = 'show_students'),
     path('class_list/<user_id>', class_list),
+    path('admin/', admin.site.urls),
     path('not_teacher', class_list),
-    path('show_students/<class_name>', show_students, name = 'show_students')
+    path('', welcome),
 
 ]

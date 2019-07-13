@@ -9,3 +9,6 @@ def show_students(request, class_name):
     'group': group,
     'students': students,
     })
+
+def welcome(request):
+    return render(request, 'users/welcome.html')
