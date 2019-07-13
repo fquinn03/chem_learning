@@ -16,6 +16,7 @@ class UserTest(TestCase):
         teacherprofile = TeacherProfile.objects.get(user_id=1)
         StudentProfile.objects.create(user = student, teacher = teacherprofile, class_id = class_id)
 
+    # models tests
     def test_is_teacher(self):
         teacher = User.objects.get(id=1)
         student = User.objects.get(id=2)
@@ -38,9 +39,11 @@ class UserTest(TestCase):
 
     def test_class_id_as_string(self):
         class1 = Class_id.objects.get(id=1)
-        self.assertEquals(class1.__str__(), "9y3")
+        self.assertEquals(class1.__str__(), "9y3 teacher")
 
+    # views tests
     def test_show_students(self):
+        teacher = User.objects.get(id=1)
         client = Client()
         response = client.get(reverse('show_students', args=['9y3']))
         self.assertEquals(response.status_code, 200)

@@ -19,7 +19,7 @@ from teachers.views import class_list
 from users.views import show_students, welcome
 
 urlpatterns = [
-    path('show_students/<class_name>', show_students, name = 'show_students'),
+    path('show_students/<class_name>/<teacher_id>', show_students, name = 'show_students'),
     path('class_list/<user_id>', class_list, name = 'class_list'),
     path('admin/', admin.site.urls),
     path('not_teacher', class_list),

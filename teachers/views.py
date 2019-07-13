@@ -9,6 +9,7 @@ def class_list(request, user_id):
         return render(request, 'teachers/class_list.html', {
         'user': user,
         'classes':classes,
+        'teacher':user
         })
     else:
         return render(request, 'teachers/not_teacher.html')
