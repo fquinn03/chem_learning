@@ -7,7 +7,8 @@
 
 <ul>
 {% for class in classes %}
-<a href ="{% url 'show_students' class_name=class.name teacher_id=teacher.id %}">{{class.name}}</a><br></br>
+<a type="button" class="btn btn-square btn-warning btn-lg" href ="{% url 'show_students' class_name=class.name teacher_id=teacher.id %}">{{class.name}}</a><br></br>
+
 {% endfor %}
 </ul>
 {% endblock %}
