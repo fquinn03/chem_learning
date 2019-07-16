@@ -1,41 +1,51 @@
-body {
-  background-color: AntiqueWhite;
+.eqrow {
+	width: 100%;
+	margin: 0;
+	padding: 0;
 }
-h1 {
-  color: navy;
-  font-family: sans-serif;
-  font-weight: bold;
+.eqrow:before, .eqrow:after {
+	content: " ";
+	display: block;
 }
-p {
-  color: navy;
-  font-family: sans-serif;
+.eqrow:after {clear: both;}
+.eqnum, .eqbody {
+	position: relative;
+	padding: 1em 0.5em;
+	margin: 0;
+	font-size: 1.05em;
+	line-height: 1.4;
+	float: left;
+}
+.eqnum {width: 8%;}
+.eqbody {width: 84%;}
+.eqleft {text-align: left;}
+.eqcenter {text-align: center;}
+.eqright {text-align: right;}
+
+.dblarrow {
+	font-size: 125%;
+	top: -0.4ex;
+	margin: 0 2px;
+}
+.dblarrow:after {
+	content:"\2190";
+	position: absolute;
+	left: 0;
+	top: 0.5ex;
 }
 
-table {
-  font-family: arial, sans-serif;
-  border-collapse: collapse;
-  width: 100%;
+.sy, .syI, .syS {
+    position: relative;
+    text-align: center;
 }
-
-td, th {
-  border: 1px solid #dddddd;
-  text-align: left;
-  padding: 8px;
-}
-
-th {
-  background-color: #dddddd;
-}
-
-a:link, a:visited {
-  background-color: navy;
-  color: white;
-  padding: 14px 25px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-}
-
-a:hover, a:active {
-  background-color: red;
+.syI {padding: 0 0.2em;}
+.syS {padding: 0 0.025em;}
+.oxbr {
+	position: absolute;
+	top: -1em;
+	left: -1px;
+	width: 100%;
+	font-size: 0.6em;
+	text-align: center;
+	letter-spacing: 0;
 }
