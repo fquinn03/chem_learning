@@ -1,17 +1,16 @@
 {% extends 'teachers/base.html' %}
 
 {% block content %}
-<form>
-<form action ="" method="POST">
-{% csrf_token %}
 
-<p><strong>{{question.text}}</strong></p>
-{% for answer in answers %}
-<p>
-  <input type = "radio" name ="question-{{question.id}}" value = {{answer.text}}</input>
-  &nbsp&nbsp&nbsp{{answer.text}}
-</p>
+<form action = "" method="POST">
+{% csrf_token %}
+{% for question in questions %}
+    <p><strong>{{question.text}}</strong></p>
+    {% for answer in question.answer_set.all %}
+    <input type ='radio' name={{answer.text}} value = "{{answer.text}}">{{answer.text}}<br></br>
+    {% endfor %}
 {% endfor %}
 <input type="submit" value="Submit">
 </form>
+
 {% endblock %}
