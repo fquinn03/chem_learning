@@ -2,13 +2,13 @@
 
 {% block content %}
 
-<form name = "form" action = "/dotest/1" method="POST">
+<form name = "form" action = "" method="POST">
 {% csrf_token %}
 {% for question in questions %}
     <p><strong>{{question.text}}</strong></p>
     {% for answer in question.answer_set.all %}
-    <input type ='radio' name= "{{question.id}}" id ="answer{{forloop.counter}}" value = "{{answer.id}}"/>
-    <label for = "answer{{forloop.counter}}">{{answer.text}}</label><br/>
+      <input type ='radio' name= "{{question.id}}" id ="answer{{forloop.counter}}" value = "{{answer.id}}" required/>
+      <label for = "answer{{forloop.counter}}">{{answer.text}}</label><br/>
     {% endfor %}
 {% endfor %}
 <input type="submit" value="Submit">

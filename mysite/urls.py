@@ -15,10 +15,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from exams.views import dotest, show_result
+from lessons.views import complete_lesson
 from teachers.views import class_list
 from users.views import show_students, welcome
-from lessons.views import complete_lesson
-from exams.views import dotest
 
 urlpatterns = [
     path('show_students/<class_name>/<teacher_id>', show_students, name = 'show_students'),
@@ -28,5 +28,6 @@ urlpatterns = [
     path('dotest/<exam_id>', dotest, name='dotest'),
     path('not_teacher', class_list),
     path('finish_test', dotest),
+    path('show_result/<exam_id>', show_result, name = 'show_result'),
     path('', welcome),
 ]

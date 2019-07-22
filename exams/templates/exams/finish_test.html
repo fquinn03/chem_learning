@@ -2,6 +2,8 @@
 
 {% block content %}
 
-<p>You have submitted your answers to {{exam.title}}</p>
+<h3>You have submitted your answers to {{exam.title}}<br><br/></h3>
+
+<a type="button" class="btn btn-square btn-warning btn-lg" href ="{% url 'show_result' exam_id=exam.id %}">Show Result</a><br></br>
 
 {% endblock %}
