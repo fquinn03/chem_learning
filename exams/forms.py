@@ -1,9 +1,10 @@
+"""
 from django import forms
 from .models import UserAnswer
 from users.models import StudentProfile
 from exams.models import Question, Answer
 
-class UserAnswerForm(forms.ModelForm):
+class UserAnswerForm(forms.Form):
     class Meta:
         model= UserAnswer
         fields= ["question", "user_answer", "user"]
@@ -28,3 +29,4 @@ class QuestionForm(forms.Form):
                 widget=forms.CheckboxSelectMultiple,
                 choices=answers,
             )
+"""

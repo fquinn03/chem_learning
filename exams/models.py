@@ -42,4 +42,4 @@ class UserAnswer(models.Model):
         unique_together = ('question', 'user', )
 
     def __str__(self):
-        return self.user_answer
+        return self.user_answer.text
