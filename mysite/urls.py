@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from exams.views import dotest, show_result
+from exams.views import dotest, show_result, review
 from lessons.views import complete_lesson
 from teachers.views import class_list
 from users.views import show_students, welcome
@@ -29,5 +29,6 @@ urlpatterns = [
     path('not_teacher', class_list),
     path('finish_test', dotest),
     path('show_result/<exam_id>', show_result, name = 'show_result'),
+    path('review/<exam_id>', review, name='review'),
     path('', welcome),
 ]

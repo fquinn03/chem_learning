@@ -1,0 +1,10 @@
+{% extends 'teachers/base.html' %}
+
+{% block content %}
+<h5>Questions you need to review</h5>
+
+{% for key, value in corrections.items %}
+
+{{key}}&nbsp;Correct Answer:&nbsp;{{value}}<br></br>
+{% endfor %}
+{% endblock %}
