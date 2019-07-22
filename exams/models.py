@@ -35,11 +35,11 @@ class Answer(models.Model):
 
 class UserAnswer(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
-    answer = models.ForeignKey(Answer, on_delete=models.CASCADE)
+    user_answer = models.ForeignKey(Answer, on_delete=models.CASCADE)
     user = models.ForeignKey(StudentProfile, on_delete=models.CASCADE)
 
     class Meta:
         unique_together = ('question', 'user', )
 
     def __str__(self):
-        return self.answer
+        return self.user_answer

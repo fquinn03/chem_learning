@@ -27,5 +27,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('dotest/<exam_id>', dotest, name='dotest'),
     path('not_teacher', class_list),
+    path('finish_test', dotest),
     path('', welcome),
 ]

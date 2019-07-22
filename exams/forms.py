@@ -1,12 +1,30 @@
 from django import forms
-from .models import Question, Answer
+from .models import UserAnswer
+from users.models import StudentProfile
+from exams.models import Question, Answer
 
-class QuestionForm(forms.ModelForm):
+class UserAnswerForm(forms.ModelForm):
     class Meta:
-        model = Question
-        fields = ['text']
+        model= UserAnswer
+        fields= ["question", "user_answer", "user"]
 
-class AnswerForm(forms.ModelForm):
-    class Meta:
-        model = Answer
-        exclude = ['question']
+class ReadOnlyText(forms.TextInput):
+  input_type = 'text'
+
+  def render(self, name, value, attrs=None):
+     if value is None:
+         value = ''
+     return value
+
+class QuestionForm(forms.Form):
+
+    questions = Question.objects.all()
+
+    for question in questions:
+        answers = question.answer_set.all
+        question = forms.CharField(widget=ReadOnlyText, label=question.text)
+        answers = forms.MultipleChoiceField(
+                required=True,
+                widget=forms.CheckboxSelectMultiple,
+                choices=answers,
+            )
