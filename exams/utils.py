@@ -11,3 +11,13 @@ def create_user_answer(post_request, user):
             useranswer.save()
         else:
             continue
+
+def calculate_percentage(questions, user_id):
+    total_questions = questions.count()
+    right = 0
+    for question in questions:
+        student_answer = UserAnswer.objects.get(question = question.id, user = user_id)
+        if student_answer.user_answer == Answer.objects.get(question = question.id, correct=True):
+            right +=1
+    percentage_result = round((right/total_questions)*100)
+    return percentage_result
