@@ -21,3 +21,11 @@ def calculate_percentage(questions, user_id):
             right +=1
     percentage_result = round((right/total_questions)*100)
     return percentage_result
+
+def get_corrections(questions, user_id):
+    corrections = {}
+    for question in questions:
+        student_answer = UserAnswer.objects.get(question = question.id, user = user_id)
+        if student_answer.user_answer != Answer.objects.get(question = question.id, correct=True):
+            corrections[question.text] = Answer.objects.get(question = question.id, correct=True)
+    return corrections

@@ -3,7 +3,7 @@ from django.db import transaction
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from users.models import StudentProfile
-from .utils import calculate_percentage, create_user_answer
+from .utils import calculate_percentage, create_user_answer, get_corrections
 
 def dotest(request, exam_id):
     exam = Exam.objects.get(id = exam_id)
@@ -30,9 +30,5 @@ def show_result(request, exam_id):
 def review(request, exam_id):
     exam = Exam.objects.get(id = exam_id)
     questions = Question.objects.all().filter(exam = exam_id)
-    corrections = {}
-    for question in questions:
-        student_answer = UserAnswer.objects.get(question = question.id, user = request.user.id)
-        if student_answer.user_answer != Answer.objects.get(question = question.id, correct=True):
-            corrections[question.text] = Answer.objects.get(question = question.id, correct=True)
+    corrections = get_corrections(questions, request.user.id)
     return render(request, 'exams/review.html', {'corrections': corrections})
