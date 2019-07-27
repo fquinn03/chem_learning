@@ -3,21 +3,14 @@ from django.db import transaction
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from users.models import StudentProfile
+from .utils import create_user_answer
 
 def dotest(request, exam_id):
     exam = Exam.objects.get(id = exam_id)
     questions = Question.objects.all().filter(exam = exam_id)
     if request.method == 'POST':
         with transaction.atomic():
-            for key, value in request.POST.items():
-                if key != 'csrfmiddlewaretoken':
-                    q = Question.objects.get(id = key)
-                    a = Answer.objects.get(id = value)
-                    u = StudentProfile.objects.get(user_id = request.user.id)
-                    useranswer = UserAnswer(question = q, user_answer = a, user = u)
-                    useranswer.save()
-                else:
-                    continue
+            create_user_answer(request.POST, StudentProfile.objects.get(user_id = request.user.id) )
             return render(request, 'exams/finish_test.html', {
                 'exam': exam,
                 })
@@ -42,6 +35,7 @@ def show_result(request, exam_id):
     })
 
 def review(request, exam_id):
+    print(request.GET)
     exam = Exam.objects.get(id = exam_id)
     questions = Question.objects.all().filter(exam = exam_id)
     corrections = {}

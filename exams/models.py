@@ -39,7 +39,7 @@ class UserAnswer(models.Model):
     user = models.ForeignKey(StudentProfile, on_delete=models.CASCADE)
 
     class Meta:
-        unique_together = ('question', 'user', )
+        unique_together = ('user', 'user_answer' )
 
     def __str__(self):
         return self.user_answer.text

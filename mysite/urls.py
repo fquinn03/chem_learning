@@ -27,7 +27,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('dotest/<exam_id>', dotest, name='dotest'),
     path('not_teacher', class_list),
-    path('finish_test', dotest),
+    path('finish_test', dotest, name='finish_test'),
     path('show_result/<exam_id>', show_result, name = 'show_result'),
     path('review/<exam_id>', review, name='review'),
     path('', welcome),

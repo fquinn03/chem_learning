@@ -3,7 +3,8 @@ from django.test import TestCase, Client
 from users.models import User, Class_id, StudentProfile, TeacherProfile
 
 class UserTest(TestCase):
-    def setUp(cls):
+
+    def setUp(self):
         User.objects.create(id = 1, username ="teacher", is_student = False, is_teacher = True)
         User.objects.create(id = 2, username ="student", is_student = True, is_teacher = False)
         Class_id.objects.create(id = 1, name = "9y3", teacher_id = 1)

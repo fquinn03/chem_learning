@@ -8,7 +8,7 @@
     
     
     <meta http-equiv="X-UA-Compatible" content="IE=emulateIE7" />
-    <title>Coverage for lessons\views.py: 100%</title>
+    <title>Coverage for lessons\admin.py: 100%</title>
     <link rel="stylesheet" href="style.css" type="text/css">
     
     <script type="text/javascript" src="jquery.min.js"></script>
@@ -23,7 +23,7 @@
 
 <div id="header">
     <div class="content">
-        <h1>Coverage for <b>lessons\views.py</b> :
+        <h1>Coverage for <b>lessons\admin.py</b> :
             <span class="pc_cov">100%</span>
         </h1>
 
@@ -72,20 +72,18 @@
 <p id="n3" class="pln"><a href="#n3">3</a></p>
 <p id="n4" class="stm run hide_run"><a href="#n4">4</a></p>
 <p id="n5" class="stm run hide_run"><a href="#n5">5</a></p>
-<p id="n6" class="stm run hide_run"><a href="#n6">6</a></p>
-<p id="n7" class="pln"><a href="#n7">7</a></p>
-<p id="n8" class="pln"><a href="#n8">8</a></p>
+<p id="n6" class="pln"><a href="#n6">6</a></p>
+<p id="n7" class="stm run hide_run"><a href="#n7">7</a></p>
 
             </td>
             <td class="text">
-<p id="t1" class="stm run hide_run"><span class="key">from</span> <span class="nam">django</span><span class="op">.</span><span class="nam">shortcuts</span> <span class="key">import</span> <span class="nam">render</span><span class="strut">&nbsp;</span></p>
+<p id="t1" class="stm run hide_run"><span class="key">from</span> <span class="nam">django</span><span class="op">.</span><span class="nam">contrib</span> <span class="key">import</span> <span class="nam">admin</span><span class="strut">&nbsp;</span></p>
 <p id="t2" class="stm run hide_run"><span class="key">from</span> <span class="op">.</span><span class="nam">models</span> <span class="key">import</span> <span class="nam">Lesson</span><span class="strut">&nbsp;</span></p>
 <p id="t3" class="pln"><span class="strut">&nbsp;</span></p>
-<p id="t4" class="stm run hide_run"><span class="key">def</span> <span class="nam">complete_lesson</span><span class="op">(</span><span class="nam">request</span><span class="op">,</span> <span class="nam">lesson_id</span><span class="op">)</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
-<p id="t5" class="stm run hide_run">    <span class="nam">lesson</span> <span class="op">=</span> <span class="nam">Lesson</span><span class="op">.</span><span class="nam">objects</span><span class="op">.</span><span class="nam">get</span><span class="op">(</span><span class="nam">id</span> <span class="op">=</span> <span class="nam">lesson_id</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
-<p id="t6" class="stm run hide_run">    <span class="key">return</span> <span class="nam">render</span><span class="op">(</span><span class="nam">request</span><span class="op">,</span> <span class="str">'lessons/view_lesson.html'</span><span class="op">,</span> <span class="op">{</span><span class="strut">&nbsp;</span></p>
-<p id="t7" class="pln">    <span class="str">'lesson'</span><span class="op">:</span> <span class="nam">lesson</span><span class="op">,</span><span class="strut">&nbsp;</span></p>
-<p id="t8" class="pln">    <span class="op">}</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
+<p id="t4" class="stm run hide_run"><span class="key">class</span> <span class="nam">LessonAdmin</span><span class="op">(</span><span class="nam">admin</span><span class="op">.</span><span class="nam">ModelAdmin</span><span class="op">)</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
+<p id="t5" class="stm run hide_run">    <span class="key">pass</span><span class="strut">&nbsp;</span></p>
+<p id="t6" class="pln"><span class="strut">&nbsp;</span></p>
+<p id="t7" class="stm run hide_run"><span class="nam">admin</span><span class="op">.</span><span class="nam">site</span><span class="op">.</span><span class="nam">register</span><span class="op">(</span><span class="nam">Lesson</span><span class="op">,</span> <span class="nam">LessonAdmin</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
 
             </td>
         </tr>
