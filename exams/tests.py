@@ -4,7 +4,7 @@ from django.urls import reverse
 from django.utils.decorators import method_decorator
 from .models import Level, Exam, Question, Answer, UserAnswer
 from users.models import Class_id, User, StudentProfile, TeacherProfile
-from .utils import calculate_percentage, create_user_answer
+from .utils import calculate_percentage, create_user_answer, get_corrections
 from .views import dotest, show_result, review
 
 class ExamsTest(TestCase):
@@ -48,6 +48,7 @@ class ExamsTest(TestCase):
         self.useranswer = UserAnswer.objects.get(id=1)
         self.question1 = Question.objects.get(id=1)
         self.option1 = Answer.objects.get(id=1)
+        self.option4 = Answer.objects.get(id=4)
         self.user_answer = UserAnswer.objects.get(id=1)
         self.client = Client()
         self.student2 = StudentProfile.objects.get(user_id=3)
@@ -126,3 +127,8 @@ class ExamsTest(TestCase):
         questions = Question.objects.all()
         percentage = calculate_percentage(questions, self.student1.user_id)
         self.assertEquals(percentage, 100)
+
+    def test_get_corrections(self):
+        questions = Question.objects.all()
+        corrections = get_corrections(questions, self.student2.user_id)
+        self.assertEquals(corrections, {"What is my favourite colour? ": self.option4})
