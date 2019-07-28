@@ -11,7 +11,6 @@ def dotest(request, exam_id):
     exam = Exam.objects.get(id = exam_id)
     questions = Question.objects.all().filter(exam = exam_id)
     if request.method == 'POST':
-        print(request.POST)
         with transaction.atomic():
             create_user_answer(request.POST, StudentProfile.objects.get(user_id = request.user.id) )
             return render(request, 'exams/finish_test.html', {
@@ -39,5 +38,10 @@ and then display show_result template  """
 def review(request, exam_id):
     exam = Exam.objects.get(id = exam_id)
     questions = Question.objects.all().filter(exam = exam_id)
-    corrections = get_corrections(questions, request.user.id)
-    return render(request, 'exams/review.html', {'corrections': corrections})
+    incorrect = get_corrections(questions, request.user.id)
+    corrections = incorrect[0]
+    mispelled = incorrect[1]
+    #list comprehension to count the number of keys(items) in the dictionary
+    mispelled_count = len(mispelled)
+    return render(request, 'exams/review.html', {'corrections': corrections, 'mispelled':
+    mispelled, 'mispelled_count':mispelled_count})

@@ -30,6 +30,7 @@ class Answer(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
     text = models.CharField(max_length=1000)
     correct = models.BooleanField(default = False)
+    correct_spelling = models.BooleanField(default = True)
 
     def __str__(self):
         return self.text
@@ -38,7 +39,7 @@ class UserAnswer(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
     user_answer = models.CharField(max_length=1000)
     user = models.ForeignKey(StudentProfile, on_delete=models.CASCADE)
-
+    
     class Meta:
         unique_together = ('user', 'user_answer' )
 
