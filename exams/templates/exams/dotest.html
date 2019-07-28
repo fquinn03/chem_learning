@@ -6,10 +6,14 @@
 {% csrf_token %}
 {% for question in questions %}
     <p><strong>{{question.text}}</strong></p>
-    {% for answer in question.answer_set.all %}
-      <input type ='radio' name= "{{question.id}}" id ="answer{{forloop.counter}}" value = "{{answer.id}}" required/>
-      <label for = "answer{{forloop.counter}}">{{answer.text}}</label><br/>
-    {% endfor %}
+    {% if not question.is_MCQ %}
+        <input type ='text' name= "{{question.id}}" id ="answer{{forloop.counter}}" value = "{{answer.text}}" required/>
+    {% else %}
+      {% for answer in question.answer_set.all %}
+        <input type ='radio' name= "{{question.id}}" id ="answer{{forloop.counter}}" value = "{{answer.text}}" required/>
+        <label for = "answer{{forloop.counter}}">{{answer.text}}</label><br/>
+      {% endfor %}
+    {% endif %}
 {% endfor %}
 <input type="submit" value="Submit">
 </form>

@@ -147,4 +147,4 @@ class ExamsTest(TestCase):
     def test_get_corrections(self):
         questions = Question.objects.all()
         corrections = get_corrections(questions, self.student2.user_id)
-        self.assertEquals(corrections, {"What is my favourite colour? ": self.option4})
+        self.assertEquals(corrections, {"What is my favourite colour? ": "Green"})

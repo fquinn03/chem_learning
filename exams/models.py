@@ -21,6 +21,7 @@ class Exam(models.Model):
 class Question(models.Model):
     exam = models.ForeignKey(Exam, on_delete=models.CASCADE)
     text = models.CharField(max_length=1000)
+    is_MCQ = models.BooleanField(default = True)
 
     def __str__(self):
         return self.text
@@ -35,11 +36,11 @@ class Answer(models.Model):
 
 class UserAnswer(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
-    user_answer = models.ForeignKey(Answer, on_delete=models.CASCADE)
+    user_answer = models.CharField(max_length=1000)
     user = models.ForeignKey(StudentProfile, on_delete=models.CASCADE)
 
     class Meta:
         unique_together = ('user', 'user_answer' )
 
     def __str__(self):
-        return self.user_answer.text
+        return self.user_answer

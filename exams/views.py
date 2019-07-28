@@ -11,6 +11,7 @@ def dotest(request, exam_id):
     exam = Exam.objects.get(id = exam_id)
     questions = Question.objects.all().filter(exam = exam_id)
     if request.method == 'POST':
+        print(request.POST)
         with transaction.atomic():
             create_user_answer(request.POST, StudentProfile.objects.get(user_id = request.user.id) )
             return render(request, 'exams/finish_test.html', {
