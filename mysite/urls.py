@@ -30,5 +30,5 @@ urlpatterns = [
     path('finish_test', dotest, name='finish_test'),
     path('show_result/<exam_id>', show_result, name = 'show_result'),
     path('review/<exam_id>', review, name='review'),
-    path('', welcome),
+    path('', welcome, name='welcome'),
 ]

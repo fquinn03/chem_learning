@@ -1,7 +1,8 @@
-from django.test import TestCase, Client
+from django.test import Client, TestCase
 from django.urls import reverse
-from .models import Lesson
 from exams.models import Level
+from .models import Lesson
+
 
 class LessonsTest(TestCase):
     def setUp(cls):

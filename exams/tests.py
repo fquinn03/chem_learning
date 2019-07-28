@@ -2,12 +2,13 @@ from django.contrib.auth.models import AbstractUser
 from django.test import Client, RequestFactory, TestCase
 from django.urls import reverse
 from django.utils.decorators import method_decorator
-from .models import Level, Exam, Question, Answer, UserAnswer
 from users.models import Class_id, User, StudentProfile, TeacherProfile
+from .models import Answer, Exam, Level, Question, UserAnswer
 from .utils import calculate_percentage, create_user_answer, get_corrections
 from .views import dotest, show_result, review
 
 class ExamsTest(TestCase):
+    # set up testing database
     @classmethod
     def setUpTestData(cls):
         User.objects.create(id = 1, username ="teacher", is_student = False, is_teacher = True)
@@ -43,6 +44,7 @@ class ExamsTest(TestCase):
         useranswer = UserAnswer.objects.get(id=1)
 
     def setUp(self):
+        # set up TestCase
         self.level_1 = Level.objects.get(id = 1)
         self.exam1 = Exam.objects.get(id=1)
         self.useranswer = UserAnswer.objects.get(id=1)
@@ -56,7 +58,10 @@ class ExamsTest(TestCase):
         self.user = User.objects.get(id=3)
         self.questions = Question.objects.all()
 
+
     # Model Tests
+    # test the __str__ methods for all the models in exams
+
     def test_level_str(self):
         self.assertEquals(self.level_1.__str__(), "1")
 
@@ -71,19 +76,25 @@ class ExamsTest(TestCase):
 
     def test_useranswer_str(self):
         self.assertEquals(self.user_answer.__str__(), "Green")
-# views tests
+
+
+    # views tests
+    # check the dotest get request returns a valid response
     def test_get_do_test_response_code(self):
         response = self.client.get(reverse('dotest', args=[1,]))
         self.assertEquals(response.status_code, 200)
 
+    # check the dotest get method returns the expected template
     def test_get_do_test_template_used(self):
         response = self.client.get(reverse('dotest', args=[1,]))
         self.assertTemplateUsed(response, 'exams/dotest.html')
 
+    # check the dotest get request returned template contains the expected html
     def test_get_do_test_template_contains(self):
         response = self.client.get(reverse('dotest', args=[1,]))
         self.assertContains(response, "<p><strong>What is my favourite colour? </strong></p>")
 
+    # check the utils.create_user_answer method adds a UserAnswer to the database
     def test_create_user_answer(self):
         request = {'csrfmiddlewaretoken': 'mihQP', '1': '1'}
         count = UserAnswer.objects.all().count()
@@ -91,6 +102,7 @@ class ExamsTest(TestCase):
         count_2 = UserAnswer.objects.all().count()
         self.assertEquals(count_2, count+1)
 
+    # check the dotest post request returns a valid response
     def test_post_dotest(self):
         request_param = {'csrfmiddlewaretoken': 'mihQP', '1': '1'}
         rf = RequestFactory()
@@ -100,6 +112,7 @@ class ExamsTest(TestCase):
         response = dotest(request, 1)
         self.assertEquals(response.status_code, 200)
 
+    # check the show_result get request returns a valid response
     def test_get_show_resuts(self):
         request_param = {}
         rf = RequestFactory()
@@ -109,6 +122,7 @@ class ExamsTest(TestCase):
         response = show_result(request, 1)
         self.assertEquals(response.status_code, 200)
 
+    # check the review get request returns a valid response
     def test_get_review(self):
         request_param = {}
         rf = RequestFactory()
@@ -118,6 +132,7 @@ class ExamsTest(TestCase):
         response = review(request, 1)
         self.assertEquals(response.status_code, 200)
 
+    #test utils.calculate_percentage helper method
     def test_calculate_percentage_1(self):
         questions = Question.objects.all()
         percentage = calculate_percentage(questions, self.student2.user_id)
@@ -128,6 +143,7 @@ class ExamsTest(TestCase):
         percentage = calculate_percentage(questions, self.student1.user_id)
         self.assertEquals(percentage, 100)
 
+    #test utils.get_corrections helper method
     def test_get_corrections(self):
         questions = Question.objects.all()
         corrections = get_corrections(questions, self.student2.user_id)
