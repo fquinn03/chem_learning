@@ -1,3 +1,4 @@
+from chempy import Substance
 from django.db import transaction
 from django.shortcuts import render
 from users.models import StudentProfile
@@ -41,7 +42,11 @@ def review(request, exam_id):
     incorrect = get_corrections(questions, request.user.id)
     corrections = incorrect[0]
     mispelled = incorrect[1]
-    #list comprehension to count the number of keys(items) in the dictionary
     mispelled_count = len(mispelled)
     return render(request, 'exams/review.html', {'corrections': corrections, 'mispelled':
     mispelled, 'mispelled_count':mispelled_count})
+
+def get_formula(request, raw_formula):
+    print(request)
+    html_formula = Substance.from_formula(raw_formula)
+    return render(request, 'dotest.html', {'html_formula':html_formula})

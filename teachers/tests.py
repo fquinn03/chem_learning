@@ -36,7 +36,7 @@ class TeacherTest(TestCase):
 
     def test_class_list_teacher_html(self):
         response = self.client.get(reverse('class_list', args=[1] ))
-        self.assertContains(response, "<h1>Welcome teacher </h1>")
+        self.assertContains(response, "<h5>Welcome teacher </h5>")
 
     def test_class_list_student_response(self):
         response = self.client.get(reverse('class_list', args=[2] ))

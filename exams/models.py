@@ -14,7 +14,6 @@ class Exam(models.Model):
 
     class Meta:
         unique_together = ('level', 'id', )
-
     def __str__(self):
         return self.title
 
@@ -22,6 +21,7 @@ class Question(models.Model):
     exam = models.ForeignKey(Exam, on_delete=models.CASCADE)
     text = models.CharField(max_length=1000)
     is_MCQ = models.BooleanField(default = True)
+    is_formula = models.BooleanField(default = False)
 
     def __str__(self):
         return self.text
@@ -39,9 +39,8 @@ class UserAnswer(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
     user_answer = models.CharField(max_length=1000)
     user = models.ForeignKey(StudentProfile, on_delete=models.CASCADE)
-    
+
     class Meta:
         unique_together = ('user', 'user_answer' )
-
     def __str__(self):
         return self.user_answer
