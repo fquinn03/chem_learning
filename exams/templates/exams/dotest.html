@@ -14,8 +14,8 @@
         <div class="modal-header">
           <h4 class="modal-title">The formula you have entered is: </h4>
         </div>
-        <div class="modal-body">
-          <p>{{html_formula}}</p>
+        <div class="modal-body" id = "formula_output">
+
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -31,16 +31,17 @@
 {% for question in questions %}
     <p><strong>{{question.text}}</strong></p>
     {% if not question.is_MCQ and not question.is_formula%}
-        <input type ='text' name= "{{question.id}}" id ="answer{{forloop.counter}}" value = "{{answer.text}}" required/>
+        <input type ='text' name= "{{question.id}}" id ="answer{{forloop.counter}}"  required />
     {% elif question.is_MCQ  %}
       {% for answer in question.answer_set.all %}
         <input type ='radio' name= "{{question.id}}" id ="answer{{forloop.counter}}" value = "{{answer.text}}" required/>
         <label for = "answer{{forloop.counter}}">{{answer.text}}</label><br/>
       {% endfor %}
     {% else %}
-        <input type ='text' class = "formula_input" name= "{{question.id}}" id ="answer{{forloop.counter}}" value = "{{answer.text}}" required/>
-        <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal" href="myModal">Check Formula</button><br></br>
+        <input type ='text' class = "formula_input" name= "{{question.id}}" id ="chemformula"  required/>
+        <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal" id="convert">Check Formula</button><br></br>
     {% endif %}
+
 {% endfor %}
 <input type="submit" value="Submit">
 </form>
