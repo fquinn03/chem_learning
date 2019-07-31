@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Answer, Exam, Level, Question, UserAnswer
+from .models import Answer, Exam, Formula_Question, Level, MCQ_Question, UserAnswer, Written_Question
 
 
 
@@ -18,10 +18,20 @@ class LevelAdmin(admin.ModelAdmin):
 
 admin.site.register(Level, LevelAdmin)
 
-class QuestionAdmin(admin.ModelAdmin):
+class Written_QuestionAdmin(admin.ModelAdmin):
     pass
 
-admin.site.register(Question, QuestionAdmin)
+admin.site.register(Written_Question, Written_QuestionAdmin)
+
+class MCQ_QuestionAdmin(admin.ModelAdmin):
+    pass
+
+admin.site.register(MCQ_Question, MCQ_QuestionAdmin)
+
+class Formula_QuestionAdmin(admin.ModelAdmin):
+    pass
+
+admin.site.register(Formula_Question, Formula_QuestionAdmin)
 
 class UserAnswerAdmin(admin.ModelAdmin):
     pass

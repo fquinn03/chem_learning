@@ -20,11 +20,26 @@ class Exam(models.Model):
 class Question(models.Model):
     exam = models.ForeignKey(Exam, on_delete=models.CASCADE)
     text = models.CharField(max_length=1000)
-    is_MCQ = models.BooleanField(default = True)
-    is_formula = models.BooleanField(default = False)
-
     def __str__(self):
         return self.text
+
+class Written_Question(Question):
+    is_written = models.BooleanField(default = True)
+
+    class Meta:
+        verbose_name="Written_Question"
+
+class MCQ_Question(Question):
+    is_MCQ = models.BooleanField(default = True)
+
+    class Meta:
+        verbose_name="MCQ_Question"
+
+class Formula_Question(Question):
+    is_formula = models.BooleanField(default = True)
+
+    class Meta:
+        verbose_name="Formula_Question"
 
 class Answer(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE)

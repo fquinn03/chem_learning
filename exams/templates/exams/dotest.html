@@ -24,25 +24,37 @@
 
     </div>
   </div>
-
 </div>
+
 <form name = "form" action = "" method="POST">
 {% csrf_token %}
-{% for question in questions %}
+{% for question in mcq_questions %}
     <p><strong>{{question.text}}</strong></p>
-    {% if not question.is_MCQ and not question.is_formula%}
-        <input type ='text' name= "{{question.id}}" id ="answer{{forloop.counter}}"  required />
-    {% elif question.is_MCQ  %}
       {% for answer in question.answer_set.all %}
         <input type ='radio' name= "{{question.id}}" id ="answer{{forloop.counter}}" value = "{{answer.text}}" required/>
-        <label for = "answer{{forloop.counter}}">{{answer.text}}</label><br/>
+        <label for = "answer{{forloop.counter}}">{{answer.text}}</label>
+        <br/>
       {% endfor %}
-    {% else %}
-        <input type ='text' class = "formula_input" name= "{{question.id}}" id ="chemformula"  required/>
-        <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal" id="convert">Check Formula</button><br></br>
-    {% endif %}
-
 {% endfor %}
+{% for question in written_questions %}
+    <p><strong>{{question.text}}</strong></p>
+    <label for = "answer{{forloop.counter}}">Answer</label>
+    <input type ='text' name= "{{question.id}}" id ="answer{{forloop.counter}}"  required />
+    <br/>
+{% endfor %}
+{% for question in formula_questions %}
+      <p><strong>{{question.text}}</strong></p>
+      <label for = "answer{{forloop.counter}}">Formula</label>
+      <input type ='text' name= "{{question.id}}" id ="answer{{forloop.counter}}" required/>
+      <br/>
+{% endfor %}
+<br/>
 <input type="submit" value="Submit">
 </form>
+
+<br/><p ><strong>Formula Checker</strong></p>
+<label for="Formula input">Enter a formula: </label>
+<input type ='text' class = "formula_input" id = "formula_input" required/>
+<button type="button" class="btn-sm btn-success" data-toggle="modal" data-target="#myModal" id="convert">Check Formula</button><br></br>
+
 {% endblock %}

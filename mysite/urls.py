@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from exams.views import dotest, get_formula, show_result, review
+from exams.views import dotest, show_result, review
 from lessons.views import complete_lesson
 from teachers.views import class_list
 from users.views import show_students, welcome
@@ -26,7 +26,6 @@ urlpatterns = [
     path('class_list/<user_id>', class_list, name = 'class_list'),
     path('admin/', admin.site.urls),
     path('dotest/<exam_id>', dotest, name='dotest'),
-    path('get_formula/<raw_formula>', get_formula, name='get_formula'),
     path('not_teacher', class_list),
     path('finish_test', dotest, name='finish_test'),
     path('show_result/<exam_id>', show_result, name = 'show_result'),
