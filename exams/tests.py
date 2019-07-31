@@ -3,8 +3,8 @@ from django.test import Client, RequestFactory, TestCase
 from django.urls import reverse
 from django.utils.decorators import method_decorator
 from users.models import Class_id, User, StudentProfile, TeacherProfile
-from .models import Answer, Exam, Level, Question, UserAnswer
-from .utils import calculate_percentage, create_user_answer, get_corrections
+from .models import Answer, Exam, Formula_Question, Level, MCQ_Question, Question, UserAnswer, Written_Question
+from .utils import calculate_percentage, create_user_answer, get_corrections_formula, get_corrections_mcq, get_corrections_written, get_formula
 from .views import dotest, show_result, review
 
 class ExamsTest(TestCase):
@@ -29,8 +29,8 @@ class ExamsTest(TestCase):
         level_1 = Level.objects.get(id = 1)
         Exam.objects.create(level = level_1, title = "Test Exam Title 1")
         exam1 = Exam.objects.get(id=1)
-        Question.objects.create(exam = exam1, text = "What is my favourite colour? ")
-        question1 = Question.objects.get(id=1)
+        MCQ_Question.objects.create(exam = exam1, text = "What is my favourite colour? ")
+        question1 = MCQ_Question.objects.get(id=1)
         Answer.objects.create(question = question1, text = "Yellow", correct = False)
         Answer.objects.create(question = question1, text = "Blue", correct = False)
         Answer.objects.create(question = question1, text = "Red", correct = False)
@@ -135,16 +135,16 @@ class ExamsTest(TestCase):
     #test utils.calculate_percentage helper method
     def test_calculate_percentage_1(self):
         questions = Question.objects.all()
-        percentage = calculate_percentage(questions, self.student2.user_id)
+        percentage = calculate_percentage(questions, self.student2.user_id, 1)
         self.assertEquals(percentage, 0)
 
     def test_calculate_percentage_2(self):
         questions = Question.objects.all()
-        percentage = calculate_percentage(questions, self.student1.user_id)
+        percentage = calculate_percentage(questions, self.student1.user_id, 1)
         self.assertEquals(percentage, 100)
 
     #test utils.get_corrections helper method
-    def test_get_corrections(self):
+    def test_get_corrections_mcq(self):
         questions = Question.objects.all()
-        corrections = get_corrections(questions, self.student2.user_id)
-        self.assertEquals(corrections[0], {"What is my favourite colour? ": "Green"})
+        corrections = get_corrections_mcq(self.student2.user_id, 1)
+        self.assertEquals(corrections, {"What is my favourite colour? ": "Green"})

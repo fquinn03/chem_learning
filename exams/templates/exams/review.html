@@ -10,21 +10,18 @@
 {{key}}&nbsp;Correct Answer:&nbsp;{{value}}<br></br>
 {% endfor %}
 
-{% for key, value in formula_corrections.items %}
-{{key}}&nbsp;Correct Answer:&nbsp;{{value}}<br></br>
-{% endfor %}
-
 {% if formulae_count > 0 %}
 <h5>Formulae you need to review</h5>
 {% for key, value in formula_corrections.items %}
 {{key}}&nbsp;Answer:&nbsp;{{value|safe}}<br></br>
 {% endfor %}
-{% endif%}
+{% endif %}
 
 {% if mispelled_count > 0 %}
 <h5>Spellings you need to review</h5>
 {% for key, value in written_corrections_mispelled.items %}
 {{key}}&nbsp;Correct Spelling:&nbsp;{{value}}<br></br>
 {% endfor %}
-{% endif%}
+{% endif %}
+
 {% endblock %}

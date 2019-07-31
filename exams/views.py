@@ -31,7 +31,7 @@ percentage result and then display show_result template  """
 def show_result(request, exam_id):
     exam = Exam.objects.get(id = exam_id)
     questions = Question.objects.all().filter(exam = exam_id)
-    percentage_result = calculate_percentage(questions, request.user.id)
+    percentage_result = calculate_percentage(questions, request.user.id, exam_id)
     return render(request, 'exams/show_result.html', {'percentage_result': percentage_result,
     'exam':exam,
     })
