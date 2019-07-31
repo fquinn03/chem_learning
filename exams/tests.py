@@ -42,6 +42,17 @@ class ExamsTest(TestCase):
         UserAnswer.objects.create(question = question1, user_answer = option4, user = student1)
         UserAnswer.objects.create(question = question1, user_answer = option2, user = student2)
         useranswer = UserAnswer.objects.get(id=1)
+        Written_Question.objects.create(exam = exam1, text = "What is my favourite film? ")
+        question2 = Written_Question.objects.get(id=2)
+        Answer.objects.create(question = question2, text = "Shrek", correct = True, correct_spelling = True)
+        Answer.objects.create(question = question2, text = "Shrak", correct = True, correct_spelling = False)
+        UserAnswer.objects.create(question = question2, user_answer = "   Shrek    ", user = student2)
+        UserAnswer.objects.create(question = question2, user_answer = "   Shrak ", user = student1)
+        Formula_Question.objects.create(exam = exam1, text = "What is the chemical formula for water? ")
+        question3 = Formula_Question.objects.get(id=3)
+        Answer.objects.create(question = question3, text = "H2O", correct = True, correct_spelling = True)
+        UserAnswer.objects.create(question = question3, user_answer = "h2o", user = student2)
+        UserAnswer.objects.create(question = question3, user_answer = "H2O", user = student1)
 
     def setUp(self):
         # set up TestCase
@@ -136,7 +147,7 @@ class ExamsTest(TestCase):
     def test_calculate_percentage_1(self):
         questions = Question.objects.all()
         percentage = calculate_percentage(questions, self.student2.user_id, 1)
-        self.assertEquals(percentage, 0)
+        self.assertEquals(percentage, 33)
 
     def test_calculate_percentage_2(self):
         questions = Question.objects.all()

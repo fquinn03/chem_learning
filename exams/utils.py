@@ -39,7 +39,6 @@ def calculate_percentage(questions, user_id, exam_id):
         for answer in correct_answers:
             if student_answer.user_answer == answer.text:
                 right +=1
-
     percentage_result = round((right/total_questions)*100)
     return percentage_result
 
