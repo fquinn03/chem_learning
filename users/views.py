@@ -1,14 +1,11 @@
 from django.shortcuts import render
-from .models import StudentProfile, Class_id
+from users.models import User
 
-
-def show_students(request, class_name, teacher_id):
-    group = Class_id.objects.get(name = class_name, teacher = teacher_id)
-    students = StudentProfile.objects.all().filter(class_id = group.id)
-    return render(request, 'users/show_students.html', {
-    'group': group,
-    'students': students,
+def welcome_teacher(request):
+    return render(request, 'users/welcome_teacher.html', {
     })
 
-def welcome(request):
-    return render(request, 'users/welcome.html')
+
+def welcome_student(request):
+    return render(request, 'users/welcome_student.html', {
+    })

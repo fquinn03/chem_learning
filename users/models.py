@@ -5,13 +5,11 @@ class User(AbstractUser):
     is_student = models.BooleanField(default=False)
     is_teacher = models.BooleanField(default=False)
 
-
 class TeacherProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
 
     def __str__(self):
         return self.user.username
-
 
 class Class_id(models.Model):
     name = models.CharField(max_length = 100, default = "class_name")

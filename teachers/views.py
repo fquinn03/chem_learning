@@ -1,6 +1,5 @@
 from django.shortcuts import render
-from users.models import Class_id, User
-from users.views import show_students
+from users.models import Class_id, StudentProfile, User
 
 def class_list(request, user_id):
     if User.objects.get(id = user_id).is_teacher:
@@ -13,3 +12,11 @@ def class_list(request, user_id):
         })
     else:
         return render(request, 'teachers/not_teacher.html')
+
+def show_students(request, class_name, teacher_id):
+    group = Class_id.objects.get(name = class_name, teacher = teacher_id)
+    students = StudentProfile.objects.all().filter(class_id = group.id)
+    return render(request, 'teachers/show_students.html', {
+    'group': group,
+    'students': students,
+    })

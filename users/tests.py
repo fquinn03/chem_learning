@@ -1,5 +1,6 @@
-from django.urls import reverse
+from django.contrib.auth.models import User
 from django.test import Client, TestCase
+from django.urls import reverse
 from users.models import  Class_id, StudentProfile, TeacherProfile, User
 
 class UserTest(TestCase):
@@ -24,6 +25,8 @@ class UserTest(TestCase):
         self.tp = TeacherProfile.objects.get(user_id = 1)
         self.sp = StudentProfile.objects.get(user_id=2)
         self.class1 = Class_id.objects.get(id=1)
+
+
     # models tests
     #test isteacher, isstudent on UserModel
     def test_is_teacher(self):
@@ -52,26 +55,28 @@ class UserTest(TestCase):
         self.assertEquals(self.class1.__str__(), "9y3 teacher")
 
     # views tests
-    def test_show_students_response(self):
-        response = self.client.get(reverse('show_students', args=['9y3', 1]))
+    def test_welcome_student_response(self):
+        response = self.client.get(reverse('welcome_student'))
         self.assertEquals(response.status_code, 200)
 
-    def test_show_students_template(self):
-        response = self.client.get(reverse('show_students', args=['9y3', 1]))
-        self.assertTemplateUsed(response, "users/show_students.html")
+    def test_welcome_student_template(self):
+        response = self.client.get(reverse('welcome_student'))
+        self.assertTemplateUsed(response, "users/welcome_student.html")
 
-    def test_show_students_html(self):
-        response = self.client.get(reverse('show_students', args=['9y3', 1]))
-        self.assertContains(response, "<td>student</td>")
+    def test_welcome_student_html(self):
+        self.client.force_login(User.objects.get(id=2))
+        response = self.client.get(reverse('welcome_student'))
+        self.assertContains(response, "<h5>Welcome Student: student</h5>")
 
-    def test_welcome_response(self):
-        response = self.client.get(reverse('welcome'))
+    def test_welcome_teacher_response(self):
+        response = self.client.get(reverse('welcome_teacher'))
         self.assertEquals(response.status_code, 200)
 
-    def test_welcome_template(self):
-        response = self.client.get(reverse('welcome'))
-        self.assertTemplateUsed(response, "users/welcome.html")
+    def test_welcome_teacher_template(self):
+        response = self.client.get(reverse('welcome_teacher'))
+        self.assertTemplateUsed(response, "users/welcome_teacher.html")
 
-    def test_welcome_html(self):
-        response = self.client.get(reverse('welcome'))
-        self.assertContains(response, "<p>Learn how to write chemical equations</p>")
+    def test_welcome_teacher_html(self):
+        self.client.force_login(User.objects.get(id=1))
+        response = self.client.get(reverse('welcome_teacher'))
+        self.assertContains(response, "<h5>Welcome Teacher: teacher</h5>")
