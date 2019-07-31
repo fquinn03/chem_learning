@@ -18,6 +18,7 @@ from django.conf.urls import url
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
 from django.urls import path, include
+from django.views.generic.base import TemplateView
 from exams.views import dotest, show_result, review
 from lessons.views import complete_lesson
 from teachers.views import class_list, show_students
@@ -33,7 +34,10 @@ urlpatterns = [
     path('finish_test', dotest, name='finish_test'),
     path('show_result/<exam_id>', show_result, name = 'show_result'),
     path('review/<exam_id>', review, name='review'),
-    path('accounts/', include('django.contrib.auth.urls')),
     path('welcome_student', welcome_student, name = 'welcome_student'),
     path('welcome_teacher', welcome_teacher, name = 'welcome_teacher'),
+    path('accounts/', include('accounts.urls')),
+    path('accounts/', include('django.contrib.auth.urls')),
+    path('', TemplateView.as_view(template_name='home.html'), name='home'),
+
 ]
