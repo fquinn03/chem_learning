@@ -36,8 +36,6 @@ urlpatterns = [
     path('review/<exam_id>', review, name='review'),
     path('welcome_student', welcome_student, name = 'welcome_student'),
     path('welcome_teacher', welcome_teacher, name = 'welcome_teacher'),
-    path('accounts/', include('accounts.urls')),
-    path('accounts/', include('django.contrib.auth.urls')),
     path('', TemplateView.as_view(template_name='home.html'), name='home'),
 
 ]
