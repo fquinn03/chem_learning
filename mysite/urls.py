@@ -22,10 +22,10 @@ from django.views.generic.base import TemplateView
 from exams.views import dotest, show_result, review
 from lessons.views import complete_lesson
 from teachers.views import class_list, show_students
-from users.views import welcome_student, welcome_teacher
+from custom_users.views import welcome_student, welcome_teacher, signup, signup_form_student, signup_form_teacher
 
 urlpatterns = [
-    path('show_students/<class_name>/<teacher_id>', show_students, name = 'show_students'),
+    path('show_students/<class_name>/<user_id>', show_students, name = 'show_students'),
     path('complete_lesson/<lesson_id>', complete_lesson, name = 'complete_lesson'),
     path('class_list/<user_id>', class_list, name = 'class_list'),
     path('admin/', admin.site.urls),
@@ -36,6 +36,10 @@ urlpatterns = [
     path('review/<exam_id>', review, name='review'),
     path('welcome_student', welcome_student, name = 'welcome_student'),
     path('welcome_teacher', welcome_teacher, name = 'welcome_teacher'),
+    path('users/', include('django.contrib.auth.urls')),
+    path('signup', signup, name = 'signup'),
+    path('signup_form_student', signup_form_student, name = 'signup_form_student'),
+    path('signup_form_teacher', signup_form_teacher, name = 'signup_form_teacher'),
     path('', TemplateView.as_view(template_name='home.html'), name='home'),
 
 ]

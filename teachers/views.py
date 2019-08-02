@@ -1,20 +1,22 @@
 from django.shortcuts import render
-from users.models import Class_id, StudentProfile, User
+from custom_users.models import Class_id, StudentProfile, TeacherProfile
+
 
 def class_list(request, user_id):
-    if User.objects.get(id = user_id).is_teacher:
-        user = User.objects.get(id = user_id)
-        classes = Class_id.objects.all().filter(teacher = user_id)
-        return render(request, 'teachers/class_list.html', {
-        'user': user,
-        'classes':classes,
-        'teacher':user
+    try:
+        teacher = TeacherProfile.objects.get(user_id = user_id)
+        if teacher:
+            classes = Class_id.objects.all().filter(teacher = teacher)
+            return render(request, 'teachers/class_list.html', {
+            'teacher': teacher,
+            'classes': classes,
         })
-    else:
+    except:
         return render(request, 'teachers/not_teacher.html')
 
-def show_students(request, class_name, teacher_id):
-    group = Class_id.objects.get(name = class_name, teacher = teacher_id)
+def show_students(request, class_name, user_id):
+    teacher = TeacherProfile.objects.get(user_id = user_id)
+    group = Class_id.objects.get(name = class_name, teacher = teacher)
     students = StudentProfile.objects.all().filter(class_id = group.id)
     return render(request, 'teachers/show_students.html', {
     'group': group,

@@ -1,5 +1,5 @@
 from chempy import Substance
-from users.models import Class_id, User, StudentProfile, TeacherProfile
+from custom_users.models import Class_id, StudentProfile, TeacherProfile
 from .models import Answer, Exam, Formula_Question, Level, MCQ_Question, Question, UserAnswer, Written_Question
 
 """ Iterate through each question in the submitted test and store the user's answer in the database  """

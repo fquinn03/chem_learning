@@ -1,2 +1,2 @@
 from django.db import models
-from users.models import TeacherProfile
+from custom_users.models import TeacherProfile

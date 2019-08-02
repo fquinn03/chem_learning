@@ -1,5 +1,5 @@
 from django.db import models
-from users.models import StudentProfile
+from custom_users.models import StudentProfile
 
 
 class Level(models.Model):

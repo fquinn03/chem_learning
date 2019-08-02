@@ -1,6 +1,6 @@
 from django.db import transaction
 from django.shortcuts import render
-from users.models import StudentProfile
+from custom_users.models import StudentProfile
 from .models import Answer, Exam, Formula_Question, Level, MCQ_Question, Question, UserAnswer, Written_Question
 from .utils import calculate_percentage, create_user_answer, get_corrections_formula, get_corrections_mcq, get_corrections_written, get_formula
 

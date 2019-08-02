@@ -1,8 +1,8 @@
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import User
 from django.test import Client, RequestFactory, TestCase
 from django.urls import reverse
 from django.utils.decorators import method_decorator
-from users.models import Class_id, User, StudentProfile, TeacherProfile
+from custom_users.models import Class_id, StudentProfile, TeacherProfile
 from .models import Answer, Exam, Formula_Question, Level, MCQ_Question, Question, UserAnswer, Written_Question
 from .utils import calculate_percentage, create_user_answer, get_corrections_formula, get_corrections_mcq, get_corrections_written, get_formula
 from .views import dotest, show_result, review
@@ -11,15 +11,15 @@ class ExamsTest(TestCase):
     # set up testing database
     @classmethod
     def setUpTestData(cls):
-        User.objects.create(id = 1, username ="teacher", is_student = False, is_teacher = True)
-        User.objects.create(id = 2, username ="student1", is_student = True, is_teacher = False)
-        User.objects.create(id = 3, username ="student2", password ='secret', is_student = True, is_teacher = False)
+        User.objects.create(username ="teacher", password="mypass")
+        User.objects.create(username ="student1", password="mypass")
+        User.objects.create(username ="student2", password="mypass")
         user1 = User.objects.get(id=1)
         user2 = User.objects.get(id=2)
         user3 = User.objects.get(id=3)
         Class_id.objects.create(id = 1, name = "9y3", teacher_id = 1)
         class_id = Class_id.objects.get(id=1)
-        TeacherProfile.objects.create(user = user1)
+        TeacherProfile.objects.create(user = user1, is_teacher = True)
         teacher = TeacherProfile.objects.get(user_id=1)
         StudentProfile.objects.create(user = user2, teacher = teacher, class_id = class_id)
         student1 = StudentProfile.objects.get(user_id=2)
