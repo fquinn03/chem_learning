@@ -25,9 +25,9 @@ from teachers.views import class_list, show_students
 from custom_users.views import welcome_student, welcome_teacher, signup, signup_form_student, signup_form_teacher
 
 urlpatterns = [
-    path('show_students/<class_name>/<user_id>', show_students, name = 'show_students'),
+    path('show_students/<class_name>', show_students, name = 'show_students'),
     path('complete_lesson/<lesson_id>', complete_lesson, name = 'complete_lesson'),
-    path('class_list/<user_id>', class_list, name = 'class_list'),
+    path('class_list', class_list, name = 'class_list'),
     path('admin/', admin.site.urls),
     path('dotest/<exam_id>', dotest, name='dotest'),
     path('not_teacher', class_list),

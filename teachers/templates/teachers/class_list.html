@@ -1,12 +1,12 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h5>Welcome {{teacher.user.username}} </h5>
+<h5>Welcome {{user.username}} </h5>
 
 <p>Click on class below to view your student's progress</p>
 <p>
 {% for class in classes %}
-<a type="button" class="btn-lg btn-success" href ="{% url 'show_students' class_name=class.name teacher_id=teacher.id %}">{{class.name}}</a><br></br>
+<a type="button" class="btn-lg btn-success" href ="{% url 'show_students' class_name=class.name %}">{{class.name}}</a><br></br>
 </p>
 {% endfor %}
 

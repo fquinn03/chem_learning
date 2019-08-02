@@ -1,14 +1,14 @@
 from django.contrib.auth.models import User
 from django.test import Client, TestCase
 from django.urls import reverse
-from custom_users.models import  Class_id, StudentProfile, TeacherProfile
+from .models import  Class_id, StudentProfile, TeacherProfile, User
 
 class UserTest(TestCase):
     # set up testing database
     @classmethod
     def setUpTestData(cls):
-        User.objects.create(username ="teacher", password="mypass")
-        User.objects.create(username ="student", password="mypass")
+        User.objects.create(id = 1, username ="teacher")
+        User.objects.create(id = 2, username ="student")
         Class_id.objects.create(id = 1, name = "9y3", teacher_id = 1)
         teacher = User.objects.get(id=1)
         student = User.objects.get(id=2)
@@ -46,7 +46,7 @@ class UserTest(TestCase):
         self.assertEquals(self.sp.__str__(), "student")
 
     def test_class_id_as_string(self):
-        self.assertEquals(self.class1.__str__(), "9y3 teacher")
+        self.assertEquals(self.class1.__str__(), "9y3")
 
     # views tests
     def test_welcome_student_response(self):

@@ -2,7 +2,7 @@ from django.db import models
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
-from django.dispatch import receiver
+
 
 class TeacherProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
@@ -17,7 +17,7 @@ class Class_id(models.Model):
     teacher = models.ForeignKey(TeacherProfile, on_delete = models.CASCADE)
 
     def __str__(self):
-        return self.name+" "+ str(self.teacher)
+        return self.name
 
 class StudentProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
@@ -30,21 +30,3 @@ class StudentProfile(models.Model):
 
     def __str__(self):
         return self.user.username
-"""
-@receiver(post_save, sender=User)
-def create_teacher_profile(sender, instance, created, **kwargs):
-    if created:
-        TeacherProfile.objects.create(user=instance)
-
-@receiver(post_save, sender=User)
-def create_student_profile(sender, instance, created, **kwargs):
-    if created:
-        StudentProfile.objects.create(user=instance)
-
-@receiver(post_save, sender=User)
-def save_user_profile(sender, instance, **kwargs):
-    if isinstance(instance, TeacherProfile):
-        instance.teacherprofile.save()
-    else:
-        instance.studentprofile.save()
-"""
