@@ -1,28 +1,21 @@
 {% extends 'base.html' %}
 
 {% block content %}
-
-<div class = "container">
-  <div class="row">
-    <div class="col-sm-5">
+<div class="container w-50" style ="text-align: center;">
+  <div class="card">
+    <div class="card-body">
       <h3>Sign up for a free account</h3>
-      <p>Select below the type of account you want to create</p>
-    </div>
-    <div class="col-sm-2"></div>
-    <div class="col-sm-5">
-      <h3>Already have an account?</h3>
+      <p>Select the type of account you want to create below</p>
+      <div class="smallcontainer" style ="text-align: center;">
+      <a href="{% url 'signup_form_student' %}" class="btn btn-success">I'm a student</a>
+      <a href="{% url 'signup_form_teacher' %}" class="btn btn-success">I'm a teacher</a>
+      <div>
+      <br/>
+      <br/>
+      <br/>
+      <h4>Already have an account?</h4>
+      <a href ="{% url 'login' %}" class = "btn btn-success">Login</a>
     </div>
   </div>
-    <div class="row">
-      <div class="col-sm-2>">
-        <a href="{% url 'signup_form_student' %}" class="btn btn-success">I'm a student</a>
-        <a href="{% url 'signup_form_teacher' %}" class="btn btn-success">I'm a teacher</a>
-      </div>
-      <div class="col-sm-5"></div>
-      <div class="col-sm-5>">
-          <a href ="{% url 'login' %}" class = "btn btn-success">Login</a>
-      </div>
-    </div>
 </div>
-
 {% endblock %}

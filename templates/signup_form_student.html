@@ -1,14 +1,18 @@
 {% extends 'base.html' %}
 
 {% block content %}
-  <div class="row">
-    <div class="col-md-8 col-sm-10 col-12">
-      <h2>Student sign up</h2>
+<div class="container w-75" style ="text-align: left;">
+  <div class="card">
+    <div class="card-headergreen">
+      Student sign up
+    </div>
+    <div class = "card-body">
       <form method="post" novalidate>
         {% csrf_token %}
         {{ form.as_p }}
-        <button type="submit" class="btn btn-success">Sign up</button>
+        <button type="submit" class="btn btn-success button-right">Sign up</button>
       </form>
     </div>
   </div>
+</div>
 {% endblock %}
