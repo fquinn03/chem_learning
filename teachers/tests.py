@@ -26,15 +26,15 @@ class TeacherTest(TestCase):
         self.class1 = Class_id.objects.get(id=1)
 
     def test_is_teacher(self):
-        self.assertEquals(self.teacherprofile.is_teacher, True)
+        self.assertEqual(self.teacherprofile.is_teacher, True)
 
     def test_is_student(self):
-        self.assertEquals(self.studentprofile.is_student, True)
+        self.assertEqual(self.studentprofile.is_student, True)
 
     def test_show_students_response(self):
         self.client.force_login(User.objects.get(id = 1))
         response = self.client.get(reverse('show_students', args=['9y3']))
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
 
     def test_show_students_template(self):
         self.client.force_login(User.objects.get(id = 1))
@@ -49,7 +49,7 @@ class TeacherTest(TestCase):
     def test_class_list_teacher_response(self):
         self.client.force_login(User.objects.get(id = 1))
         response = self.client.get(reverse('class_list'))
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
 
     def test_class_list_teacher_template(self):
         self.client.force_login(User.objects.get(id = 1))
@@ -74,4 +74,4 @@ class TeacherTest(TestCase):
     def test_class_list_student_html(self):
         self.client.force_login(User.objects.get(id = 2))
         response = self.client.get(reverse('class_list'))
-        self.assertContains(response, "<p>You do teach any classes</p>")
+        self.assertContains(response, "<p>You do not teach any classes!</p>")

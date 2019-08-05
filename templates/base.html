@@ -4,7 +4,7 @@
   <title>Chem Learning</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  {% load staticfiles %}
+  {% load static %}
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
@@ -16,48 +16,30 @@
 </head>
 <body>
 
-<nav class="navbar navbar-expand-sm" style = "background-color:MediumSeaGreen">
+<nav class="navbar navbar-expand-sm">
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
     <span class="navbar-toggler-icon"></span>
   </button>
   <div class="collapse navbar-collapse" id="collapsibleNavbar" >
     <ul class="navbar-nav mr-auto">
-      <h4 class="nav-item" style = "color:white; float: left">ChemLearning</h4>
+      <h4 class="nav-item">ChemLearning</h4>
     </ul>
     <ul class="navbar-nav ml-auto">
       <li class="nav-item">
-        <a class="nav-link" style = "color:white" href="#">Settings</a>
+        <a class="nav-link" href="#">Settings</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" style = "color:white" href="{% url 'logout' %}">Logout</a>
+        <a class="nav-link" href="{% url 'logout' %}">Logout</a>
       </li>
     </ul>
   </div>
 </nav>
-
-<div class="container" style="margin-top:30px; margin-left:15px; margin-bottom:30px">
-  <div class="row">
-    <div class="col-sm-2" style=" background-color:MediumSeaGreen">
-      <ul class="nav nav-pills flex-column" >
-        <li class="nav-item">
-          <a class="nav-link" style = "color:white" href="#">Active</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" style = "color:white" href="#">Link</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" style = "color:white" href="#">Link</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link " style = "color:white" href="#">Disabled</a>
-        </li>
-      </ul>
-      <hr class="d-sm-none">
-    </div>
-    <div class="col-sm-9" >
-        {% block content %}
-        {% endblock %}
-	  </div>
+<div class="container">
+  <div class="col-sm-12" >
+    {% block content %}
+    {% endblock %}
+  </div>
 </div>
+<hr class="d-sm-none">
 </body>
 </html>

@@ -22,7 +22,7 @@ from django.views.generic.base import TemplateView
 from exams.views import dotest, show_result, review
 from lessons.views import complete_lesson
 from teachers.views import class_list, show_students
-from custom_users.views import welcome_student, welcome_teacher, signup, signup_form_student, signup_form_teacher
+from custom_users.views import welcome_student, welcome_teacher, signup, signup_form_student, signup_form_teacher, home
 
 urlpatterns = [
     path('show_students/<class_name>', show_students, name = 'show_students'),
@@ -40,6 +40,6 @@ urlpatterns = [
     path('signup', signup, name = 'signup'),
     path('signup_form_student', signup_form_student, name = 'signup_form_student'),
     path('signup_form_teacher', signup_form_teacher, name = 'signup_form_teacher'),
-    path('', TemplateView.as_view(template_name='home.html'), name='home'),
+    path('', home, name='home'),
 
 ]

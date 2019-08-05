@@ -74,26 +74,25 @@ class ExamsTest(TestCase):
     # test the __str__ methods for all the models in exams
 
     def test_level_str(self):
-        self.assertEquals(self.level_1.__str__(), "1")
+        self.assertEqual(self.level_1.__str__(), "1")
 
     def test_exam_str(self):
-        self.assertEquals(self.exam1.__str__(), "Test Exam Title 1")
+        self.assertEqual(self.exam1.__str__(), "Test Exam Title 1")
 
     def test_question_str(self):
-        self.assertEquals(self.question1.__str__(), "What is my favourite colour? ")
+        self.assertEqual(self.question1.__str__(), "What is my favourite colour? ")
 
     def test_answer_str(self):
-        self.assertEquals(self.option1.__str__(), "Yellow")
+        self.assertEqual(self.option1.__str__(), "Yellow")
 
     def test_useranswer_str(self):
-        self.assertEquals(self.user_answer.__str__(), "Green")
-
+        self.assertEqual(self.user_answer.__str__(), "Green")
 
     # views tests
     # check the dotest get request returns a valid response
     def test_get_do_test_response_code(self):
         response = self.client.get(reverse('dotest', args=[1,]))
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
 
     # check the dotest get method returns the expected template
     def test_get_do_test_template_used(self):
@@ -111,7 +110,7 @@ class ExamsTest(TestCase):
         count = UserAnswer.objects.all().count()
         create_user_answer(request, self.student2 )
         count_2 = UserAnswer.objects.all().count()
-        self.assertEquals(count_2, count+1)
+        self.assertEqual(count_2, count+1)
 
     # check the dotest post request returns a valid response
     def test_post_dotest(self):
@@ -121,7 +120,7 @@ class ExamsTest(TestCase):
         request = rf.post(url, request_param )
         request.user = self.user
         response = dotest(request, 1)
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
 
     # check the show_result get request returns a valid response
     def test_get_show_resuts(self):
@@ -131,7 +130,7 @@ class ExamsTest(TestCase):
         request = rf.get(url, request_param )
         request.user = self.user
         response = show_result(request, 1)
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
 
     # check the review get request returns a valid response
     def test_get_review(self):
@@ -141,21 +140,21 @@ class ExamsTest(TestCase):
         request = rf.get(url, request_param )
         request.user = self.user
         response = review(request, 1)
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
 
     #test utils.calculate_percentage helper method
     def test_calculate_percentage_1(self):
         questions = Question.objects.all()
         percentage = calculate_percentage(questions, self.student2.user_id, 1)
-        self.assertEquals(percentage, 33)
+        self.assertEqual(percentage, 33)
 
     def test_calculate_percentage_2(self):
         questions = Question.objects.all()
         percentage = calculate_percentage(questions, self.student1.user_id, 1)
-        self.assertEquals(percentage, 100)
+        self.assertEqual(percentage, 100)
 
     #test utils.get_corrections helper method
     def test_get_corrections_mcq(self):
         questions = Question.objects.all()
         corrections = get_corrections_mcq(self.student2.user_id, 1)
-        self.assertEquals(corrections, {"What is my favourite colour? ": "Green"})
+        self.assertEqual(corrections, {"What is my favourite colour? ": "Green"})

@@ -17,12 +17,12 @@ class LessonsTest(TestCase):
         self.client = Client()
     # models tests
     def test_str(self):
-        self.assertEquals(self.lesson.__str__(), "test_lesson_1")
+        self.assertEqual(self.lesson.__str__(), "test_lesson_1")
 
     # views tests
     def test_complete_lesson_response(self):
         response = self.client.get(reverse('complete_lesson', args=[1,]))
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
 
     def test_complete_lesson_template(self):
         response = self.client.get(reverse('complete_lesson', args=[1,]))

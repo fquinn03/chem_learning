@@ -1,3 +1,9 @@
+a {
+    color: white;
+    text-decoration: none;
+    background-color: transparent;
+}
+
 .btn {
   display: inline-block;
   font-weight: 400;
@@ -17,16 +23,89 @@
   transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
 
+.button-right{
+  float:right;
+}
+
 .btn-success {
   color: #ffffff;
   background-color: MediumSeaGreen;
   border-color: MediumSeaGreen;
+  width:100px;
 }
 
 .btn-success:hover {
   color: MediumSeaGreen;
   background-color: #ffffff;
   border-color: MediumSeaGreen;
+}
+
+.card-header{
+  color:white;
+  padding: 0.75rem 1.25rem;
+  margin-bottom: 0;
+  background-color: mediumseagreen;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.)
+}
+
+.container {
+  width: 100%;
+  padding-right: 15px;
+  padding-left: 15px;
+  margin-top:30px;
+  margin-right: auto;
+  margin-left:10px;
+  margin-bottom:30px;
+}
+
+.containercentre{
+  vertical-align: middle;
+  width: auto;
+  height: auto;
+  padding-left: 300px;
+  padding-top: 150px;
+  margin-bottom: 100px;
+  margin-left:100px;
+
+}
+
+.navbar {
+    background-color: mediumseagreen;
+    color: white;
+    position: relative;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    -ms-flex-align: center;
+    align-items: center;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
+    padding: 0.5rem 1rem;
+}
+
+.smallcontainer{
+  width: 100%;
+  padding-right: 15px;
+  padding-left: 15px;
+  margin-top:15px;
+  margin-right: auto;
+  margin-left:0px;
+  margin-bottom:15px;
+}
+
+.smallestcontainer{
+  width: 100%;
+  padding-right: 15px;
+  padding-left: 0px;
+  margin-top:15px;
+  margin-right: auto;
+  margin-left:0px;
+  margin-bottom:15px;
+}
+
+#username{
+  padding-left: 100px;
 }
 
 .eqrow {
