@@ -12,7 +12,6 @@ $(document).ready(function(){
 
   $("#id_school").change(function () {
     var schoolId = $(this).val();
-    console.log(schoolId)
 
     $.ajax({
       url: '/ajax_load_teachers',
@@ -20,9 +19,25 @@ $(document).ready(function(){
         'school': schoolId
       },
       success: function (data) {
-        console.log(data)
         $("#id_teacher").html(data);
       }
     })
   })
+
+  $("#id_teacher").change(function () {
+    var teacherId = $(this).val();
+    console.log(teacherId)
+
+    $.ajax({
+      url: '/ajax_load_classes',
+      data:{
+        'teacher': teacherId
+      },
+      success: function (data) {
+        console.log(data)
+        $("#id_class_id").html(data);
+      }
+    })
+  })
+
 })

@@ -85,3 +85,8 @@ def ajax_load_teachers(request):
     school_id = request.GET.get('school')
     teachers = TeacherProfile.objects.filter(school=school_id).order_by('user_id')
     return render(request, 'custom_users/ajax_load_teachers.html', {'teachers': teachers})
+
+def ajax_load_classes(request):
+    teacher_id = request.GET.get('teacher')
+    class_ids = Class_id.objects.filter(teacher=teacher_id).order_by('name')
+    return render(request, 'custom_users/ajax_load_classes.html', {'class_ids': class_ids})
