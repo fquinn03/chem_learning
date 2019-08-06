@@ -4,18 +4,18 @@
 <div class="container w-50" style ="text-align: left;">
   <div class="card">
     <div class="card-headergreen">
-      Student sign up
+      Customise Student Details
     </div>
-    <div class = "card-body">
-      <form method="post" novalidate>
+    <div class="card-body">
+      <p>Add your school, teacher and class</p>
+      <form method="post" id = "edit_student_details" data-teachers-url="{% url 'ajax_load_teachers' %}" novalidate>
         {% csrf_token %}
         {% for field in form %}
-        <strong>{{field.label}}<br/></strong>
-        {{field.help_text|safe}}
+        {{field.label}}<br/>
         {{field}}<br/>
         <br/>
         {% endfor %}
-        <button type="submit" class="btn btn-success button-right">Sign up</button>
+        <button type="submit" class="btn btn-success button-right">Update</button>
       </form>
     </div>
   </div>

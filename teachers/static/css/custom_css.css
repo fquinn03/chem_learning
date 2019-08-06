@@ -23,10 +23,6 @@ a {
   transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
 
-.button-right{
-  float:right;
-}
-
 .btn-success {
   color: #ffffff;
   background-color: MediumSeaGreen;
@@ -38,6 +34,10 @@ a {
   color: MediumSeaGreen;
   background-color: #ffffff;
   border-color: MediumSeaGreen;
+}
+
+.button-right{
+  float:right;
 }
 
 .card {
@@ -72,16 +72,6 @@ a {
   margin-left: auto;
 }
 
-.containercentered {
-  text-align: center;
-  height: 100%;
-  width: 100%;
-  padding-right: 15px;
-  padding-left: 15px;
-  margin-right: auto;
-  margin-left: auto;
-}
-
 .navbar {
     background-color: mediumseagreen;
     color: white;
@@ -105,20 +95,6 @@ a {
   margin-right: auto;
   margin-left:0px;
   margin-bottom:15px;
-}
-
-.smallestcontainer{
-  width: 100%;
-  padding-right: 15px;
-  padding-left: 0px;
-  margin-top:15px;
-  margin-right: auto;
-  margin-left:0px;
-  margin-bottom:15px;
-}
-
-#username{
-  padding-left: 100px;
 }
 
 .eqrow {

@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container w-50" style ="text-align: left;">
+  <div class="card">
+    <div class="card-headergreen">
+      Student Details Added
+    </div>
+    <div class="card-body">
+      <p>Student Name: {{student.user.username}}</p>
+      <p>School Name: {{student.school}}</p>
+      <p>Teacher: {{student.teacher}}</p>
+      <p>Class: {{student.class_id}}</p>
+      <a type="button" class="btn btn-success button-right" href ="{% url 'welcome_student' %}">Close</a>
+    </div>
+  </div>
+</div>
+{% endblock %}
