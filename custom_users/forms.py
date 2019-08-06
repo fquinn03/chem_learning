@@ -23,20 +23,15 @@ class StudentProfileForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.fields['teacher'].queryset = TeacherProfile.objects.none()
         self.fields['class_id'].queryset = Class_id.objects.none()
-        if 'school' in self.data:
+
+        if 'school' in self.data and 'class_id' in self.data:
             try:
                 school_id = int(self.data.get('school'))
-                self.fields['teacher'].queryset = TeacherProfile.objects.filter(school=school_id).order_by(user_id)
+                self.fields['teacher'].queryset = TeacherProfile.objects.filter(school=school_id)
+                teacher_id = int(self.data.get('teacher'))
+                self.fields['class_id'].queryset = Class_id.objects.filter(teacher=teacher_id)
             except (ValueError, TypeError):
                 pass  # invalid input from the client; ignore and fallback to empty City queryset
         elif self.instance.pk:
-            self.fields['teacher'].queryset = self.instance.school.teacher_set.order_by(user_id)
-
-        if 'class_id' in self.data:
-            try:
-                teacher_id = int(self.data.get('class_id'))
-                self.fields['class_id'].queryset = Class_id.objects.filter(teacher=teacher_id).order_by(name)
-            except (ValueError, TypeError):
-                pass  # invalid input from the client; ignore and fallback to empty City queryset
-        elif self.instance.pk:
-            self.fields['class_id'].queryset = self.instance.teacher.class_id_set.order_by(user_id)
+            self.fields['teacher'].queryset = self.instance.school.teacher_set
+            self.fields['class_id'].queryset = self.instance.teacher.class_id_set
