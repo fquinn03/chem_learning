@@ -72,6 +72,14 @@ a {
   margin-left: auto;
 }
 
+small.fieldhelp{
+  color:grey;
+}
+
+strong.fielderror{
+  color: red;
+}
+
 .navbar {
     background-color: mediumseagreen;
     color: white;

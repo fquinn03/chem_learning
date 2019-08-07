@@ -19,7 +19,7 @@ from django.contrib import admin
 from django.contrib.auth import views as auth_views
 from django.urls import path, include
 from django.views.generic.base import TemplateView
-from exams.views import dotest, show_result, review
+from exams.views import dotest, show_result, review, do_signup_quiz
 from lessons.views import complete_lesson
 from teachers.views import class_list, show_students
 from custom_users.views import (welcome_student, welcome_teacher, signup, signup_form_student,
@@ -45,6 +45,7 @@ urlpatterns = [
     path('student_details_added', student_details_added, name = 'student_details_added'),
     path('ajax_load_teachers', ajax_load_teachers, name = 'ajax_load_teachers'),
     path('ajax_load_classes', ajax_load_classes, name = 'ajax_load_classes'),
+    path('do_signup_quiz', do_signup_quiz, name = 'do_signup_quiz'),
     path('', home, name='home'),
 
 ]

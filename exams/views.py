@@ -1,5 +1,5 @@
 from django.db import transaction
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from custom_users.models import StudentProfile
 from .models import Answer, Exam, Formula_Question, Level, MCQ_Question, Question, UserAnswer, Written_Question
 from .utils import calculate_percentage, create_user_answer, get_corrections_formula, get_corrections_mcq, get_corrections_written, get_formula
@@ -24,6 +24,24 @@ def dotest(request, exam_id):
             'mcq_questions': mcq_questions, 'written_questions':written_questions, 'formula_questions':formula_questions,
             'questions': questions
 })
+
+def do_signup_quiz(request):
+    exam = Exam.objects.get(title = "signup_quiz")
+    questions = Question.objects.filter(exam = exam.id)
+    level = 1
+    if request.method == 'POST':
+        for key, value in request.POST.items():
+            if key != 'csrfmiddlewaretoken':
+                if value == "True" and int(key) >= level:
+                    level = int(key)
+        student = StudentProfile.objects.get(user_id = request.user.id)
+        student.level = level
+        student.save()
+        return redirect('welcome_student')
+    else:
+        return render(request, 'custom_users/do_signup_quiz.html', {'questions': questions
+        })
+
 
 """ Use the exam_id to get all the questions for the exam.  Use utils.calculate_percentage to
 check if the user_answer in the database for each question is correct, calculate the user's

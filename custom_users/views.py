@@ -13,7 +13,7 @@ def welcome_student(request):
     student = StudentProfile.objects.select_related().get(user_id = user.id)
     level = student.level.__str__()
     return render(request, 'custom_users/welcome_student.html', {'user':user,
-    'level':level})
+    'level': level})
 
 def signup(request):
     return render(request, 'signup.html')
@@ -23,13 +23,13 @@ def signup_form_student(request):
         form = StudentForm(request.POST)
         if form.is_valid():
             user = form.save()
-            user.refresh_from_db()  # load the profile instance created by the signal
+            user.refresh_from_db()
             user.save()
             student = StudentProfile.objects.create(user=user)
             raw_password = form.cleaned_data.get('password1')
             user = authenticate(username=user.username, password=raw_password)
             login(request, user)
-            return redirect('welcome_student')
+            return redirect('edit_student')
     else:
         form=StudentForm()
     return render(request, 'signup_form_student.html', {'form': form})
