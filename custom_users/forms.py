@@ -37,3 +37,6 @@ class StudentProfileForm(forms.ModelForm):
             self.fields['teacher'].queryset = self.instance.school.teacher_set
             self.fields['class_id'].queryset = self.instance.teacher.class_id_set
         """
+class TeacherProfileForm(forms.Form):
+    school = forms.ModelMultipleChoiceField(queryset=School.objects.all())
+    class_name = forms.CharField()

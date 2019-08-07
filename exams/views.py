@@ -28,12 +28,12 @@ def dotest(request, exam_id):
 def do_signup_quiz(request):
     exam = Exam.objects.get(title = "signup_quiz")
     questions = Question.objects.filter(exam = exam.id)
-    level = 1
+    level = 0
     if request.method == 'POST':
         for key, value in request.POST.items():
             if key != 'csrfmiddlewaretoken':
-                if value == "True" and int(key) >= level:
-                    level = int(key)
+                if value == "True" and int(key) > level:
+                    level = int(key) - 1
         student = StudentProfile.objects.get(user_id = request.user.id)
         student.level = level
         student.save()

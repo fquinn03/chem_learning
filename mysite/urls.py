@@ -23,7 +23,8 @@ from exams.views import dotest, show_result, review, do_signup_quiz
 from lessons.views import complete_lesson
 from teachers.views import class_list, show_students
 from custom_users.views import (welcome_student, welcome_teacher, signup, signup_form_student,
-signup_form_teacher, home, edit_student, student_details_added, ajax_load_teachers, ajax_load_classes)
+signup_form_teacher, home, edit_student, edit_teacher, student_details_added, teacher_details_added,
+ajax_load_teachers, ajax_load_classes)
 
 urlpatterns = [
     path('show_students/<class_name>', show_students, name = 'show_students'),
@@ -42,7 +43,9 @@ urlpatterns = [
     path('signup_form_student', signup_form_student, name = 'signup_form_student'),
     path('signup_form_teacher', signup_form_teacher, name = 'signup_form_teacher'),
     path('edit_student', edit_student, name = 'edit_student'),
+    path('edit_teacher', edit_teacher, name = 'edit_teacher'),
     path('student_details_added', student_details_added, name = 'student_details_added'),
+    path('teacher_details_added', teacher_details_added, name = 'teacher_details_added'),
     path('ajax_load_teachers', ajax_load_teachers, name = 'ajax_load_teachers'),
     path('ajax_load_classes', ajax_load_classes, name = 'ajax_load_classes'),
     path('do_signup_quiz', do_signup_quiz, name = 'do_signup_quiz'),

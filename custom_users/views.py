@@ -2,11 +2,16 @@ from django.contrib.auth import login, authenticate
 from django.contrib.auth.models import User
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_list_or_404, get_object_or_404
-from .forms import StudentForm, TeacherForm, StudentProfileForm
+from .forms import StudentForm, TeacherForm, StudentProfileForm, TeacherProfileForm
 from .models import Class_id, School, TeacherProfile, StudentProfile
 
 def welcome_teacher(request):
-    return render(request, 'custom_users/welcome_teacher.html')
+    user = request.user
+    teacher = TeacherProfile.objects.select_related().get(user_id = user.id)
+    classes = Class_id.objects.filter(teacher = teacher)
+    return render(request, 'custom_users/welcome_teacher.html', {'teacher': teacher,
+    'classes':classes
+    })
 
 def welcome_student(request):
     user = request.user
@@ -41,11 +46,11 @@ def signup_form_teacher(request):
             user = form.save()
             user.refresh_from_db()
             user.save()
-            TeacherProfile.objects.create(user=user, school = 1)
+            TeacherProfile.objects.create(user=user)
             raw_password = form.cleaned_data.get('password1')
             user = authenticate(username=user.username, password=raw_password)
             login(request, user)
-            return redirect('welcome_teacher')
+            return redirect('edit_teacher')
     else:
         form=TeacherForm()
     return render(request, 'signup_form_teacher.html', {'form': form})
@@ -77,9 +82,30 @@ def edit_student(request):
         form=StudentProfileForm()
     return render(request, 'custom_users/edit_student.html', {'form': form})
 
+def edit_teacher(request):
+    if request.method == 'POST':
+        user = request.user
+        teacher = get_object_or_404(TeacherProfile, user_id = user.id)
+        form=TeacherProfileForm(request.POST)
+        if form.is_valid():
+            school = School.objects.get(id = request.POST['school'])
+            class_id = Class_id.objects.create(name = request.POST['class_name'], teacher = teacher)
+            teacher.school = school
+            teacher.class_id = class_id
+            teacher.save()
+            print(form.data)
+            return render(request, 'custom_users/teacher_details_added.html', {'teacher':teacher})
+    else:
+        form=TeacherProfileForm()
+    return render(request, 'custom_users/edit_teacher.html', {'form': form})
+
 def student_details_added(request):
     student = StudentProfile.objects.get(user_id = request.user.id)
     return render(request, 'custom_users/student_details_added.html', {'student': student})
+
+def teacher_details_added(request):
+    teacher = StudentProfile.objects.get(user_id = request.user.id)
+    return render(request, 'custom_users/teacher_details_added.html', {'teacher': teacher})
 
 def ajax_load_teachers(request):
     school_id = request.GET.get('school')
