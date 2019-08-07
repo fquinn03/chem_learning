@@ -2,7 +2,7 @@ from django.contrib.auth import login, authenticate
 from django.contrib.auth.models import User
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_list_or_404, get_object_or_404
-from .forms import StudentForm, TeacherForm, StudentProfileForm, TeacherProfileForm
+from .forms import AddSchoolForm, StudentForm, TeacherForm, StudentProfileForm, TeacherProfileForm
 from .models import Class_id, School, TeacherProfile, StudentProfile
 
 def welcome_teacher(request):
@@ -98,6 +98,21 @@ def edit_teacher(request):
     else:
         form=TeacherProfileForm()
     return render(request, 'custom_users/edit_teacher.html', {'form': form})
+
+def add_school(request):
+    if request.method == 'POST':
+        user = request.user
+        teacher = get_object_or_404(TeacherProfile, user_id = user.id)
+        form = AddSchoolForm(request.POST)
+        if form.is_valid():
+            school = form.save()
+            school.refresh_from_db()
+            school.save()
+            teacher.school = school
+            return redirect('edit_teacher')
+    else:
+        form=AddSchoolForm()
+    return render(request, 'custom_users/add_school.html', {'form': form})
 
 def student_details_added(request):
     student = StudentProfile.objects.get(user_id = request.user.id)

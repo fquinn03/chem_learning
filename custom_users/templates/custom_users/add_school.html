@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container w-75" style ="text-align: left;">
+  <div class="card">
+    <div class="card-headergreen">
+      Add School
+    </div>
+    <div class = "card-body">
+      <form method="post" novalidate>
+        {% csrf_token %}
+        {% for field in form %}
+        <p>
+        <strong>{{field.label}}<br/></strong>
+        {% if field.help_text %}
+        <small class = "fieldhelp">{{field.help_text|safe}}</small><br/>
+        {% endif %}
+        {{field}}
+        {% for error in field.errors %}
+          <strong class = "fielderror">{{error}}</strong><br/>
+        {% endfor %}
+
+        {% endfor %}
+        </p>
+        <button type="submit" class="btn btn-success button-right">Sign up</button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

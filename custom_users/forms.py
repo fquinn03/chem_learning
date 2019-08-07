@@ -40,3 +40,9 @@ class StudentProfileForm(forms.ModelForm):
 class TeacherProfileForm(forms.Form):
     school = forms.ModelMultipleChoiceField(queryset=School.objects.all())
     class_name = forms.CharField()
+
+class AddSchoolForm(forms.ModelForm):
+
+    class Meta:
+        model = School
+        fields = ('name', 'post_code')

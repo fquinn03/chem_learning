@@ -24,7 +24,7 @@ from lessons.views import complete_lesson
 from teachers.views import class_list, show_students
 from custom_users.views import (welcome_student, welcome_teacher, signup, signup_form_student,
 signup_form_teacher, home, edit_student, edit_teacher, student_details_added, teacher_details_added,
-ajax_load_teachers, ajax_load_classes)
+ajax_load_teachers, ajax_load_classes, add_school)
 
 urlpatterns = [
     path('show_students/<class_name>', show_students, name = 'show_students'),
@@ -49,6 +49,7 @@ urlpatterns = [
     path('ajax_load_teachers', ajax_load_teachers, name = 'ajax_load_teachers'),
     path('ajax_load_classes', ajax_load_classes, name = 'ajax_load_classes'),
     path('do_signup_quiz', do_signup_quiz, name = 'do_signup_quiz'),
+    path('add_school', add_school, name = 'add_school'),
     path('', home, name='home'),
 
 ]
