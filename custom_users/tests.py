@@ -143,7 +143,7 @@ class UserTest(TestCase):
 
     def test_sign_up_form_student_post_response(self):
         response=self.client.post(reverse('signup_form_student'),
-        {'username': 'student5', 'password1': 'pass1234', 'password2': 'pass1234'})
+        {'username': 'student5', 'password1': 'pass1234', 'password2': 'pass1234'}, follow = True)
         self.assertEqual(response.status_code, 200)
 
     def test_sign_up_form_student_post_count_users(self):
@@ -162,12 +162,12 @@ class UserTest(TestCase):
 
     def test_sign_up_form_student_post_template(self):
         response=self.client.post(reverse('signup_form_student'),
-        {'username': 'student5', 'password1': 'pass1234', 'password2': 'pass1234'})
+        {'username': 'student5', 'password1': 'pass1234', 'password2': 'pass1234'}, follow = True)
         self.assertTemplateUsed(response, 'custom_users/edit_student.html')
 
     def test_sign_up_form_student_post_html(self):
         response=self.client.post(reverse('signup_form_student'),
-        {'username': 'student5', 'password1': 'pass1234', 'password2': 'pass1234'})
+        {'username': 'student5', 'password1': 'pass1234', 'password2': 'pass1234'}, follow = True)
         self.assertContains(response, '<div class="card-headergreen">Add Student Details</div>')
 
     def test_sign_up_form_teacher_get_response(self):
@@ -262,7 +262,7 @@ class UserTest(TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_edit_student_post_response(self):
-        self.client.force_login(User.objects.get(id=4))
+        self.client.force_login(User.objects.get(id=3))
         response=self.client.get(reverse('edit_student'), {'school': '1', 'teacher': '1', 'class_id':'1' })
         self.assertEqual(response.status_code, 200)
 
@@ -279,7 +279,7 @@ class UserTest(TestCase):
 
     def test_edit_student_post_template(self):
         self.client.force_login(User.objects.get(id=3))
-        response=self.client.post(reverse('edit_student'), {'school': '1', 'teacher': '1', 'class_id':'1' })
+        response=self.client.post(reverse('edit_student'), {'school': '1', 'teacher': '1', 'class_id':'1' }, follow = True)
         self.assertTemplateUsed(response, 'custom_users/student_details_added.html')
 
     def test_edit_student_get_html(self):
@@ -289,7 +289,7 @@ class UserTest(TestCase):
 
     def test_edit_student_post_html(self):
         self.client.force_login(User.objects.get(id=3))
-        response=self.client.post(reverse('edit_student'), {'school': '1', 'teacher': '1', 'class_id':'1' })
+        response=self.client.post(reverse('edit_student'), {'school': '1', 'teacher': '1', 'class_id':'1' }, follow = True)
         self.assertContains(response, '<div class="card-headergreen">Student Details Added</div>')
 
     def test_edit_teacher_get_response(self):

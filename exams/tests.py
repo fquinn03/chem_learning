@@ -28,6 +28,7 @@ class ExamsTest(TestCase):
         Level.objects.create(title = "1")
         level_1 = Level.objects.get(id = 1)
         Exam.objects.create(level = level_1, title = "Test Exam Title 1")
+        Exam.objects.create(level = level_1, title = "signup_quiz")
         exam1 = Exam.objects.get(id=1)
         MCQ_Question.objects.create(exam = exam1, text = "What is my favourite colour? ")
         question1 = MCQ_Question.objects.get(id=1)
@@ -158,3 +159,45 @@ class ExamsTest(TestCase):
         questions = Question.objects.all()
         corrections = get_corrections_mcq(self.student2.user_id, 1)
         self.assertEqual(corrections, {"What is my favourite colour? ": "Green"})
+
+    def test_do_quiz_signup_get_response(self):
+        self.client.force_login(User.objects.get(id=2))
+        response=self.client.get(reverse('do_signup_quiz'))
+        self.assertEqual(response.status_code, 200)
+
+    def test_do_quiz_signup_get_template(self):
+        self.client.force_login(User.objects.get(id=2))
+        response=self.client.get(reverse('do_signup_quiz'))
+        self.assertTemplateUsed(response, 'custom_users/do_signup_quiz.html')
+
+    def test_do_quiz_signup_get_html(self):
+        self.client.force_login(User.objects.get(id=2))
+        response=self.client.get(reverse('do_signup_quiz'))
+        self.assertContains(response, '<h5>SignUp Quiz</h5>')
+
+    def test_do_quiz_signup_post_response(self):
+        self.client.force_login(User.objects.get(id=2))
+        response=self.client.post(reverse('do_signup_quiz'), {'2':'True', '3': 'True', '4': 'False'}, follow = True)
+        self.assertEqual(response.status_code, 200)
+
+    def test_do_quiz_signup_post_student_level_2(self):
+        self.client.force_login(User.objects.get(id=2))
+        response=self.client.post(reverse('do_signup_quiz'), {'2':'True', '3': 'True', '4': 'False'}, follow = True)
+        student = StudentProfile.objects.get(user_id = 2)
+        self.assertEqual(student.level, 2)
+
+    def test_do_quiz_signup_post_student_level_3(self):
+        self.client.force_login(User.objects.get(id=2))
+        response=self.client.post(reverse('do_signup_quiz'), {'2':'True', '3': 'True', '4': 'True'}, follow = True)
+        student = StudentProfile.objects.get(user_id = 2)
+        self.assertEqual(student.level, 3)
+
+    def test_do_quiz_signup_post_template(self):
+        self.client.force_login(User.objects.get(id=2))
+        response=self.client.post(reverse('do_signup_quiz'), {'2':'True', '3': 'True', '4': 'False'}, follow = True)
+        self.assertTemplateUsed(response, 'custom_users/welcome_student.html')
+
+    def test_do_quiz_signup_post_html(self):
+        self.client.force_login(User.objects.get(id=2))
+        response=self.client.post(reverse('do_signup_quiz'), {'2':'True', '3': 'True', '4': 'False'}, follow = True)
+        self.assertContains(response, '<h5>Welcome Student: student1</h5>')

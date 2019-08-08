@@ -35,7 +35,7 @@ def signup_form_student(request):
             raw_password = form.cleaned_data.get('password1')
             user = authenticate(username=user.username, password=raw_password)
             login(request, user)
-            return render(request, 'custom_users/edit_student.html')
+            return redirect('edit_student')
     else:
         form=StudentForm()
     return render(request, 'signup_form_student.html', {'form': form})
@@ -78,7 +78,7 @@ def edit_student(request):
         form = StudentProfileForm(request.POST, instance = student)
         if form.is_valid():
             form = form.save()
-            return render(request, 'custom_users/student_details_added.html')
+            return redirect('student_details_added')
     else:
         form=StudentProfileForm()
     return render(request, 'custom_users/edit_student.html', {'form': form})
