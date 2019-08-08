@@ -4,7 +4,8 @@ from django.urls import reverse
 from django.utils.decorators import method_decorator
 from custom_users.models import Class_id, StudentProfile, TeacherProfile
 from .models import Answer, Exam, Formula_Question, Level, MCQ_Question, Question, UserAnswer, Written_Question
-from .utils import calculate_percentage, create_user_answer, get_corrections_formula, get_corrections_mcq, get_corrections_written, get_formula
+from .utils import (calculate_percentage, create_user_answer, get_corrections_formula, get_corrections_mcq,
+get_corrections_written, get_formula, get_corrections_written)
 from .views import dotest, show_result, review
 
 class ExamsTest(TestCase):
@@ -201,3 +202,13 @@ class ExamsTest(TestCase):
         self.client.force_login(User.objects.get(id=2))
         response=self.client.post(reverse('do_signup_quiz'), {'2':'True', '3': 'True', '4': 'False'}, follow = True)
         self.assertContains(response, '<h5>Welcome Student: student1</h5>')
+
+    def test_get_corrections_written_incorrect(self):
+        questions = Written_Question.objects.all()
+        corrections = get_corrections_written(self.student1.user_id, 1)
+        self.assertEqual(corrections[0], {})
+
+    def test_get_corrections_written_mispelled(self):
+        questions = Written_Question.objects.all()
+        corrections = get_corrections_written(self.student1.user_id, 1)
+        self.assertEqual(corrections[1], {'What is my favourite film? ': 'Shrek'})

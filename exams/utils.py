@@ -70,7 +70,6 @@ def get_corrections_written(user_id, exam_id):
                 mispelled[question.text] = correct_answer.text
             else:
                 written_corrections[question.text] = correct_answer.text
-
     return (written_corrections, mispelled)
 
 def get_corrections_formula(user_id, exam_id):

@@ -119,7 +119,7 @@ def student_details_added(request):
     return render(request, 'custom_users/student_details_added.html', {'student': student})
 
 def teacher_details_added(request):
-    teacher = StudentProfile.objects.get(user_id = request.user.id)
+    teacher = TeacherProfile.objects.get(user_id = request.user.id)
     return render(request, 'custom_users/teacher_details_added.html', {'teacher': teacher})
 
 def ajax_load_teachers(request):

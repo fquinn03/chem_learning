@@ -126,6 +126,10 @@ class UserTest(TestCase):
         form = StudentProfileForm({'school': 1, 'teacher': 1,'class_id': ""}, instance = student)
         self.assertEqual(form.fields['class_id'].queryset[0], Class_id.objects.get(teacher_id = teacher_id))
 
+    def test_signup(self):
+        response = self.client.get(reverse('signup'))
+        self.assertEqual(response.status_code, 200)
+
     def test_sign_up_form_student_get_response(self):
         self.client.force_login(User.objects.get(id=3))
         response=self.client.get(reverse('signup_form_student'))
@@ -361,3 +365,63 @@ class UserTest(TestCase):
         self.client.force_login(User.objects.get(id=1))
         response=self.client.post(reverse('add_school'), {'name': 'schoolName', 'post_code': 'my_postcode'})
         self.assertContains(response, '<div class="card-headergreen">Teacher Details Added</div>')
+
+    def test_student_details_added_response(self):
+        self.client.force_login(User.objects.get(id=2))
+        response=self.client.get(reverse('student_details_added'))
+        self.assertEqual(response.status_code, 200)
+
+    def test_student_details_added_template(self):
+        self.client.force_login(User.objects.get(id=2))
+        response=self.client.get(reverse('student_details_added'))
+        self.assertTemplateUsed(response, 'custom_users/student_details_added.html')
+
+    def test_student_details_added_html(self):
+        self.client.force_login(User.objects.get(id=2))
+        response=self.client.get(reverse('student_details_added'))
+        self.assertContains(response, '<div class="card-headergreen">Student Details Added</div>')
+
+    def test_teacher_details_added_response(self):
+        self.client.force_login(User.objects.get(id=1))
+        response=self.client.get(reverse('teacher_details_added'))
+        self.assertEqual(response.status_code, 200)
+
+    def test_teacher_details_added_template(self):
+        self.client.force_login(User.objects.get(id=1))
+        response=self.client.get(reverse('teacher_details_added'))
+        self.assertTemplateUsed(response, 'custom_users/teacher_details_added.html')
+
+    def test_teacher_details_added_html(self):
+        self.client.force_login(User.objects.get(id=1))
+        response=self.client.get(reverse('teacher_details_added'))
+        self.assertContains(response, '<div class="card-headergreen">Teacher Details Added</div>')
+
+    def test_load_ajax_classes_response(self):
+        self.client.force_login(User.objects.get(id=2))
+        response=self.client.get(reverse('ajax_load_classes'))
+        self.assertEqual(response.status_code, 200)
+
+    def test_load_ajax_classes_template(self):
+        self.client.force_login(User.objects.get(id=2))
+        response=self.client.get(reverse('ajax_load_classes'))
+        self.assertTemplateUsed(response, 'custom_users/ajax_load_classes.html')
+
+    def test_load_ajax_classes_html(self):
+        self.client.force_login(User.objects.get(id=2))
+        response=self.client.get(reverse('ajax_load_classes'))
+        self.assertContains(response, '<option value="">---------</option>')
+
+    def test_load_ajax_teachers_response(self):
+        self.client.force_login(User.objects.get(id=2))
+        response=self.client.get(reverse('ajax_load_teachers'))
+        self.assertEqual(response.status_code, 200)
+
+    def test_load_ajax_teachers_template(self):
+        self.client.force_login(User.objects.get(id=2))
+        response=self.client.get(reverse('ajax_load_teachers'))
+        self.assertTemplateUsed(response, 'custom_users/ajax_load_teachers.html')
+
+    def test_load_ajax_teachers_html(self):
+        self.client.force_login(User.objects.get(id=2))
+        response=self.client.get(reverse('ajax_load_teachers'))
+        self.assertContains(response, '<option value="">---------</option>')
