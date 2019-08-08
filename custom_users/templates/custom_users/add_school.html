@@ -3,9 +3,7 @@
 {% block content %}
 <div class="container w-75" style ="text-align: left;">
   <div class="card">
-    <div class="card-headergreen">
-      Add School
-    </div>
+    <div class="card-headergreen">Add School</div>
     <div class = "card-body">
       <form method="post" novalidate>
         {% csrf_token %}
@@ -22,7 +20,7 @@
 
         {% endfor %}
         </p>
-        <button type="submit" class="btn btn-success button-right">Sign up</button>
+        <button type="submit" class="btn btn-success button-right">Add School</button>
       </form>
     </div>
   </div>

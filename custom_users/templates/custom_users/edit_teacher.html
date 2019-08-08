@@ -1,11 +1,9 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="container w-50" style ="text-align: left;">
+<div class="container w-75" style ="text-align: left;">
   <div class="card">
-    <div class="card-headergreen">
-      Add Teacher Details
-    </div>
+    <div class="card-headergreen">Add Teacher Details</div>
     <div class="card-body">
       <p>Add your school</p>
       <form method="post" novalidate>
@@ -15,8 +13,8 @@
         {{field}}<br/>
         <br/>
         {% endfor %}
-        <p>Don't see your school. Add a school</p>
-        <a type="button" class="btn btn-success button" href ="{% url 'add_school' %}">Add School</a>
+        <p ><strong class="fielderror">Don't see your school? Add it</strong></p>
+        <a type="button" class="btn btn-success button-eqcenter" href ="{% url 'add_school' %}">Add School</a>
         <button type="submit" class="btn btn-success button-right">Update</button>
       </form>
     </div>

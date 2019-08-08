@@ -5,6 +5,7 @@ from django.shortcuts import render, redirect, get_list_or_404, get_object_or_40
 from .forms import AddSchoolForm, StudentForm, TeacherForm, StudentProfileForm, TeacherProfileForm
 from .models import Class_id, School, TeacherProfile, StudentProfile
 
+
 def welcome_teacher(request):
     user = request.user
     teacher = TeacherProfile.objects.select_related().get(user_id = user.id)
@@ -34,7 +35,7 @@ def signup_form_student(request):
             raw_password = form.cleaned_data.get('password1')
             user = authenticate(username=user.username, password=raw_password)
             login(request, user)
-            return redirect('edit_student')
+            return render(request, 'custom_users/edit_student.html')
     else:
         form=StudentForm()
     return render(request, 'signup_form_student.html', {'form': form})
@@ -77,7 +78,7 @@ def edit_student(request):
         form = StudentProfileForm(request.POST, instance = student)
         if form.is_valid():
             form = form.save()
-            return render(request, 'custom_users/student_details_added.html', {'student':student})
+            return render(request, 'custom_users/student_details_added.html')
     else:
         form=StudentProfileForm()
     return render(request, 'custom_users/edit_student.html', {'form': form})
@@ -88,12 +89,11 @@ def edit_teacher(request):
         teacher = get_object_or_404(TeacherProfile, user_id = user.id)
         form=TeacherProfileForm(request.POST)
         if form.is_valid():
-            school = School.objects.get(id = request.POST['school'])
+            school = School.objects.get(id = request.POST['name'])
             class_id = Class_id.objects.create(name = request.POST['class_name'], teacher = teacher)
             teacher.school = school
             teacher.class_id = class_id
             teacher.save()
-            print(form.data)
             return render(request, 'custom_users/teacher_details_added.html', {'teacher':teacher})
     else:
         form=TeacherProfileForm()
@@ -109,7 +109,7 @@ def add_school(request):
             school.refresh_from_db()
             school.save()
             teacher.school = school
-            return redirect('edit_teacher')
+            return render(request, 'custom_users/teacher_details_added.html', {'teacher': teacher})
     else:
         form=AddSchoolForm()
     return render(request, 'custom_users/add_school.html', {'form': form})

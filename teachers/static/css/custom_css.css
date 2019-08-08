@@ -40,6 +40,10 @@ a {
   float:right;
 }
 
+.button-eqcenter{
+  float:center;
+}
+
 .card {
   position: relative;
   display: -ms-flexbox;
@@ -79,6 +83,7 @@ small.fieldhelp{
 strong.fielderror{
   color: red;
 }
+
 
 .navbar {
     background-color: mediumseagreen;
