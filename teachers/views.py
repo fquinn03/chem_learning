@@ -2,7 +2,10 @@ from django.contrib.auth.models import User
 from django.shortcuts import render
 from custom_users.models import Class_id, StudentProfile, TeacherProfile
 
-
+"""
+If user is a teacher, a list of their classes is sent to the template
+If not they are redirected to not teacher template
+"""
 def class_list(request):
     user = request.user
     try:
@@ -14,8 +17,12 @@ def class_list(request):
             'classes':classes,
             })
     except:
-        return render(request, 'teachers/not_teacher.html')
+        return redirect('not_teacher')
 
+"""
+If a teacher clicks on a class in the above class_list view/template
+A list of students in that class is sent to the template.
+"""
 def show_students(request, class_name):
     user = request.user
     teacher = TeacherProfile.objects.get(user_id = user.id)

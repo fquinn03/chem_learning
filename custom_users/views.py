@@ -5,7 +5,17 @@ from django.shortcuts import render, redirect, get_list_or_404, get_object_or_40
 from .forms import AddSchoolForm, StudentForm, TeacherForm, StudentProfileForm, TeacherProfileForm
 from .models import Class_id, School, TeacherProfile, StudentProfile
 
+"""
+The custom_users app is concerned with signup and login of users
+Adding teacher and student data.
+Registering teachers with schools and registering students with schools and teachers.
+"""
 
+
+"""
+Welcome teacher view. Displays the default template for any authenticated teacher user.
+Gets all of a teachers classes and displays a button for each.
+"""
 def welcome_teacher(request):
     user = request.user
     teacher = TeacherProfile.objects.select_related().get(user_id = user.id)
@@ -14,6 +24,10 @@ def welcome_teacher(request):
     'classes':classes
     })
 
+"""
+Welcome student view. Displays the default template for any authenticated student user.
+Shows a students next lesson, test and gives overall summary of progress.
+"""
 def welcome_student(request):
     user = request.user
     student = StudentProfile.objects.select_related().get(user_id = user.id)
@@ -21,9 +35,19 @@ def welcome_student(request):
     return render(request, 'custom_users/welcome_student.html', {'user':user,
     'level': level})
 
+"""
+Displays the default template for an unauthenticated user.
+Give option to signup as student/teacher or to login.
+"""
 def signup(request):
     return render(request, 'signup.html')
 
+"""
+Displays an empty Sign up form for a student user.
+A User and StudentProfile are created from form data at the same time.
+The new student user is logged in and redirected to add their details
+through the edit_student template.
+"""
 def signup_form_student(request):
     if request.method == 'POST':
         form = StudentForm(request.POST)
@@ -40,6 +64,12 @@ def signup_form_student(request):
         form=StudentForm()
     return render(request, 'signup_form_student.html', {'form': form})
 
+"""
+Displays an empty Sign up form for a teacher user.
+A User and TeacherProfile are created from form data at the same time.
+The new teacher user is logged in and redirected to add their details
+through the edit_teacher template.
+"""
 def signup_form_teacher(request):
     if request.method == 'POST':
         form = TeacherForm(request.POST)
@@ -56,6 +86,11 @@ def signup_form_teacher(request):
         form=TeacherForm()
     return render(request, 'signup_form_teacher.html', {'form': form})
 
+"""
+Default view for authenticated user.
+Displays either welcome_student or welcome_teacher template.
+If the user is unauthenticated they are redirected to the signup template
+"""
 def home(request):
     if request.user.is_authenticated:
         try:
@@ -70,7 +105,10 @@ def home(request):
                 return render(request, 'custom_users/welcome_teacher.html',{'classes':classes})
     else:
             return render(request, 'signup.html')
-
+"""
+Gets form to add student details, validates data and saves valid
+information to the database.
+"""
 def edit_student(request):
     if request.method == 'POST':
         user = request.user
@@ -83,6 +121,10 @@ def edit_student(request):
         form=StudentProfileForm()
     return render(request, 'custom_users/edit_student.html', {'form': form})
 
+"""
+Gets form to add teacher details, validates data and saves valid
+information to the database.
+"""
 def edit_teacher(request):
     if request.method == 'POST':
         user = request.user
@@ -99,6 +141,10 @@ def edit_teacher(request):
         form=TeacherProfileForm()
     return render(request, 'custom_users/edit_teacher.html', {'form': form})
 
+"""
+Gets form to add a new school, validates data and saves valid
+information to the database.
+"""
 def add_school(request):
     if request.method == 'POST':
         user = request.user
@@ -114,19 +160,37 @@ def add_school(request):
         form=AddSchoolForm()
     return render(request, 'custom_users/add_school.html', {'form': form})
 
+"""
+Displays a summary of the details just added by the student user when
+signing up.
+"""
 def student_details_added(request):
     student = StudentProfile.objects.get(user_id = request.user.id)
     return render(request, 'custom_users/student_details_added.html', {'student': student})
 
+"""
+Displays a summary of the details just added by the teacher user when
+signing up.
+"""
 def teacher_details_added(request):
     teacher = TeacherProfile.objects.get(user_id = request.user.id)
     return render(request, 'custom_users/teacher_details_added.html', {'teacher': teacher})
 
+"""
+Used to create a dynamic dropdown menu within the add student details form.
+When a student has selected their school this view updates the select teacher
+dropdown menu, so that only teachers in that school can be selected.
+"""
 def ajax_load_teachers(request):
     school_id = request.GET.get('school')
     teachers = TeacherProfile.objects.filter(school=school_id).order_by('user_id')
     return render(request, 'custom_users/ajax_load_teachers.html', {'teachers': teachers})
 
+"""
+Used to create a dynamic dropdown menu within the add student details form.
+When a student has selected their school and their teacher this view updates the
+dropdown menu, so that only classes beloning to that teacher can be selected. 
+"""
 def ajax_load_classes(request):
     teacher_id = request.GET.get('teacher')
     class_ids = Class_id.objects.filter(teacher=teacher_id).order_by('name')

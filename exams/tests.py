@@ -8,6 +8,13 @@ from .utils import (calculate_percentage, create_user_answer, get_corrections_fo
 get_corrections_written, get_formula, get_corrections_written)
 from .views import dotest, show_result, review
 
+"""
+Unit tests for all of the exams views and utils.
+NOTE: force_login method is used instead of login() when a test requires a user be logged in
+and the details of how a user logged in aren’t important.
+This method is faster than login() since the expensive password hashing algorithms are bypassed
+"""
+
 class ExamsTest(TestCase):
     # set up testing database
     @classmethod
@@ -57,7 +64,7 @@ class ExamsTest(TestCase):
         UserAnswer.objects.create(question = question3, user_answer = "H2O", user = student1)
 
     def setUp(self):
-        # set up TestCase
+        # set up Exams TestCase
         self.level_1 = Level.objects.get(id = 1)
         self.exam1 = Exam.objects.get(id=1)
         self.useranswer = UserAnswer.objects.get(id=1)
@@ -72,9 +79,10 @@ class ExamsTest(TestCase):
         self.questions = Question.objects.all()
 
 
-    # Model Tests
+    """
+    Models Tests
+    """
     # test the __str__ methods for all the models in exams
-
     def test_level_str(self):
         self.assertEqual(self.level_1.__str__(), "1")
 
@@ -90,21 +98,88 @@ class ExamsTest(TestCase):
     def test_useranswer_str(self):
         self.assertEqual(self.user_answer.__str__(), "Green")
 
-    # views tests
-    # check the dotest get request returns a valid response
-    def test_get_do_test_response_code(self):
+    """
+    Views and Template testing
+
+    Each view is tested for expected response using using GET requests
+    (and POST requests where relevant).
+
+    Template rendered is tested using assertTemplateUsed()
+    This checks the correct template is rendered for logged in
+    user type and the type of request.
+
+    The template and context are tested using assertContains(), to
+    ensure the correct template has been rendered with the correct
+    context data for logged in user where relevant.
+
+    Additional testing for individual views is added and explained
+    where necessary.
+    """
+    # test dotest view. GET and POST requests
+    def test_do_test_get_response_code(self):
+        self.client.force_login(User.objects.get(id=3))
         response = self.client.get(reverse('dotest', args=[1,]))
         self.assertEqual(response.status_code, 200)
 
-    # check the dotest get method returns the expected template
-    def test_get_do_test_template_used(self):
+    def test_do_test_get_template_used(self):
+        self.client.force_login(User.objects.get(id=3))
         response = self.client.get(reverse('dotest', args=[1,]))
         self.assertTemplateUsed(response, 'exams/dotest.html')
 
-    # check the dotest get request returned template contains the expected html
-    def test_get_do_test_template_contains(self):
+    def test_do_test_get_html(self):
+        self.client.force_login(User.objects.get(id=3))
         response = self.client.get(reverse('dotest', args=[1,]))
         self.assertContains(response, "<p><strong>What is my favourite colour? </strong></p>")
+
+    def test_do_test_post_response_code(self):
+        self.client.force_login(User.objects.get(id=3))
+        response = self.client.post(reverse('dotest', args=[1,]),
+        {'csrfmiddlewaretoken': 'flsff','1': 'Green', '2': 'jaws'})
+        self.assertEqual(response.status_code, 200)
+
+    def test_do_test_post_template_used(self):
+        self.client.force_login(User.objects.get(id=3))
+        response = self.client.post(reverse('dotest', args=[1,]),
+        {'csrfmiddlewaretoken': 'flsff','1': 'Green', '2': 'jaws'})
+        self.assertTemplateUsed(response, 'exams/finish_test.html')
+
+    def test_do_test_post_html(self):
+        self.client.force_login(User.objects.get(id=3))
+        response = self.client.post(reverse('dotest', args=[1,]),
+        {'csrfmiddlewaretoken': 'flsff','1': 'Green', '2': 'jaws'})
+        self.assertContains(response, "<h5>You have submitted your answers to Test Exam Title 1<br><br/></h5>")
+
+    # test show_result view.
+    def test_show_result_get_response_code(self):
+        self.client.force_login(User.objects.get(id=3))
+        response = self.client.get(reverse('show_result', args=[1,]))
+        self.assertEqual(response.status_code, 200)
+
+    def test_show_result_get_template_used(self):
+        self.client.force_login(User.objects.get(id=3))
+        response = self.client.get(reverse('show_result', args=[1,]))
+        self.assertTemplateUsed(response, 'exams/show_result.html')
+
+    def test_show_result_get_html(self):
+        self.client.force_login(User.objects.get(id=3))
+        response = self.client.get(reverse('show_result', args=[1,]))
+        self.assertContains(response, "<h5>You scored: 33% on Test Exam Title 1<br><br/></h5>")
+
+    # test review view
+    def test_review_get_response_code(self):
+        self.client.force_login(User.objects.get(id=3))
+        response = self.client.get(reverse('review', args=[1,]))
+        self.assertEqual(response.status_code, 200)
+
+    def test_review_get_template_used(self):
+        self.client.force_login(User.objects.get(id=3))
+        response = self.client.get(reverse('review', args=[1,]))
+        self.assertTemplateUsed(response, 'exams/review.html')
+
+    def test_review_get_html(self):
+        self.client.force_login(User.objects.get(id=3))
+        response = self.client.get(reverse('review', args=[1,]))
+        self.assertContains(response, "<h5>Questions you need to review</h5>")
 
     # check the utils.create_user_answer method adds a UserAnswer to the database
     def test_create_user_answer(self):
@@ -113,36 +188,6 @@ class ExamsTest(TestCase):
         create_user_answer(request, self.student2 )
         count_2 = UserAnswer.objects.all().count()
         self.assertEqual(count_2, count+1)
-
-    # check the dotest post request returns a valid response
-    def test_post_dotest(self):
-        request_param = {'csrfmiddlewaretoken': 'mihQP', '1': '1'}
-        rf = RequestFactory()
-        url = reverse('dotest', args=[1,])
-        request = rf.post(url, request_param )
-        request.user = self.user
-        response = dotest(request, 1)
-        self.assertEqual(response.status_code, 200)
-
-    # check the show_result get request returns a valid response
-    def test_get_show_resuts(self):
-        request_param = {}
-        rf = RequestFactory()
-        url = reverse('show_result', args=[1,])
-        request = rf.get(url, request_param )
-        request.user = self.user
-        response = show_result(request, 1)
-        self.assertEqual(response.status_code, 200)
-
-    # check the review get request returns a valid response
-    def test_get_review(self):
-        request_param = {}
-        rf = RequestFactory()
-        url = reverse('review', args=[1,])
-        request = rf.get(url, request_param )
-        request.user = self.user
-        response = review(request, 1)
-        self.assertEqual(response.status_code, 200)
 
     #test utils.calculate_percentage helper method
     def test_calculate_percentage_1(self):
@@ -155,12 +200,24 @@ class ExamsTest(TestCase):
         percentage = calculate_percentage(questions, self.student1.user_id, 1)
         self.assertEqual(percentage, 100)
 
-    #test utils.get_corrections helper method
+    #test utils.get_corrections_mcq helper method
     def test_get_corrections_mcq(self):
         questions = Question.objects.all()
         corrections = get_corrections_mcq(self.student2.user_id, 1)
         self.assertEqual(corrections, {"What is my favourite colour? ": "Green"})
 
+    #test utils.get_corrections_written helper method
+    def test_get_corrections_written_incorrect(self):
+        questions = Written_Question.objects.all()
+        corrections = get_corrections_written(self.student1.user_id, 1)
+        self.assertEqual(corrections[0], {})
+
+    def test_get_corrections_written_mispelled(self):
+        questions = Written_Question.objects.all()
+        corrections = get_corrections_written(self.student1.user_id, 1)
+        self.assertEqual(corrections[1], {'What is my favourite film? ': 'Shrek'})
+
+    # test test_do_quiz_signup view. GET and POST requests
     def test_do_quiz_signup_get_response(self):
         self.client.force_login(User.objects.get(id=2))
         response=self.client.get(reverse('do_signup_quiz'))
@@ -202,13 +259,3 @@ class ExamsTest(TestCase):
         self.client.force_login(User.objects.get(id=2))
         response=self.client.post(reverse('do_signup_quiz'), {'2':'True', '3': 'True', '4': 'False'}, follow = True)
         self.assertContains(response, '<h5>Welcome Student: student1</h5>')
-
-    def test_get_corrections_written_incorrect(self):
-        questions = Written_Question.objects.all()
-        corrections = get_corrections_written(self.student1.user_id, 1)
-        self.assertEqual(corrections[0], {})
-
-    def test_get_corrections_written_mispelled(self):
-        questions = Written_Question.objects.all()
-        corrections = get_corrections_written(self.student1.user_id, 1)
-        self.assertEqual(corrections[1], {'What is my favourite film? ': 'Shrek'})
