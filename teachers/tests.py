@@ -42,7 +42,7 @@ class TeacherTest(TestCase):
         self.assertEqual(self.teacherprofile.is_teacher, True)
 
     def test_teacher_is_student(self):
-        self.assertEqual(self.teacherprofile.student, False)
+        self.assertEqual(self.teacherprofile.is_student, False)
 
     def test_is_student(self):
         self.assertEqual(self.studentprofile.is_student, True)
@@ -99,16 +99,13 @@ class TeacherTest(TestCase):
         self.assertContains(response, "<h5>Welcome teacher </h5>")
 
     def test_class_list_student_response(self):
-        self.client.force_login(User.objects.get(id = 2))
         response = self.client.get(reverse('class_list' ))
         self.assertTrue(response.status_code, 200)
 
     def test_class_list_student_template(self):
-        self.client.force_login(User.objects.get(id = 2))
         response = self.client.get(reverse('class_list'))
         self.assertTemplateUsed(response, "teachers/not_teacher.html")
 
     def test_class_list_student_html(self):
-        self.client.force_login(User.objects.get(id = 2))
         response = self.client.get(reverse('class_list'))
         self.assertContains(response, "<p>You do not teach any classes!</p>")

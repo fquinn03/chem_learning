@@ -17,7 +17,7 @@ def class_list(request):
             'classes':classes,
             })
     except:
-        return redirect('not_teacher')
+        return render(request, 'teachers/not_teacher.html')
 
 """
 If a teacher clicks on a class in the above class_list view/template
