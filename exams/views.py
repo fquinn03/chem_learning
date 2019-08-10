@@ -1,9 +1,11 @@
 from django.db import transaction
 from django.shortcuts import render, redirect
 from custom_users.models import StudentProfile
-from .models import Answer, Exam, Formula_Question, Level, MCQ_Question, Question, UserAnswer, Written_Question
-from .utils import calculate_percentage, create_user_answer, get_corrections_formula, get_corrections_mcq, get_corrections_written, get_formula
-
+from .models import (Answer, Exam, CompletedExam, Formula_Question,
+MCQ_Question, Question, UserAnswer, Written_Question)
+from .utils import (calculate_percentage, create_exam_completed_entry, create_user_answer,
+get_corrections_formula, get_corrections_mcq, get_corrections_written, get_formula,
+get_level)
 """
 Use the exam_id to get all the questions for the exam. If GET request display the questions
 and answer options.If POST request, use utils.create_user_answer to add a user_answer to
@@ -37,12 +39,16 @@ for student profile.
 def do_signup_quiz(request):
     exam = Exam.objects.get(title = "signup_quiz")
     questions = Question.objects.filter(exam = exam.id)
-    level = 0
+    answers = []
+    level = 1
     if request.method == 'POST':
         for key, value in request.POST.items():
             if key != 'csrfmiddlewaretoken':
-                if value == "True" and int(key) > level:
-                    level = int(key) - 1
+                answers.append(value)
+
+        for i in range(len(answers)):
+            if answers[i] == "True":
+                level = i+1
         student = StudentProfile.objects.get(user_id = request.user.id)
         student.level = level
         student.signup_quiz_completed = True
@@ -59,9 +65,12 @@ check if the user_answer in the database for each question is correct, calculate
 percentage result and then display show_result template.
 """
 def show_result(request, exam_id):
+    student = StudentProfile.objects.get(user_id = request.user.id)
     exam = Exam.objects.get(id = exam_id)
     questions = Question.objects.all().filter(exam = exam_id)
     percentage_result = calculate_percentage(questions, request.user.id, exam_id)
+    create_exam_completed_entry(student, exam, percentage_result)
+    get_level(request.user.id)
     return render(request, 'exams/show_result.html', {'percentage_result': percentage_result,
     'exam':exam,
     })

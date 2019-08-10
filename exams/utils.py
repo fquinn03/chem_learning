@@ -1,6 +1,7 @@
 from chempy import Substance
-from custom_users.models import Class_id, StudentProfile, TeacherProfile
-from .models import Answer, Exam, Formula_Question, Level, MCQ_Question, Question, UserAnswer, Written_Question
+from custom_users.models import Class_id, StudentProfile, TeacherProfile, User
+from .models import (Answer, CompletedExam, Exam, Formula_Question,
+MCQ_Question, Question, UserAnswer, Written_Question)
 
 """
 Iterate through each question in the submitted test and store the user's answer in the database
@@ -102,3 +103,59 @@ def get_formula(raw_formula):
     formula = Substance.from_formula(raw_formula) #use chempy to convert string raw_formula to chemical formula, gives correct subscripting
     html_formula = formula.html_name #use chempy to give html for formula eg H<sub>2</sub>O
     return html_formula
+
+"""
+Method to record that a user has taken a particular exam.
+Once a user completes an exam through the dotest view
+an entry with their percentage is created in the CompletedExams table.
+"""
+
+def create_exam_completed_entry(user, exam, result):
+    CompletedExam.objects.create(user = user, exam = exam, level = exam.level, percentage = result)
+
+"""
+Method to calculate a users score for a given level.  The method finds all the exams the user has taken
+in that level. Calculates a weighted mean as the user's score for that level.
+If the score is > 80% the level is incremented and attempts at this new level is reset to zero.
+If the score is < 80% and the user has completed 3 exams at this level the level is decremented
+and their attempt at this new level is reset to zero.
+Otherwise the user stays on the same level and their attempts at this level is incremented.
+"""
+def get_level(user_id):
+    # get the student object
+    student = StudentProfile.objects.get(user_id = user_id)
+    level = student.level
+    # get the exams the student has completed
+    completed_exams = CompletedExam.objects.filter(level = level).filter(user = student)
+    results = []
+
+    # get a list of results for the exams completed
+    for exam in completed_exams:
+        results.append(exam.percentage)
+
+    # calculate a weighted mean for the exams completed
+    number_of_results = len(results)
+    if number_of_results == 0:
+        score = 0
+    elif number_of_results == 1:
+        score = results[0] * 1
+    elif number_of_results == 2:
+        score = results[1]*0.95 + results[0]*0.05
+    else:
+        score = results[len(results)]*0.9 + results[len(results)-1]*0.1
+
+    # check the users score and adjust level/attempts accordingly
+    if score > 80:
+        student.level += 1
+        student.attempt = 0
+    elif score < 80 and student.attempt >= 3:
+        if level > 1:
+            student.level -= 1
+            student.attempt = 0
+        else:
+            student.level = 1
+            student.attempt = 0
+    else:
+        student.attempt += 1
+
+    student.save()

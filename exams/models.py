@@ -6,22 +6,13 @@ Students have a Level. Exams and Lessons have a level.
 This can be used to match appropriate exam or lesson to
 student.
 """
-class Level(models.Model):
-    title = models.CharField(max_length = 100)
-
-    def __str__(self):
-        return str(self.id)
-
-
 #Exams have a level and a title.
 class Exam(models.Model):
-    level = models.ForeignKey(Level, on_delete=models.CASCADE)
     title = models.CharField(max_length = 100)
+    level = models.IntegerField(default = 1)
 
-    class Meta:
-        unique_together = ('level', 'id', )
     def __str__(self):
-        return self.title
+        return str(self.level) +" "+self.title
 
 # Questions belong to an exam.
 class Question(models.Model):
@@ -67,7 +58,15 @@ class UserAnswer(models.Model):
     user_answer = models.CharField(max_length=1000)
     user = models.ForeignKey(StudentProfile, on_delete=models.CASCADE)
 
-    class Meta:
-        unique_together = ('user', 'user_answer' )
     def __str__(self):
         return self.user_answer
+
+# Model to store information about which exams a user has completed
+class CompletedExam(models.Model):
+    user = models.ForeignKey(StudentProfile, on_delete=models.CASCADE)
+    exam = models.ForeignKey(Exam, on_delete=models.CASCADE)
+    level = models.IntegerField(default = 1)
+    percentage = models.IntegerField(default = 1)
+
+    def __str__(self):
+        return self.user.user.username+" "+self.exam.title

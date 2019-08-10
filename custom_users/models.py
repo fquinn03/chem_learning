@@ -51,7 +51,7 @@ class StudentProfile(models.Model):
     is_student = models.BooleanField(default=True)
     is_teacher = models.BooleanField(default=False)
     level = models.IntegerField(default=1)
-    score = models.IntegerField(default=0)
+    attempt = models.IntegerField(default=1)
     details_added = models.BooleanField(default=False)
     signup_quiz_completed = models.BooleanField(default=False)
 

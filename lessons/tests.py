@@ -1,7 +1,6 @@
 from django.test import Client, TestCase
 from django.urls import reverse
 from custom_users.models import User
-from exams.models import Level
 from .models import Lesson
 
 """
@@ -16,9 +15,7 @@ class LessonsTest(TestCase):
     # set up test database
     def setUpTestData(cls):
         User.objects.create(id = 2, username = "student1", password="student1_pass")
-        Level.objects.create(title = "1")
-        level = Level.objects.get(id=1)
-        Lesson.objects.create(level = level, title = "test_lesson_1", link = "www.testlink1.com", number = 1)
+        Lesson.objects.create(level = 1, title = "test_lesson_1", link = "www.testlink1.com", number = 1)
 
     def setUp(self):
     # set up Lessons TestCase

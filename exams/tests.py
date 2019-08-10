@@ -3,9 +3,12 @@ from django.test import Client, RequestFactory, TestCase
 from django.urls import reverse
 from django.utils.decorators import method_decorator
 from custom_users.models import Class_id, StudentProfile, TeacherProfile
-from .models import Answer, Exam, Formula_Question, Level, MCQ_Question, Question, UserAnswer, Written_Question
-from .utils import (calculate_percentage, create_user_answer, get_corrections_formula, get_corrections_mcq,
-get_corrections_written, get_formula, get_corrections_written)
+from .models import (Answer, Exam, Formula_Question, MCQ_Question, Question,
+UserAnswer, Written_Question, CompletedExam)
+from .utils import (calculate_percentage, create_exam_completed_entry,
+create_user_answer, get_corrections_formula, get_corrections_mcq,
+get_corrections_written, get_corrections_written, get_formula,
+get_level)
 from .views import dotest, show_result, review
 
 """
@@ -22,22 +25,34 @@ class ExamsTest(TestCase):
         User.objects.create(username ="teacher", password="mypass")
         User.objects.create(username ="student1", password="mypass")
         User.objects.create(username ="student2", password="mypass")
+        User.objects.create(username ="student3", password="mypass")
+        User.objects.create(username ="student4", password="mypass")
+
         user1 = User.objects.get(id=1)
         user2 = User.objects.get(id=2)
         user3 = User.objects.get(id=3)
+        user4 = User.objects.get(id=4)
+        user5 = User.objects.get(id=5)
         Class_id.objects.create(id = 1, name = "9y3", teacher_id = 1)
         class_id = Class_id.objects.get(id=1)
         TeacherProfile.objects.create(user = user1, is_teacher = True)
         teacher = TeacherProfile.objects.get(user_id=1)
-        StudentProfile.objects.create(user = user2, teacher = teacher, class_id = class_id)
+        StudentProfile.objects.create(user = user2, teacher = teacher, class_id = class_id, level = 1, attempt = 1)
         student1 = StudentProfile.objects.get(user_id=2)
-        StudentProfile.objects.create(user = user3, teacher = teacher, class_id = class_id)
+        StudentProfile.objects.create(user = user3, teacher = teacher, class_id = class_id, level = 2, attempt = 2)
         student2 = StudentProfile.objects.get(user_id=3)
-        Level.objects.create(title = "1")
-        level_1 = Level.objects.get(id = 1)
-        Exam.objects.create(level = level_1, title = "Test Exam Title 1")
-        Exam.objects.create(level = level_1, title = "signup_quiz")
+        StudentProfile.objects.create(user = user4, teacher = teacher, class_id = class_id, level = 1, attempt = 3)
+        student3 = StudentProfile.objects.get(user_id=4)
+        StudentProfile.objects.create(user = user5, teacher = teacher, class_id = class_id, level = 1, attempt = 3)
+        student4 = StudentProfile.objects.get(user_id=5)
+        Exam.objects.create(level = 1, title = "Test Exam Title 1")
+        Exam.objects.create(level = 1, title = "signup_quiz")
+        Exam.objects.create(level = 2, title = "Test Exam Title 1")
+        Exam.objects.create(level = 4, title = "Test Exam Title 1")
         exam1 = Exam.objects.get(id=1)
+        exam2 = Exam.objects.get(id=3)
+        exam3 = Exam.objects.get(id=1)
+        exam4 = Exam.objects.get(id=4)
         MCQ_Question.objects.create(exam = exam1, text = "What is my favourite colour? ")
         question1 = MCQ_Question.objects.get(id=1)
         Answer.objects.create(question = question1, text = "Yellow", correct = False)
@@ -62,10 +77,13 @@ class ExamsTest(TestCase):
         Answer.objects.create(question = question3, text = "H2O", correct = True, correct_spelling = True)
         UserAnswer.objects.create(question = question3, user_answer = "h2o", user = student2)
         UserAnswer.objects.create(question = question3, user_answer = "H2O", user = student1)
+        CompletedExam.objects.create(user = student1, exam = exam1, level = exam1.level, percentage =100)
+        CompletedExam.objects.create(user = student1, exam = exam2, level = exam2.level, percentage = 33)
+        CompletedExam.objects.create(user = student3, exam = exam1, level = exam1.level, percentage = 55)
+        CompletedExam.objects.create(user = student4, exam = exam4, level = exam4.level, percentage = 0)
 
     def setUp(self):
         # set up Exams TestCase
-        self.level_1 = Level.objects.get(id = 1)
         self.exam1 = Exam.objects.get(id=1)
         self.useranswer = UserAnswer.objects.get(id=1)
         self.question1 = Question.objects.get(id=1)
@@ -75,6 +93,9 @@ class ExamsTest(TestCase):
         self.client = Client()
         self.student2 = StudentProfile.objects.get(user_id=3)
         self.student1 = StudentProfile.objects.get(user_id=2)
+        self.student3 = StudentProfile.objects.get(user_id=4)
+        self.student1.level = 1
+        self.student2.level = 1
         self.user = User.objects.get(id=3)
         self.questions = Question.objects.all()
 
@@ -83,11 +104,8 @@ class ExamsTest(TestCase):
     Models Tests
     """
     # test the __str__ methods for all the models in exams
-    def test_level_str(self):
-        self.assertEqual(self.level_1.__str__(), "1")
-
     def test_exam_str(self):
-        self.assertEqual(self.exam1.__str__(), "Test Exam Title 1")
+        self.assertEqual(self.exam1.__str__(), "1 Test Exam Title 1")
 
     def test_question_str(self):
         self.assertEqual(self.question1.__str__(), "What is my favourite colour? ")
@@ -259,3 +277,45 @@ class ExamsTest(TestCase):
         self.client.force_login(User.objects.get(id=2))
         response=self.client.post(reverse('do_signup_quiz'), {'2':'True', '3': 'True', '4': 'False'}, follow = True)
         self.assertContains(response, '<h5>Welcome Student: student1</h5>')
+
+    # test utils.create_exam_completed_entry
+    def test_create_exam_completed_entry_student1(self):
+        user = StudentProfile.objects.get(user_id=4)
+        create_exam_completed_entry(user, self.exam1, 78)
+        exam_completed_entry = CompletedExam.objects.get(id = 5)
+        self.assertEqual(exam_completed_entry.exam, self.exam1)
+        self.assertEqual(exam_completed_entry.percentage, 78)
+        self.assertEqual(exam_completed_entry.user.user.username, "student3")
+        self.assertEqual(exam_completed_entry.user.user.password, "mypass")
+
+    """
+    # test utils.get_level
+    # increment level
+    def test_get_level_student1(self):
+        student1 = StudentProfile.objects.get(user_id = 2)
+        get_level(2)
+        student1 = StudentProfile.objects.get(user_id = 2)
+        self.assertEqual(student1.level, 2)
+
+    # decrement level
+    def test_get_level_student4(self):
+        student4 = StudentProfile.objects.get(user_id = 5)
+        get_level(5)
+        student4 = StudentProfile.objects.get(user_id = 5)
+        self.assertEqual(student4.level, 3)
+
+    # level stays the same
+    def test_get_level_student2(self):
+        student2 = StudentProfile.objects.get(user_id = 3)
+        get_level(3)
+        student2 = StudentProfile.objects.get(user_id = 3)
+        self.assertEqual(student2.level, 1)
+        self.assertEqual(student2.attempt, 2)
+
+    # don't decrement below level one
+    def test_get_level_student3(self):
+        student3 = StudentProfile.objects.get(user_id = 4)
+        get_level(4)
+        student3 = StudentProfile.objects.get(user_id = 4)
+        self.assertEqual(student3.level, 1)
+    """

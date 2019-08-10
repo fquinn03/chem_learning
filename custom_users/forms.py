@@ -44,14 +44,16 @@ class StudentProfileForm(forms.ModelForm):
         if 'school' in self.data: # if school has been selected
             try:
                 school_id = int(self.data.get('school'))
-                self.fields['teacher'].queryset = TeacherProfile.objects.filter(school=school_id) # update dropdown to contain teachers from that school
+                # update dropdown to contain teachers from that school
+                self.fields['teacher'].queryset = TeacherProfile.objects.filter(school=school_id)
             except (ValueError, TypeError):
                 self.fields['teacher'].queryset = TeacherProfile.objects.none()
 
         if 'teacher' in self.data: # if teacher has been selected
             try:
                 teacher_id = int(self.data.get('teacher'))
-                self.fields['class_id'].queryset = Class_id.objects.filter(teacher=teacher_id) # update dropdown to contain the teacher's classes
+                # update dropdown to contain the teacher's classes
+                self.fields['class_id'].queryset = Class_id.objects.filter(teacher=teacher_id)
             except (ValueError, TypeError):
                 self.fields['class_id'].queryset = Class_id.objects.none()
 """
@@ -63,7 +65,6 @@ class TeacherProfileForm(forms.Form):
     class_name = forms.CharField()
 
 class AddSchoolForm(forms.ModelForm):
-
     class Meta:
         model = School
         fields = ('name', 'post_code')
