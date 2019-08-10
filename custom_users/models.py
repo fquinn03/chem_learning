@@ -2,6 +2,7 @@ from django.db import models
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
+from lessons.models import Lesson
 
 # School details Name and PostCode Required
 class School(models.Model):
@@ -52,6 +53,8 @@ class StudentProfile(models.Model):
     is_teacher = models.BooleanField(default=False)
     level = models.IntegerField(default=1)
     attempt = models.IntegerField(default=1)
+    next_lesson_id = models.IntegerField(default=1)
+    completed_lessons = models.ManyToManyField(Lesson)
     details_added = models.BooleanField(default=False)
     signup_quiz_completed = models.BooleanField(default=False)
 

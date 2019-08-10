@@ -169,16 +169,32 @@ Find the next lesson for a student and display it on the welcome student screen.
 Get the students current level. Find the next lesson object for that level.
 """
 def get_next_lesson(user):
-    student = StudentProfile.objects.get(id = user.id)
-    lessons = Lesson.objects.filter(level = student.level)
-    completed_lessons = LessonCompleted.objects.filter(user = student)
-    for lesson in lessons:
-        if lesson not in completed_lessons:
-            student.next_lesson = lesson
+    delete_completed_lessons(user)
+    student = StudentProfile.objects.get(user_id = user)
+    all_lessons = Lesson.objects.filter(level = student.level)
+    completed_lessons = student.completed_lessons.filter(level = student.level)
+    remaining_lessons = all_lessons.difference(completed_lessons)
+    next_lesson = remaining_lessons[0]
+    student.next_lesson_id = next_lesson.id
+    student.save()
+
+"""
+If all lesons in a level are completed, delete the student.completed_lessons so the student
+can retake the lessons.
+"""
+def delete_completed_lessons(user):
+    student = StudentProfile.objects.get(user_id = user)
+    all_lessons = Lesson.objects.filter(level = student.level)
+    completed_lessons = student.completed_lessons.filter(level = student.level)
+    remaining_lessons = all_lessons.difference(completed_lessons)
+    if remaining_lessons.count() == 0:
+        lessons_to_remove = student.completed_lessons.filter(level = student.level)
+        for lesson in lessons_to_remove:
+            student.completed_lessons.remove(lesson)
 
 """
 Find the next exam for a student and display it on the welcome student screen.
-"""
+
 def get_next_exam(user):
     student = StudentProfile.objects.get(id = user.id)
     exams = Exam.objects.filter(level = student.level)
@@ -186,3 +202,4 @@ def get_next_exam(user):
     for exam in examss:
         if exam not in completed_exams:
             student.next_exam = exam
+"""
