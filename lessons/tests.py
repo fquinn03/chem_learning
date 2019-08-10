@@ -22,18 +22,22 @@ class LessonsTest(TestCase):
         User.objects.create(id = 4, username = "student3", password="student_pass")
         User.objects.create(id = 5, username = "student4", password="student_pass")
         User.objects.create(id = 6, username = "student5", password="student_pass")
+        User.objects.create(id = 7, username = "student6", password="student_pass")
         studentuser1 = User.objects.get(id = 3)
         studentuser2 = User.objects.get(id = 4)
         studentuser3 = User.objects.get(id = 5)
         studentuser4 = User.objects.get(id = 6)
+        studentuser5 = User.objects.get(id = 7)
         StudentProfile.objects.create(user = studentuser1, level = 1 )
         StudentProfile.objects.create(user = studentuser2, level = 2, attempt = 3 )
         StudentProfile.objects.create(user = studentuser3, level = 2, attempt = 3 )
         StudentProfile.objects.create(user = studentuser4, level = 1, attempt = 2 )
+        StudentProfile.objects.create(user = studentuser5, level = 1, attempt = 2 )
         student2 = StudentProfile.objects.get(user_id = 3)
         student3 = StudentProfile.objects.get(user_id = 4)
         student4 = StudentProfile.objects.get(user_id = 5)
         student5 = StudentProfile.objects.get(user_id = 6)
+        student6 = StudentProfile.objects.get(user_id = 7)
         Lesson.objects.create(level = 1, title = "test_lesson_1_1", link = "www.testlink1.com")
         Lesson.objects.create(level = 1, title = "test_lesson_1_2", link = "www.testlink2.com")
         Lesson.objects.create(level = 1, title = "test_lesson_1_3", link = "www.testlink3.com")
@@ -52,9 +56,13 @@ class LessonsTest(TestCase):
         student3.completed_lessons.add(lesson3)
         student4.completed_lessons.add(lesson1)
         student5.completed_lessons.add(lesson4)
+        student6.completed_lessons.add(lesson1)
+        student6.completed_lessons.add(lesson2)
+        student6.completed_lessons.add(lesson3)
         CompletedExam.objects.create(user = student3, exam = exam1, level = 2, percentage = 35)
         CompletedExam.objects.create(user = student4, exam = exam1, level = 2, percentage = 45)
         CompletedExam.objects.create(user = student5, exam = exam1, level = 1, percentage = 90)
+        CompletedExam.objects.create(user = student6, exam = exam1, level = 1, percentage = 63)
     def setUp(self):
     # set up Lessons TestCase
         self.lesson = Lesson.objects.get(id=1)
@@ -99,13 +107,8 @@ class LessonsTest(TestCase):
         response = self.client.get(reverse('complete_lesson', args=[1,]))
         self.assertContains(response, "<h5>Lesson Title: test_lesson_1_1</h5>")
 
-    # get_next_lesson
-    def test_get_next_lesson(self):
-        get_next_lesson(3)
-        self.assertEqual(StudentProfile.objects.get(user_id = 3).next_lesson_id, 2)
-
-
     """
+    Tests for get_next_lesson()
     if user goes back level and they have previously completed all Lessons
     check all past completed lessons are deleted so they can start again
     """
@@ -134,3 +137,13 @@ class LessonsTest(TestCase):
         get_next_lesson(6)
         self.assertEqual(StudentProfile.objects.get(user_id = 6).level, 2)
         self.assertEqual(StudentProfile.objects.get(user_id = 6).next_lesson_id, 5)
+
+    """
+    if user stays on the same level and they have previously completed aal Lessons
+    in that level they restart the lessons.
+    """
+    def test_go_back_level_and_continue_lessons(self):
+        get_level(7)
+        get_next_lesson(7)
+        self.assertEqual(StudentProfile.objects.get(user_id = 7).level, 1)
+        self.assertEqual(StudentProfile.objects.get(user_id = 7).next_lesson_id, 1)

@@ -2,6 +2,7 @@ from django.contrib.auth import login, authenticate
 from django.contrib.auth.models import User
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_list_or_404, get_object_or_404
+from lessons.models import Lesson
 from .forms import AddSchoolForm, StudentForm, TeacherForm, StudentProfileForm, TeacherProfileForm
 from .models import Class_id, School, TeacherProfile, StudentProfile
 
@@ -31,9 +32,10 @@ Shows a students next lesson, test and gives overall summary of progress.
 def welcome_student(request):
     user = request.user
     student = StudentProfile.objects.select_related().get(user_id = user.id)
-    level = student.level.__str__()
-    return render(request, 'custom_users/welcome_student.html', {'user':user,
-    'level': level})
+    next_lesson = Lesson.objects.get(id = student.next_lesson_id)
+    return render(request, 'custom_users/welcome_student.html', {'student': student,
+    'next_lesson':next_lesson
+    })
 
 """
 Displays the default template for an unauthenticated user.

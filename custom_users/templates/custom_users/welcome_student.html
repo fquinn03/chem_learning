@@ -2,8 +2,29 @@
 
 {% block content %}
 
-<h5>Welcome Student: {{user.get_username}}</h5>
+<h5>Welcome Student: {{student.user.get_username}}</h5>
 
-<p> Current Level: {{level}} </p>
+<p> Current Level: {{student.level}} </p>
+
+<div class="row">
+  <div class="col-sm-4">
+    <p> Take the next lesson </p>
+    {% load static %}
+    <a href="complete_lesson/{{student.next_lesson_id}}">
+    <img src = {{next_lesson.image_link}} style="width:300px;height:200px;" alt="Element Lesson Title Page"/>
+    </a>
+
+  </div>
+  <div class="col-sm-4">
+    <p> Take the next test </p>
+    {% load static %}
+    <a href="complete_lesson/{{student.next_lesson_id}}">
+    <img src="{% static 'images/challenge.jpg' %}" alt="Complete a challenge" style="width:300px;height:200px;">
+    </a>
+  </div>
+  <div class="col-sm-4">
+    <p> Your Progress </p>
+  </div>
+</div>
 
 {% endblock %}

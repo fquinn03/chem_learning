@@ -9,6 +9,6 @@ class Lesson(models.Model):
     level = models.IntegerField(default = 1)
     title = models.CharField(max_length = 100, unique = True)
     link = models.CharField(max_length = 500)
-
+    image_link = models.CharField(max_length = 500, default = "lesson_image_link")
     def __str__(self):
         return self.title

@@ -54,7 +54,7 @@ class StudentProfile(models.Model):
     level = models.IntegerField(default=1)
     attempt = models.IntegerField(default=1)
     next_lesson_id = models.IntegerField(default=1)
-    completed_lessons = models.ManyToManyField(Lesson)
+    completed_lessons = models.ManyToManyField(Lesson, blank = True)
     details_added = models.BooleanField(default=False)
     signup_quiz_completed = models.BooleanField(default=False)
 
