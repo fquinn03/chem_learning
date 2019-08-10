@@ -16,7 +16,7 @@ class Exam(models.Model):
 
 # Questions belong to an exam.
 class Question(models.Model):
-    exam = models.ForeignKey(Exam, on_delete=models.CASCADE)
+    exam = models.ManyToManyField(Exam)
     text = models.CharField(max_length=1000)
     def __str__(self):
         return self.text

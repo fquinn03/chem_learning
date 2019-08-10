@@ -27,34 +27,46 @@ class ExamsTest(TestCase):
         User.objects.create(username ="student2", password="mypass")
         User.objects.create(username ="student3", password="mypass")
         User.objects.create(username ="student4", password="mypass")
-
+        User.objects.create(username ="student5", password="mypass")
+        User.objects.create(username ="student6", password="mypass")
+        User.objects.create(username ="student7", password="mypass")
         user1 = User.objects.get(id=1)
         user2 = User.objects.get(id=2)
         user3 = User.objects.get(id=3)
         user4 = User.objects.get(id=4)
         user5 = User.objects.get(id=5)
+        user6 = User.objects.get(id=6)
+        user7 = User.objects.get(id=7)
+        user8 = User.objects.get(id=8)
         Class_id.objects.create(id = 1, name = "9y3", teacher_id = 1)
         class_id = Class_id.objects.get(id=1)
         TeacherProfile.objects.create(user = user1, is_teacher = True)
         teacher = TeacherProfile.objects.get(user_id=1)
         StudentProfile.objects.create(user = user2, teacher = teacher, class_id = class_id, level = 1, attempt = 1)
         student1 = StudentProfile.objects.get(user_id=2)
-        StudentProfile.objects.create(user = user3, teacher = teacher, class_id = class_id, level = 2, attempt = 2)
+        StudentProfile.objects.create(user = user3, teacher = teacher, class_id = class_id, level = 2, attempt = 1)
         student2 = StudentProfile.objects.get(user_id=3)
         StudentProfile.objects.create(user = user4, teacher = teacher, class_id = class_id, level = 1, attempt = 3)
         student3 = StudentProfile.objects.get(user_id=4)
-        StudentProfile.objects.create(user = user5, teacher = teacher, class_id = class_id, level = 1, attempt = 3)
+        StudentProfile.objects.create(user = user5, teacher = teacher, class_id = class_id, level = 4, attempt = 3)
         student4 = StudentProfile.objects.get(user_id=5)
+        StudentProfile.objects.create(user = user6, teacher = teacher, class_id = class_id, level = 4, attempt = 3)
+        student5 = StudentProfile.objects.get(user_id=6)
+        StudentProfile.objects.create(user = user7, teacher = teacher, class_id = class_id, level = 5, attempt = 2)
+        student6 = StudentProfile.objects.get(user_id=7)
+        StudentProfile.objects.create(user = user8, teacher = teacher, class_id = class_id, level = 7, attempt = 2)
+        student7 = StudentProfile.objects.get(user_id=8)
         Exam.objects.create(level = 1, title = "Test Exam Title 1")
-        Exam.objects.create(level = 1, title = "signup_quiz")
+        Exam.objects.create(level = 0, title = "signup_quiz")
         Exam.objects.create(level = 2, title = "Test Exam Title 1")
-        Exam.objects.create(level = 4, title = "Test Exam Title 1")
+        Exam.objects.create(level = 3, title = "Test Exam Title 1")
         exam1 = Exam.objects.get(id=1)
-        exam2 = Exam.objects.get(id=3)
-        exam3 = Exam.objects.get(id=1)
+        exam2 = Exam.objects.get(id=2)
+        exam3 = Exam.objects.get(id=3)
         exam4 = Exam.objects.get(id=4)
-        MCQ_Question.objects.create(exam = exam1, text = "What is my favourite colour? ")
+        MCQ_Question.objects.create(text = "What is my favourite colour? ")
         question1 = MCQ_Question.objects.get(id=1)
+        question1.exam.add(exam1)
         Answer.objects.create(question = question1, text = "Yellow", correct = False)
         Answer.objects.create(question = question1, text = "Blue", correct = False)
         Answer.objects.create(question = question1, text = "Red", correct = False)
@@ -66,25 +78,35 @@ class ExamsTest(TestCase):
         UserAnswer.objects.create(question = question1, user_answer = option4, user = student1)
         UserAnswer.objects.create(question = question1, user_answer = option2, user = student2)
         useranswer = UserAnswer.objects.get(id=1)
-        Written_Question.objects.create(exam = exam1, text = "What is my favourite film? ")
+        Written_Question.objects.create(text = "What is my favourite film? ")
         question2 = Written_Question.objects.get(id=2)
+        question2.exam.add(exam1)
         Answer.objects.create(question = question2, text = "Shrek", correct = True, correct_spelling = True)
         Answer.objects.create(question = question2, text = "Shrak", correct = True, correct_spelling = False)
         UserAnswer.objects.create(question = question2, user_answer = "   Shrek    ", user = student2)
         UserAnswer.objects.create(question = question2, user_answer = "   Shrak ", user = student1)
-        Formula_Question.objects.create(exam = exam1, text = "What is the chemical formula for water? ")
+        Formula_Question.objects.create(text = "What is the chemical formula for water? ")
         question3 = Formula_Question.objects.get(id=3)
+        question3.exam.add(exam1)
         Answer.objects.create(question = question3, text = "H2O", correct = True, correct_spelling = True)
         UserAnswer.objects.create(question = question3, user_answer = "h2o", user = student2)
         UserAnswer.objects.create(question = question3, user_answer = "H2O", user = student1)
-        CompletedExam.objects.create(user = student1, exam = exam1, level = exam1.level, percentage =100)
-        CompletedExam.objects.create(user = student1, exam = exam2, level = exam2.level, percentage = 33)
-        CompletedExam.objects.create(user = student3, exam = exam1, level = exam1.level, percentage = 55)
-        CompletedExam.objects.create(user = student4, exam = exam4, level = exam4.level, percentage = 0)
+        CompletedExam.objects.create(user = student1, exam = exam1, level = 1, percentage =100)
+        CompletedExam.objects.create(user = student1, exam = exam2, level = 0, percentage = 33)
+        CompletedExam.objects.create(user = student3, exam = exam1, level = 1, percentage = 55)
+        CompletedExam.objects.create(user = student3, exam = exam3, level = 2, percentage = 85)
+        CompletedExam.objects.create(user = student4, exam = exam4, level = 4, percentage = 0)
+        CompletedExam.objects.create(user = student2, exam = exam3, level = 2, percentage = 45)
+        CompletedExam.objects.create(user = student6, exam = exam3, level = 5, percentage = 45)
+        CompletedExam.objects.create(user = student6, exam = exam4, level = 5, percentage = 65)
+        CompletedExam.objects.create(user = student7, exam = exam1, level = 7, percentage = 0)
+        CompletedExam.objects.create(user = student7, exam = exam2, level = 7, percentage = 80)
+        CompletedExam.objects.create(user = student7, exam = exam3, level = 7, percentage = 85)
 
     def setUp(self):
         # set up Exams TestCase
         self.exam1 = Exam.objects.get(id=1)
+        self.exam4 = Exam.objects.get(id=4)
         self.useranswer = UserAnswer.objects.get(id=1)
         self.question1 = Question.objects.get(id=1)
         self.option1 = Answer.objects.get(id=1)
@@ -94,11 +116,11 @@ class ExamsTest(TestCase):
         self.student2 = StudentProfile.objects.get(user_id=3)
         self.student1 = StudentProfile.objects.get(user_id=2)
         self.student3 = StudentProfile.objects.get(user_id=4)
+        self.student4 = StudentProfile.objects.get(user_id=5)
         self.student1.level = 1
         self.student2.level = 1
         self.user = User.objects.get(id=3)
         self.questions = Question.objects.all()
-
 
     """
     Models Tests
@@ -115,6 +137,9 @@ class ExamsTest(TestCase):
 
     def test_useranswer_str(self):
         self.assertEqual(self.user_answer.__str__(), "Green")
+
+    def test_completed_exam_str(self):
+        self.assertEqual(CompletedExam.objects.get(id = 1).__str__(), "student1 Test Exam Title 1" )
 
     """
     Views and Template testing
@@ -199,42 +224,6 @@ class ExamsTest(TestCase):
         response = self.client.get(reverse('review', args=[1,]))
         self.assertContains(response, "<h5>Questions you need to review</h5>")
 
-    # check the utils.create_user_answer method adds a UserAnswer to the database
-    def test_create_user_answer(self):
-        request = {'csrfmiddlewaretoken': 'mihQP', '1': '1'}
-        count = UserAnswer.objects.all().count()
-        create_user_answer(request, self.student2 )
-        count_2 = UserAnswer.objects.all().count()
-        self.assertEqual(count_2, count+1)
-
-    #test utils.calculate_percentage helper method
-    def test_calculate_percentage_1(self):
-        questions = Question.objects.all()
-        percentage = calculate_percentage(questions, self.student2.user_id, 1)
-        self.assertEqual(percentage, 33)
-
-    def test_calculate_percentage_2(self):
-        questions = Question.objects.all()
-        percentage = calculate_percentage(questions, self.student1.user_id, 1)
-        self.assertEqual(percentage, 100)
-
-    #test utils.get_corrections_mcq helper method
-    def test_get_corrections_mcq(self):
-        questions = Question.objects.all()
-        corrections = get_corrections_mcq(self.student2.user_id, 1)
-        self.assertEqual(corrections, {"What is my favourite colour? ": "Green"})
-
-    #test utils.get_corrections_written helper method
-    def test_get_corrections_written_incorrect(self):
-        questions = Written_Question.objects.all()
-        corrections = get_corrections_written(self.student1.user_id, 1)
-        self.assertEqual(corrections[0], {})
-
-    def test_get_corrections_written_mispelled(self):
-        questions = Written_Question.objects.all()
-        corrections = get_corrections_written(self.student1.user_id, 1)
-        self.assertEqual(corrections[1], {'What is my favourite film? ': 'Shrek'})
-
     # test test_do_quiz_signup view. GET and POST requests
     def test_do_quiz_signup_get_response(self):
         self.client.force_login(User.objects.get(id=2))
@@ -278,17 +267,55 @@ class ExamsTest(TestCase):
         response=self.client.post(reverse('do_signup_quiz'), {'2':'True', '3': 'True', '4': 'False'}, follow = True)
         self.assertContains(response, '<h5>Welcome Student: student1</h5>')
 
+    """
+    Utils testing
+    """
+    # check the utils.create_user_answer method adds a UserAnswer to the database
+    def test_create_user_answer(self):
+        request = {'csrfmiddlewaretoken': 'mihQP', '1': '1'}
+        count = UserAnswer.objects.all().count()
+        create_user_answer(request, self.student2 )
+        count_2 = UserAnswer.objects.all().count()
+        self.assertEqual(count_2, count+1)
+
+    #test utils.calculate_percentage helper method
+    def test_calculate_percentage_1(self):
+        questions = Question.objects.all()
+        percentage = calculate_percentage(questions, self.student2.user_id, 1)
+        self.assertEqual(percentage, 33)
+
+    def test_calculate_percentage_2(self):
+        questions = Question.objects.all()
+        percentage = calculate_percentage(questions, self.student1.user_id, 1)
+        self.assertEqual(percentage, 100)
+
+    #test utils.get_corrections_mcq helper method
+    def test_get_corrections_mcq(self):
+        questions = Question.objects.all()
+        corrections = get_corrections_mcq(self.student2.user_id, 1)
+        self.assertEqual(corrections, {"What is my favourite colour? ": "Green"})
+
+    #test utils.get_corrections_written helper method
+    def test_get_corrections_written_incorrect(self):
+        questions = Written_Question.objects.all()
+        corrections = get_corrections_written(self.student1.user_id, 1)
+        self.assertEqual(corrections[0], {})
+
+    def test_get_corrections_written_mispelled(self):
+        questions = Written_Question.objects.all()
+        corrections = get_corrections_written(self.student1.user_id, 1)
+        self.assertEqual(corrections[1], {'What is my favourite film? ': 'Shrek'})
+
     # test utils.create_exam_completed_entry
     def test_create_exam_completed_entry_student1(self):
         user = StudentProfile.objects.get(user_id=4)
-        create_exam_completed_entry(user, self.exam1, 78)
-        exam_completed_entry = CompletedExam.objects.get(id = 5)
-        self.assertEqual(exam_completed_entry.exam, self.exam1)
+        create_exam_completed_entry(user, self.exam4, 78)
+        exam_completed_entry = CompletedExam.objects.get(id = 12)
+        self.assertEqual(exam_completed_entry.exam, self.exam4)
         self.assertEqual(exam_completed_entry.percentage, 78)
         self.assertEqual(exam_completed_entry.user.user.username, "student3")
         self.assertEqual(exam_completed_entry.user.user.password, "mypass")
 
-    """
     # test utils.get_level
     # increment level
     def test_get_level_student1(self):
@@ -309,7 +336,7 @@ class ExamsTest(TestCase):
         student2 = StudentProfile.objects.get(user_id = 3)
         get_level(3)
         student2 = StudentProfile.objects.get(user_id = 3)
-        self.assertEqual(student2.level, 1)
+        self.assertEqual(student2.level, 2)
         self.assertEqual(student2.attempt, 2)
 
     # don't decrement below level one
@@ -318,4 +345,27 @@ class ExamsTest(TestCase):
         get_level(4)
         student3 = StudentProfile.objects.get(user_id = 4)
         self.assertEqual(student3.level, 1)
-    """
+
+    # no exams at that level score = 0, attempst = 0
+    def test_get_level_no_exams(self):
+        student5 = StudentProfile.objects.get(user_id = 6)
+        get_level(6)
+        student5 = StudentProfile.objects.get(user_id = 6)
+        self.assertEqual(student5.level, 4)
+        self.assertEqual(student5.attempt, 0)
+
+    # 2 or more exams weighted mean
+    def test_get_level_two_exams(self):
+        student6 = StudentProfile.objects.get(user_id = 7)
+        get_level(7)
+        student6 = StudentProfile.objects.get(user_id = 7)
+        self.assertEqual(student6.level, 5)
+        self.assertEqual(student6.attempt, 3)
+
+    # 3 or more exams weighted mean
+    def test_get_level_three_exams(self):
+        student7 = StudentProfile.objects.get(user_id = 8)
+        get_level(8)
+        student7 = StudentProfile.objects.get(user_id = 8)
+        self.assertEqual(student7.level, 8)
+        self.assertEqual(student7.attempt, 0)

@@ -88,19 +88,15 @@ class CustomUsersTest(TestCase):
 
     """
     Views and Template testing
-
     Each view is tested for expected response using
     assertEqual(response.status_code, )
     using GET requests (and POST requests where relevant).
-
     Template rendered is tested using assertTemplateUsed()
     This checks the correct template is rendered for logged in
     user type and the type of request.
-
     The template and context are tested using assertContains(), to
     ensure the correct template has been rendered with the correct
     context data for logged in user where relevant.
-
     Additional testing for individual views is added and explained
     where necessary.
     """

@@ -116,6 +116,7 @@ def edit_student(request):
         form = StudentProfileForm(request.POST, instance = student)
         if form.is_valid():
             form = form.save()
+            student.details_added = True
             return redirect('student_details_added')
     else:
         form=StudentProfileForm()
@@ -136,6 +137,7 @@ def edit_teacher(request):
             teacher.school = school
             teacher.class_id = class_id
             teacher.save()
+            teacher.details_added = True
             return render(request, 'custom_users/teacher_details_added.html', {'teacher':teacher})
     else:
         form=TeacherProfileForm()
@@ -189,7 +191,7 @@ def ajax_load_teachers(request):
 """
 Used to create a dynamic dropdown menu within the add student details form.
 When a student has selected their school and their teacher this view updates the
-dropdown menu, so that only classes beloning to that teacher can be selected. 
+dropdown menu, so that only classes beloning to that teacher can be selected.
 """
 def ajax_load_classes(request):
     teacher_id = request.GET.get('teacher')

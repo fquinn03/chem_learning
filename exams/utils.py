@@ -2,6 +2,7 @@ from chempy import Substance
 from custom_users.models import Class_id, StudentProfile, TeacherProfile, User
 from .models import (Answer, CompletedExam, Exam, Formula_Question,
 MCQ_Question, Question, UserAnswer, Written_Question)
+from lessons.models import Lesson
 
 """
 Iterate through each question in the submitted test and store the user's answer in the database
@@ -21,9 +22,9 @@ is correct to work out their percentage_result for the test.
 def calculate_percentage(questions, user_id, exam_id):
     total_questions = questions.count()
     #select each question type
-    mcq_questions = MCQ_Question.objects.filter(exam_id = exam_id)
-    written_questions = Written_Question.objects.filter(exam_id = exam_id)
-    formula_questions = Formula_Question.objects.filter(exam_id = exam_id)
+    mcq_questions = MCQ_Question.objects.filter(exam = exam_id)
+    written_questions = Written_Question.objects.filter(exam = exam_id)
+    formula_questions = Formula_Question.objects.filter(exam = exam_id)
     right = 0
     #mark each question in each category
     for question in mcq_questions:
@@ -136,17 +137,20 @@ def get_level(user_id):
     # calculate a weighted mean for the exams completed
     number_of_results = len(results)
     if number_of_results == 0:
-        score = 0
+        score = -1
     elif number_of_results == 1:
         score = results[0] * 1
     elif number_of_results == 2:
         score = results[1]*0.95 + results[0]*0.05
     else:
-        score = results[len(results)]*0.9 + results[len(results)-1]*0.1
+        score = results[number_of_results-1]*0.9 + results[number_of_results-2]*0.1
 
     # check the users score and adjust level/attempts accordingly
     if score > 80:
         student.level += 1
+        student.attempt = 0
+    elif score == -1:
+        student.level = level
         student.attempt = 0
     elif score < 80 and student.attempt >= 3:
         if level > 1:
@@ -159,3 +163,26 @@ def get_level(user_id):
         student.attempt += 1
 
     student.save()
+
+"""
+Find the next lesson for a student and display it on the welcome student screen.
+Get the students current level. Find the next lesson object for that level.
+"""
+def get_next_lesson(user):
+    student = StudentProfile.objects.get(id = user.id)
+    lessons = Lesson.objects.filter(level = student.level)
+    completed_lessons = LessonCompleted.objects.filter(user = student)
+    for lesson in lessons:
+        if lesson not in completed_lessons:
+            student.next_lesson = lesson
+
+"""
+Find the next exam for a student and display it on the welcome student screen.
+"""
+def get_next_exam(user):
+    student = StudentProfile.objects.get(id = user.id)
+    exams = Exam.objects.filter(level = student.level)
+    completed_exams = CompletedExam.objects.filter(user = student)
+    for exam in examss:
+        if exam not in completed_exams:
+            student.next_exam = exam
