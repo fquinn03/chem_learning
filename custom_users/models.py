@@ -31,7 +31,7 @@ class TeacherProfile(models.Model):
 
 # One teacher can have many classes, can be named by user.
 class Class_id(models.Model):
-    name = models.CharField(max_length=100, default="My Class")
+    name = models.CharField(max_length=100, default="My Class", unique = True)
     teacher = models.ForeignKey(TeacherProfile, on_delete=models.CASCADE)
 
     def __str__(self):
@@ -54,6 +54,7 @@ class StudentProfile(models.Model):
     level = models.IntegerField(default=1)
     attempt = models.IntegerField(default=1)
     next_lesson_id = models.IntegerField(default=1)
+    next_exam_id = models.IntegerField(default=1)
     completed_lessons = models.ManyToManyField(Lesson, blank = True)
     details_added = models.BooleanField(default=False)
     signup_quiz_completed = models.BooleanField(default=False)

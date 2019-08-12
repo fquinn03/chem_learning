@@ -139,7 +139,7 @@ class LessonsTest(TestCase):
         self.assertEqual(StudentProfile.objects.get(user_id = 6).next_lesson_id, 5)
 
     """
-    if user stays on the same level and they have previously completed aal Lessons
+    if user stays on the same level and they have previously completed all Lessons
     in that level they restart the lessons.
     """
     def test_go_back_level_and_continue_lessons(self):

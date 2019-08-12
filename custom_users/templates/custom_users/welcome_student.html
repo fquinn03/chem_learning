@@ -2,13 +2,19 @@
 
 {% block content %}
 
-<h5>Welcome Student: {{student.user.get_username}}</h5>
+<h5><strong>Welcome Student:</strong> {{student.user.get_username}}</h5>
 
-<p> Current Level: {{student.level}} </p>
 
+<p><strong>Current Level:</strong> {{student.level}}</p>
+<p>Progress</p>
+<div class="progress">
+  <div class="progress-bar bg-success" style="width:{{progress}}%; height:30px;"></div>
+</div>
+<br/>
+<br/>
 <div class="row">
   <div class="col-sm-4">
-    <p> Take the next lesson </p>
+    <p> Complete the next lesson </p>
     {% load static %}
     <a href="complete_lesson/{{student.next_lesson_id}}">
     <img src = {{next_lesson.image_link}} style="width:300px;height:200px;" alt="Element Lesson Title Page"/>
@@ -16,15 +22,33 @@
 
   </div>
   <div class="col-sm-4">
-    <p> Take the next test </p>
+    <p> Complete the next quiz </p>
     {% load static %}
-    <a href="complete_lesson/{{student.next_lesson_id}}">
+    <a href="complete_lesson/{{student.next_exam_id}}">
     <img src="{% static 'images/challenge.jpg' %}" alt="Complete a challenge" style="width:300px;height:200px;">
     </a>
   </div>
-  <div class="col-sm-4">
-    <p> Your Progress </p>
+  <div class="col-sm-4" style="width:325px; height:250px; overflow:auto;">
+    <p> Completed Quizzes </p>
+    <table class = "table" >
+      <thead class = "thead-light" >
+        <tr>
+          <th>Level</th>
+          <th>Exam</th>
+          <th>Percentage</th>
+        </tr>
+      </thead>
+    {% for exam in completed_exams %}
+    <tr >
+    <td>{{exam.exam.level}}</td>
+    <td>{{exam.exam.title}}</td>
+    <td><a class = "bluelink" href ="{% url 'show_result' exam_id=exam.exam.id %}">{{exam.percentage}}</a></td>
+    </tr>
+    {% endfor %}
+    </table>
+
   </div>
 </div>
+
 
 {% endblock %}

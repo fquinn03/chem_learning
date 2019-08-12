@@ -3,6 +3,7 @@ from django.test import Client, RequestFactory, TestCase
 from django.urls import reverse
 from django.utils.decorators import method_decorator
 from custom_users.models import Class_id, StudentProfile, TeacherProfile
+from lessons.models import Lesson
 from .models import (Answer, Exam, Formula_Question, MCQ_Question, Question,
 UserAnswer, Written_Question, CompletedExam)
 from .utils import (calculate_percentage, create_exam_completed_entry,
@@ -58,8 +59,8 @@ class ExamsTest(TestCase):
         student7 = StudentProfile.objects.get(user_id=8)
         Exam.objects.create(level = 1, title = "Test Exam Title 1")
         Exam.objects.create(level = 0, title = "signup_quiz")
-        Exam.objects.create(level = 2, title = "Test Exam Title 1")
-        Exam.objects.create(level = 3, title = "Test Exam Title 1")
+        Exam.objects.create(level = 2, title = "Test Exam Title 2")
+        Exam.objects.create(level = 3, title = "Test Exam Title 3")
         exam1 = Exam.objects.get(id=1)
         exam2 = Exam.objects.get(id=2)
         exam3 = Exam.objects.get(id=3)
@@ -102,6 +103,7 @@ class ExamsTest(TestCase):
         CompletedExam.objects.create(user = student7, exam = exam1, level = 7, percentage = 0)
         CompletedExam.objects.create(user = student7, exam = exam2, level = 7, percentage = 80)
         CompletedExam.objects.create(user = student7, exam = exam3, level = 7, percentage = 85)
+        Lesson.objects.create(level = 1, title = "a lesson")
 
     def setUp(self):
         # set up Exams TestCase
@@ -265,7 +267,7 @@ class ExamsTest(TestCase):
     def test_do_quiz_signup_post_html(self):
         self.client.force_login(User.objects.get(id=2))
         response=self.client.post(reverse('do_signup_quiz'), {'2':'True', '3': 'True', '4': 'False'}, follow = True)
-        self.assertContains(response, '<h5>Welcome Student: student1</h5>')
+        self.assertContains(response, "<h5><strong>Welcome Student:</strong> student1</h5>")
 
     """
     Utils testing

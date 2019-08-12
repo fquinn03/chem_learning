@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 from custom_users.models import StudentProfile
 
 """
@@ -8,7 +9,7 @@ student.
 """
 #Exams have a level and a title.
 class Exam(models.Model):
-    title = models.CharField(max_length = 100)
+    title = models.CharField(max_length = 100, unique = True)
     level = models.IntegerField(default = 1)
 
     def __str__(self):
@@ -17,7 +18,7 @@ class Exam(models.Model):
 # Questions belong to an exam.
 class Question(models.Model):
     exam = models.ManyToManyField(Exam)
-    text = models.CharField(max_length=1000)
+    text = models.CharField(max_length=1000, unique = True)
     def __str__(self):
         return self.text
 
@@ -58,6 +59,9 @@ class UserAnswer(models.Model):
     user_answer = models.CharField(max_length=1000)
     user = models.ForeignKey(StudentProfile, on_delete=models.CASCADE)
 
+    class Meta:
+        unique_together = [['user', 'user_answer']]
+
     def __str__(self):
         return self.user_answer
 
@@ -67,6 +71,9 @@ class CompletedExam(models.Model):
     exam = models.ForeignKey(Exam, on_delete=models.CASCADE)
     level = models.IntegerField(default = 1)
     percentage = models.IntegerField(default = 1)
+
+    class Meta:
+        unique_together = ['user', 'exam']
 
     def __str__(self):
         return self.user.user.username+" "+self.exam.title

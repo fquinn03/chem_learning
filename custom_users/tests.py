@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
 from django.test import Client, RequestFactory, TestCase
 from django.urls import reverse
+from lessons.models import Lesson
 from .models import  Class_id, School, StudentProfile, TeacherProfile, User
 from .forms import StudentProfileForm
 from .views import edit_student, signup_form_student, signup_form_teacher
@@ -32,6 +33,7 @@ class CustomUsersTest(TestCase):
         teacherprofile=TeacherProfile.objects.get(user_id = 1)
         StudentProfile.objects.create(user=student, teacher=teacherprofile, class_id = class_id, school_id = school.id)
         StudentProfile.objects.create(user=another_student, teacher=teacherprofile, class_id = class_id, school_id = school.id)
+        Lesson.objects.create(level = 1, title = "test_lesson_1_1", link = "www.testlink1.com")
 
     def setUp(self):
         # set up CustomUsers TestCase
@@ -115,7 +117,7 @@ class CustomUsersTest(TestCase):
     def test_welcome_student_html(self):
         self.client.force_login(User.objects.get(id=2))
         response=self.client.get(reverse('welcome_student'))
-        self.assertContains(response, "<h5>Welcome Student: student1</h5>")
+        self.assertContains(response, "<h5><strong>Welcome Student:</strong> student1</h5>")
 
     # test welcome teacher view
     def test_welcome_teacher_response(self):
@@ -268,18 +270,18 @@ class CustomUsersTest(TestCase):
     # test home view when student user logged in
     def test_home_student_response(self):
         self.client.force_login(User.objects.get(id=3))
-        response=self.client.get(reverse('home'))
+        response=self.client.get(reverse('home'), follow=True)
         self.assertEqual(response.status_code, 200)
 
     def test_home_student_template(self):
         self.client.force_login(User.objects.get(id=3))
-        response=self.client.get(reverse('home'))
+        response=self.client.get(reverse('home'), follow=True)
         self.assertTemplateUsed(response, 'custom_users/welcome_student.html')
 
     def test_home_student_html(self):
         self.client.force_login(User.objects.get(id=3))
-        response=self.client.get(reverse('home'))
-        self.assertContains(response, '<h5>Welcome Student: student2</h5>')
+        response=self.client.get(reverse('home'), follow=True)
+        self.assertContains(response, '<h5><strong>Welcome Student:</strong> student2</h5>')
 
     # test home view when teacher user logged in
     def test_home_teacher_response(self):

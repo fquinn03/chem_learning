@@ -4,6 +4,11 @@ a {
     background-color: transparent;
 }
 
+a.bluelink {
+  color:blue;
+}
+
+
 .btn {
   display: inline-block;
   font-weight: 400;
