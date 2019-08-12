@@ -17,7 +17,7 @@ def dotest(request, exam_id):
             student = StudentProfile.objects.get(user_id = request.user.id)
             if student.details_added and student.signup_quiz_completed:
                 exam = Exam.objects.get(id = exam_id)
-                if exam.id == student.next_exam_id:
+                if exam.id == student.next_exam_id and exam.level == student.level:
                     questions = Question.objects.filter(exam = exam_id)
                     written_questions = Written_Question.objects.filter(exam = exam_id)
                     mcq_questions = MCQ_Question.objects.filter(exam = exam_id)
@@ -34,6 +34,7 @@ def dotest(request, exam_id):
                         })
                 else:
                     return redirect('welcome_student')
+
             elif student.details_added:
                 return redirect('do_signup_quiz')
             else:
