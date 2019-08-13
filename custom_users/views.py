@@ -6,6 +6,8 @@ from django.shortcuts import render, redirect, get_list_or_404, get_object_or_40
 from lessons.models import Lesson
 from .forms import AddSchoolForm, StudentForm, TeacherForm, StudentProfileForm, TeacherProfileForm
 from .models import Class_id, School, TeacherProfile, StudentProfile
+from .utils import (user_is_teacher, user_is_student, have_student_details, have_teacher_details,
+have_student_signup, sign_up_quiz_already_completed)
 from exams.models import CompletedExam
 
 """
@@ -13,25 +15,6 @@ The custom_users app is concerned with signup and login of users
 Adding teacher and student data.
 Registering teachers with schools and registering students with schools and teachers.
 """
-def user_is_student(user):
-    try:
-        StudentProfile.objects.get(user_id = user.id)
-        return True
-    except:
-        TeacherProfile.objects.get(user_id = user.id)
-        return False
-    else:
-        return False
-
-def user_is_teacher(user):
-    try:
-        TeacherProfile.objects.get(user_id = user.id)
-        return True
-    except:
-        StudentProfile.objects.get(user_id = user.id)
-        return False
-    else:
-        return False
 
 """
 Welcome teacher view. Displays the default template for any authenticated teacher user.
@@ -39,15 +22,14 @@ Gets all of a teachers classes and displays a button for each.
 """
 @login_required
 @user_passes_test(user_is_teacher)
+@user_passes_test(have_teacher_details, login_url = 'edit_teacher',  redirect_field_name = 'get_teacher_details' )
 def welcome_teacher(request):
     teacher = TeacherProfile.objects.select_related().get(user_id = request.user.id)
     classes = Class_id.objects.filter(teacher = teacher)
-    if teacher.details_added:
-        return render(request, 'custom_users/welcome_teacher.html', {'teacher': teacher,
-        'classes':classes
-        })
-    else:
-        return redirect('edit_teacher')
+    return render(request, 'custom_users/welcome_teacher.html', {'teacher': teacher,
+    'classes':classes
+    })
+
 
 
 """
@@ -56,6 +38,8 @@ Shows a students next lesson, test and gives overall summary of progress.
 """
 @login_required
 @user_passes_test(user_is_student)
+@user_passes_test(have_student_details, login_url = 'edit_student',  redirect_field_name = 'get_student_details' )
+@user_passes_test(have_student_signup,  login_url = 'do_signup_quiz', redirect_field_name = 'do_signup_quiz')
 def welcome_student(request):
     student = StudentProfile.objects.select_related().get(user_id = request.user.id)
     next_lesson = Lesson.objects.get(id = student.next_lesson_id)
@@ -224,10 +208,8 @@ signing up.
 @user_passes_test(user_is_teacher)
 def teacher_details_added(request):
     teacher = TeacherProfile.objects.get(user_id = request.user.id)
-    if teacher.details_added:
-        return render(request, 'custom_users/teacher_details_added.html', {'teacher': teacher})
-    else:
-        return redirect('edit_teacher')
+    return render(request, 'custom_users/teacher_details_added.html', {'teacher': teacher})
+
 
 """
 Used to create a dynamic dropdown menu within the add student details form.
