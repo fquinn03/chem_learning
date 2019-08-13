@@ -109,11 +109,11 @@ Default view for authenticated user.
 Displays either welcome_student or welcome_teacher template.
 If the user is unauthenticated they are redirected to the signup template
 """
+
 def home(request):
     if request.user.is_authenticated:
         try:
             student = StudentProfile.objects.select_related().get(user_id = request.user.id)
-            level = student.level.__str__()
             if student:
                 return redirect('welcome_student')
         except:

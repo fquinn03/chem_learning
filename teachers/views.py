@@ -1,5 +1,5 @@
 from django.contrib.auth.decorators import user_passes_test, login_required
-from custom_users.views import user_is_teacher, user_is_student, have_teacher_details
+from custom_users.utils import user_is_teacher, user_is_student, have_teacher_details
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 from custom_users.models import Class_id, StudentProfile, TeacherProfile

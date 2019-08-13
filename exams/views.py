@@ -28,7 +28,7 @@ def dotest(request, exam_id):
     if request.method == 'POST':
         with transaction.atomic():
             create_user_answer(request.POST, StudentProfile.objects.get(user_id = request.user.id) )
-        return redirect('show_result', exam_id = exam.id)
+            return redirect('show_result', exam_id = exam.id)
     else:
         return render(request, 'exams/dotest.html', {
             'mcq_questions': mcq_questions, 'written_questions':written_questions,
@@ -77,6 +77,7 @@ percentage result and then display show_result template.
 @user_passes_test(have_student_details, login_url = 'edit_student',  redirect_field_name = 'get_student_details' )
 @user_passes_test(have_student_signup,  login_url = 'do_signup_quiz', redirect_field_name = 'do_signup_quiz')
 def show_result(request, exam_id):
+    student = StudentProfile.objects.get(user_id = request.user.id)
     exam = Exam.objects.get(id = exam_id)
     questions = Question.objects.all().filter(exam = exam_id)
     percentage_result = calculate_percentage(questions, request.user.id, exam_id)

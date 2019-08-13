@@ -24,8 +24,8 @@ class ExamsTest(TestCase):
     @classmethod
     def setUpTestData(cls):
         User.objects.create(username ="teacher", password="mypass")
-        User.objects.create(username ="student1", password="mypass")
-        User.objects.create(username ="student2", password="mypass")
+        User.objects.create_user(username ="student1", password="mypass")
+        User.objects.create_user(username ="student2", password="mypass")
         User.objects.create(username ="student3", password="mypass")
         User.objects.create(username ="student4", password="mypass")
         User.objects.create(username ="student5", password="mypass")
@@ -43,9 +43,13 @@ class ExamsTest(TestCase):
         class_id = Class_id.objects.get(id=1)
         TeacherProfile.objects.create(user = user1, is_teacher = True)
         teacher = TeacherProfile.objects.get(user_id=1)
-        StudentProfile.objects.create(user = user2, teacher = teacher, class_id = class_id, level = 1, attempt = 1)
+        StudentProfile.objects.create(user = user2, teacher = teacher, class_id = class_id, level = 1,
+        attempt = 1, details_added = True,
+        signup_quiz_completed = False, next_lesson_id = 1)
         student1 = StudentProfile.objects.get(user_id=2)
-        StudentProfile.objects.create(user = user3, teacher = teacher, class_id = class_id, level = 2, attempt = 1)
+        StudentProfile.objects.create(user = user3, teacher = teacher,
+        class_id = class_id, level = 2, attempt = 1, details_added = True,
+        signup_quiz_completed = True, next_lesson_id = 1 )
         student2 = StudentProfile.objects.get(user_id=3)
         StudentProfile.objects.create(user = user4, teacher = teacher, class_id = class_id, level = 1, attempt = 3)
         student3 = StudentProfile.objects.get(user_id=4)
@@ -162,88 +166,86 @@ class ExamsTest(TestCase):
     """
     # test dotest view. GET and POST requests
     def test_do_test_get_response_code(self):
-        self.client.force_login(User.objects.get(id=3))
+        self.client.login(username ="student2", password="mypass")
         response = self.client.get(reverse('dotest', args=[1,]))
         self.assertEqual(response.status_code, 200)
 
     def test_do_test_get_template_used(self):
-        self.client.force_login(User.objects.get(id=3))
+        self.client.login(username ="student2", password="mypass")
         response = self.client.get(reverse('dotest', args=[1,]))
         self.assertTemplateUsed(response, 'exams/dotest.html')
 
     def test_do_test_get_html(self):
-        self.client.force_login(User.objects.get(id=3))
+        self.client.login(username ="student2", password="mypass")
         response = self.client.get(reverse('dotest', args=[1,]))
         self.assertContains(response, "<p><strong>What is my favourite colour? </strong></p>")
 
     def test_do_test_post_response_code(self):
-        self.client.force_login(User.objects.get(id=3))
-        response = self.client.post(reverse('dotest', args=[1,]),
-        {'csrfmiddlewaretoken': 'flsff','1': 'Green', '2': 'jaws'})
-        self.assertEqual(response.status_code, 200)
+        self.client.login(username ="student2", password="mypass")
+        response = self.client.post(reverse('dotest', args=[1,]))
+        self.assertEqual(response.status_code, 302)
 
     def test_do_test_post_template_used(self):
-        self.client.force_login(User.objects.get(id=3))
-        response = self.client.post(reverse('dotest', args=[1,]),
-        {'csrfmiddlewaretoken': 'flsff','1': 'Green', '2': 'jaws'})
-        self.assertTemplateUsed(response, 'exams/finish_test.html')
+        self.client.login(username ="student2", password="mypass")
+        response = self.client.post(reverse('dotest', args=[1,]), follow=True)
+        self.assertTemplateUsed(response, 'exams/show_result.html')
 
     def test_do_test_post_html(self):
-        self.client.force_login(User.objects.get(id=3))
-        response = self.client.post(reverse('dotest', args=[1,]),
-        {'csrfmiddlewaretoken': 'flsff','1': 'Green', '2': 'jaws'})
-        self.assertContains(response, "<h5>You have submitted your answers to Test Exam Title 1<br><br/></h5>")
+        self.client.login(username ="student2", password="mypass")
+        response = self.client.post(reverse('dotest', args=[1,]), follow=True)
+        self.assertContains(response, "<h5>You scored: 33% on Test Exam Title 1<br><br/></h5>")
 
     # test show_result view.
     def test_show_result_get_response_code(self):
-        self.client.force_login(User.objects.get(id=3))
+        self.client.login(username ="student2", password="mypass")
         response = self.client.get(reverse('show_result', args=[1,]))
         self.assertEqual(response.status_code, 200)
 
     def test_show_result_get_template_used(self):
-        self.client.force_login(User.objects.get(id=3))
+        self.client.login(username ="student2", password="mypass")
         response = self.client.get(reverse('show_result', args=[1,]))
         self.assertTemplateUsed(response, 'exams/show_result.html')
 
     def test_show_result_get_html(self):
-        self.client.force_login(User.objects.get(id=3))
+        self.client.login(username ="student2", password="mypass")
         response = self.client.get(reverse('show_result', args=[1,]))
         self.assertContains(response, "<h5>You scored: 33% on Test Exam Title 1<br><br/></h5>")
 
     # test review view
     def test_review_get_response_code(self):
-        self.client.force_login(User.objects.get(id=3))
+        self.client.login(username ="student2", password="mypass")
         response = self.client.get(reverse('review', args=[1,]))
         self.assertEqual(response.status_code, 200)
 
     def test_review_get_template_used(self):
-        self.client.force_login(User.objects.get(id=3))
+        self.client.login(username ="student2", password="mypass")
         response = self.client.get(reverse('review', args=[1,]))
         self.assertTemplateUsed(response, 'exams/review.html')
 
     def test_review_get_html(self):
-        self.client.force_login(User.objects.get(id=3))
+        self.client.login(username ="student2", password="mypass")
         response = self.client.get(reverse('review', args=[1,]))
         self.assertContains(response, "<h5>Questions you need to review</h5>")
 
     # test test_do_quiz_signup view. GET and POST requests
     def test_do_quiz_signup_get_response(self):
-        self.client.force_login(User.objects.get(id=2))
+        self.client.login(username ="student2", password="mypass")
         response=self.client.get(reverse('do_signup_quiz'))
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 302)
 
     def test_do_quiz_signup_get_template(self):
-        self.client.force_login(User.objects.get(id=2))
-        response=self.client.get(reverse('do_signup_quiz'))
-        self.assertTemplateUsed(response, 'custom_users/do_signup_quiz.html')
+        self.client.login(username ="student2", password="mypass")
+        response=self.client.get(reverse('do_signup_quiz'), follow = True)
+        self.assertTemplateUsed(response, 'custom_users/welcome_student.html')
 
     def test_do_quiz_signup_get_html(self):
-        self.client.force_login(User.objects.get(id=2))
-        response=self.client.get(reverse('do_signup_quiz'))
-        self.assertContains(response, '<h5>SignUp Quiz</h5>')
+        self.client.login(username ="student2", password="mypass")
+        response=self.client.get(reverse('do_signup_quiz'), follow = True)
+        self.assertContains(response, '<h5><strong>Welcome Student:</strong> student2</h5>')
+
 
     def test_do_quiz_signup_post_response(self):
-        self.client.force_login(User.objects.get(id=2))
+        self.client.login(username ="student1", password="mypass")
         response=self.client.post(reverse('do_signup_quiz'), {'2':'True', '3': 'True', '4': 'False'}, follow = True)
         self.assertEqual(response.status_code, 200)
 
@@ -252,7 +254,7 @@ class ExamsTest(TestCase):
         response=self.client.post(reverse('do_signup_quiz'), {'2':'True', '3': 'True', '4': 'False'}, follow = True)
         student = StudentProfile.objects.get(user_id = 2)
         self.assertEqual(student.level, 2)
-
+    
     def test_do_quiz_signup_post_student_level_3(self):
         self.client.force_login(User.objects.get(id=2))
         response=self.client.post(reverse('do_signup_quiz'), {'2':'True', '3': 'True', '4': 'True'}, follow = True)
@@ -272,6 +274,7 @@ class ExamsTest(TestCase):
     """
     Utils testing
     """
+
     # check the utils.create_user_answer method adds a UserAnswer to the database
     def test_create_user_answer(self):
         request = {'csrfmiddlewaretoken': 'mihQP', '1': '1'}

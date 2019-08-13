@@ -1,3 +1,5 @@
+from .models import StudentProfile, TeacherProfile
+
 def sign_up_quiz_already_completed(user):
     student = StudentProfile.objects.get(user_id = user.id)
     return not student.signup_quiz_completed
@@ -19,9 +21,6 @@ def user_is_student(user):
         StudentProfile.objects.get(user_id = user.id)
         return True
     except:
-        TeacherProfile.objects.get(user_id = user.id)
-        return False
-    else:
         return False
 
 def user_is_teacher(user):
@@ -29,7 +28,4 @@ def user_is_teacher(user):
         TeacherProfile.objects.get(user_id = user.id)
         return True
     except:
-        StudentProfile.objects.get(user_id = user.id)
-        return False
-    else:
         return False
