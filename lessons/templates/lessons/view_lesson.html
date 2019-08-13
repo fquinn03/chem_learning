@@ -2,7 +2,11 @@
 
 {% block content %}
 <h5>Lesson Title: {{lesson.title}}</h5>
-<div class="powerpoint">
-    {{lesson.link|safe}}
+<div class = "container">
+  <div class="powerpoint">
+      {{lesson.link|safe}}
+      <button style = "margin-bottom:50px"
+      type="submit" class="btn btn-success button-right" href = "{% url 'welcome_student' %}">Lesson Complete</button>
+  </div>
 </div>
 {% endblock %}
