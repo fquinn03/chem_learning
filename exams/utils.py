@@ -191,17 +191,23 @@ def get_next_lesson(user):
 Find the next exam for a student and display it on the welcome student screen.
 Get the students current level. Find the next lesson object for that level.
 """
-
 def get_next_exam(user):
     student = StudentProfile.objects.get(user_id = user)
     all_exams = Exam.objects.filter(level = student.level)
-    completed_exams = CompletedExam.objects.filter(level = student.level)
-    remaining_lessons = all_exams.difference(completed_exams)
-    if remaining_exams.count() == 0:
-        for exam in completed_exams:
-            CompletedExams.objects.remove(exam)
-        next_exam = all_exams[0]
+    all_exam_ids = []
+    for exam in all_exams:
+        all_exam_ids.append(exam.id)
+    completed_exams = CompletedExam.objects.select_related().filter(user = student).filter(level = student.level)
+    all_completed_exam_ids = []
+    for exam in completed_exams:
+        all_completed_exam_ids.append(exam.exam.id)
+    remaining_exams = []
+    for id in all_exam_ids:
+        if id not in all_completed_exam_ids:
+            remaining_exams.append(id)
+    if len(remaining_exams) == 0:
+        next_exam = all_exams_ids[0]
     else:
         next_exam = remaining_exams[0]
-    student.next_exam_id = next_exam.id
+    student.next_exam_id = next_exam
     student.save()

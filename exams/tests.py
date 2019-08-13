@@ -9,7 +9,7 @@ UserAnswer, Written_Question, CompletedExam)
 from .utils import (calculate_percentage, create_exam_completed_entry,
 create_user_answer, get_corrections_formula, get_corrections_mcq,
 get_corrections_written, get_corrections_written, get_formula,
-get_level)
+get_level, get_next_exam)
 from .views import dotest, show_result, review
 
 """
@@ -65,6 +65,8 @@ class ExamsTest(TestCase):
         Exam.objects.create(level = 0, title = "signup_quiz")
         Exam.objects.create(level = 2, title = "Test Exam Title 2")
         Exam.objects.create(level = 3, title = "Test Exam Title 3")
+        Exam.objects.create(level = 1, title = "Test Exam Title 4")
+        Exam.objects.create(level = 1, title = "Test Exam Title 5")
         exam1 = Exam.objects.get(id=1)
         exam2 = Exam.objects.get(id=2)
         exam3 = Exam.objects.get(id=3)
@@ -254,7 +256,7 @@ class ExamsTest(TestCase):
         response=self.client.post(reverse('do_signup_quiz'), {'2':'True', '3': 'True', '4': 'False'}, follow = True)
         student = StudentProfile.objects.get(user_id = 2)
         self.assertEqual(student.level, 2)
-    
+
     def test_do_quiz_signup_post_student_level_3(self):
         self.client.force_login(User.objects.get(id=2))
         response=self.client.post(reverse('do_signup_quiz'), {'2':'True', '3': 'True', '4': 'True'}, follow = True)
@@ -374,3 +376,9 @@ class ExamsTest(TestCase):
         student7 = StudentProfile.objects.get(user_id = 8)
         self.assertEqual(student7.level, 8)
         self.assertEqual(student7.attempt, 0)
+
+    # test utils.get_next_exam()
+    def test_get_next_exam_same_level(self):
+        get_next_exam(2)
+        student1 = StudentProfile.objects.get(user_id =2)
+        self.assertEqual(student1.next_exam_id, 5)
