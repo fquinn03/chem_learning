@@ -128,6 +128,9 @@ class ExamsTest(TestCase):
         CompletedExam.objects.create(user = student9, exam = exam5, level = 1, percentage = 80)
         CompletedExam.objects.create(user = student9, exam = exam6, level = 1, percentage = 85)
         Lesson.objects.create(level = 1, title = "a lesson")
+        Lesson.objects.create(level = 1, title = "another lesson")
+        Lesson.objects.create(level = 2, title = "a third lesson")
+        Lesson.objects.create(level = 3, title = "a fourth lesson")
 
     def setUp(self):
         # set up Exams TestCase

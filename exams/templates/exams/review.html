@@ -1,7 +1,6 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h5>You scored: {{percentage_result}}% on {{exam.title}}<br><br/></h5>
 
 <h5>Questions you need to review</h5>
 {% for key, value in mcq_corrections.items %}
@@ -25,5 +24,7 @@
 {{key}}&nbsp;Correct Spelling:&nbsp;{{value}}<br></br>
 {% endfor %}
 {% endif %}
+
+<a type="button" class="btn btn-success" href ="{% url 'welcome_student' %}">Continue</a><br></br>
 
 {% endblock %}

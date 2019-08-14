@@ -8,7 +8,7 @@ from .models import (Answer, Exam, CompletedExam, Formula_Question,
 MCQ_Question, Question, UserAnswer, Written_Question)
 from .utils import (calculate_percentage, create_exam_completed_entry, create_user_answer,
 get_corrections_formula, get_corrections_mcq, get_corrections_written, get_formula,
-get_level)
+get_level, get_next_exam, get_next_lesson)
 """
 Use the exam_id to get all the questions for the exam. If GET request display the questions
 and answer options.If POST request, use utils.create_user_answer to add a user_answer to
@@ -63,6 +63,8 @@ def do_signup_quiz(request):
         student.level = level
         student.signup_quiz_completed = True
         student.save()
+        get_next_lesson(student.user_id)
+        get_next_exam(student.user_id)
         return redirect('welcome_student')
     else:
         return render(request, 'custom_users/do_signup_quiz.html', {'questions': questions
@@ -83,10 +85,13 @@ def show_result(request, exam_id):
     percentage_result = calculate_percentage(questions, request.user.id, exam_id)
     create_exam_completed_entry(student, exam, percentage_result)
     get_level(request.user.id)
+    if student.level > 4:
+        return render(request, 'exams/congratulations.html')
+    get_next_exam(request.user.id)
+    get_next_lesson(request.user.id)
     return render(request, 'exams/show_result.html', {'percentage_result': percentage_result,
     'exam':exam,
     })
-
 
 """
 Use the exam_id to get all the questions for the exam.  Use utils.test_get_corrections to add

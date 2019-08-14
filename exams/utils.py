@@ -80,15 +80,16 @@ def get_corrections_written(user_id, exam_id):
     acceptable_answers =[]
     for question in written_questions:
         student_answer = UserAnswer.objects.get(question = question.id, user = user_id) # get the student's answer
-        correct_answer =  Answer.objects.get(question = question.id, correct=True, correct_spelling = True)# get the correct answer
+        correct_answers =  Answer.objects.filter(question = question.id, correct=True, correct_spelling = True)# get the correct answer
         possible_answers =  Answer.objects.filter(question = question.id, correct=True, correct_spelling = False)# get any acceptable mispelled answers
         for possible_answer in possible_answers:
             acceptable_answers.append(possible_answer.text.lower()) # get a list of all acceptable mispelled answers
-        if student_answer.user_answer.lower().strip() != correct_answer.text.lower():
-            if student_answer.user_answer.lower().strip() in acceptable_answers:
-                mispelled[question.text] = correct_answer.text # add the question and correct spelling for any incorrectly spelled answers
-            else:
-                written_corrections[question.text] = correct_answer.text # add the question and correct anser  for any incorrect answers
+        for correct_answer in correct_answers:
+            if student_answer.user_answer.lower().strip() != correct_answer.text.lower():
+                if student_answer.user_answer.lower().strip() in acceptable_answers:
+                    mispelled[question.text] = correct_answer.text # add the question and correct spelling for any incorrectly spelled answers
+                else:
+                    written_corrections[question.text] = correct_answer.text # add the question and correct anser  for any incorrect answers
     return (written_corrections, mispelled)
 
 def get_corrections_formula(user_id, exam_id):
@@ -206,6 +207,11 @@ def get_next_exam(user):
         if id not in all_completed_exam_ids:
             remaining_exams.append(id)
     if len(remaining_exams) == 0:
+        CompletedExam.objects.filter(user = student).filter(level = student.level).delete()
+        for id in all_completed_exam_ids:
+            questions = Question.objects.filter(exam = id)
+            for question in questions:
+                UserAnswer.objects.filter(user = student.user_id).filter(question = question).delete()
         next_exam = all_exam_ids[0]
     else:
         next_exam = remaining_exams[0]

@@ -43,7 +43,7 @@ Shows a students next lesson, test and gives overall summary of progress.
 def welcome_student(request):
     student = StudentProfile.objects.select_related().get(user_id = request.user.id)
     next_lesson = Lesson.objects.get(id = student.next_lesson_id)
-    progress = (student.level/0.10)
+    progress = (student.level*25)
     completed_exams = CompletedExam.objects.filter(user = student)
     return render(request, 'custom_users/welcome_student.html', {'student': student,
     'next_lesson':next_lesson,
@@ -77,6 +77,8 @@ def signup_form_student(request):
             user = authenticate(username=user.username, password=raw_password)
             login(request, user)
             return redirect('edit_student')
+        else:
+            return render(request, 'signup_form_student.html', {'form': form})
     else:
         form=StudentForm()
         return render(request, 'signup_form_student.html', {'form': form})
@@ -100,6 +102,8 @@ def signup_form_teacher(request):
             user = authenticate(username=user.username, password=raw_password)
             login(request, user)
             return redirect('edit_teacher')
+        else:
+            return render(request, 'signup_form_teacher.html', {'form': form})
     else:
         form=TeacherForm()
         return render(request, 'signup_form_teacher.html', {'form': form})
@@ -141,6 +145,8 @@ def edit_student(request):
             student.details_added = True
             student.save()
             return redirect('student_details_added')
+        else:
+            return render(request, 'custom_users/edit_student.html', {'form': form})
     else:
         form=StudentProfileForm()
         return render(request, 'custom_users/edit_student.html', {'form': form})
