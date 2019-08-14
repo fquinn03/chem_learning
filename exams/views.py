@@ -1,9 +1,9 @@
-from django.contrib.auth.decorators import user_passes_test, login_required
 from django.db import transaction
+from django.contrib.auth.decorators import user_passes_test, login_required
 from django.shortcuts import render, redirect
 from custom_users.models import StudentProfile
-from custom_users.utils import (user_is_teacher, user_is_student, have_student_details,
-have_student_signup, sign_up_quiz_already_completed)
+from custom_users.utils import (exam_not_done_before, user_is_teacher, user_is_student, have_student_details,
+have_student_signup, is_finished, sign_up_quiz_already_completed)
 from .models import (Answer, Exam, CompletedExam, Formula_Question,
 MCQ_Question, Question, UserAnswer, Written_Question)
 from .utils import (calculate_percentage, create_exam_completed_entry, create_user_answer,
@@ -18,6 +18,7 @@ the database for each question answered and then display finish_test template
 @user_passes_test(user_is_student)
 @user_passes_test(have_student_details, login_url = 'edit_student',  redirect_field_name = 'get_student_details' )
 @user_passes_test(have_student_signup,  login_url = 'do_signup_quiz', redirect_field_name = 'do_signup_quiz')
+@user_passes_test(exam_not_done_before)
 def dotest(request, exam_id):
     student = StudentProfile.objects.get(user_id = request.user.id)
     exam = Exam.objects.get(id = exam_id)
@@ -26,9 +27,8 @@ def dotest(request, exam_id):
     mcq_questions = MCQ_Question.objects.filter(exam = exam_id)
     formula_questions = Formula_Question.objects.filter(exam = exam_id)
     if request.method == 'POST':
-        with transaction.atomic():
-            create_user_answer(request.POST, StudentProfile.objects.get(user_id = request.user.id) )
-            return redirect('show_result', exam_id = exam.id)
+        create_user_answer(request.POST, StudentProfile.objects.get(user_id = request.user.id))
+        return redirect('show_result', exam_id = exam.id)
     else:
         return render(request, 'exams/dotest.html', {
             'mcq_questions': mcq_questions, 'written_questions':written_questions,
@@ -83,12 +83,13 @@ def show_result(request, exam_id):
     exam = Exam.objects.get(id = exam_id)
     questions = Question.objects.all().filter(exam = exam_id)
     percentage_result = calculate_percentage(questions, request.user.id, exam_id)
-    create_exam_completed_entry(student, exam, percentage_result)
+    with transaction.atomic():
+        create_exam_completed_entry(student, exam, percentage_result)
     get_level(request.user.id)
-    if student.level > 4:
-        return render(request, 'exams/congratulations.html')
     get_next_exam(request.user.id)
     get_next_lesson(request.user.id)
+    if student.level > 4:
+        return redirect('congratulations')
     return render(request, 'exams/show_result.html', {'percentage_result': percentage_result,
     'exam':exam,
     })
@@ -103,14 +104,28 @@ and then display show_result template.
 @user_passes_test(have_student_details, login_url = 'edit_student',  redirect_field_name = 'get_student_details' )
 @user_passes_test(have_student_signup,  login_url = 'do_signup_quiz', redirect_field_name = 'do_signup_quiz')
 def review(request, exam_id):
-    mcq_corrections = get_corrections_mcq(request.user.id, exam_id)
-    written_corrections = get_corrections_written(request.user.id, exam_id)
-    written_corrections_incorrect = written_corrections[0]
-    written_corrections_mispelled = written_corrections[1]
-    formula_corrections = get_corrections_formula(request.user.id, exam_id)
-    mispelled_count = len(written_corrections_mispelled)
-    formulae_count = len(formula_corrections)
-    return render(request, 'exams/review.html', {'mcq_corrections': mcq_corrections, 'written_corrections_incorrect':
-    written_corrections_incorrect, 'written_corrections_mispelled':written_corrections_mispelled,
-    'formula_corrections':formula_corrections, 'mispelled_count':mispelled_count, 'formulae_count':formulae_count
-    })
+    student = StudentProfile.objects.get(user_id = request.user.id)
+    exam = CompletedExam.objects.get(user_id = request.user.id, exam = exam_id)
+    if exam.percentage == 100:
+        return redirect('hundred')
+    else:
+        mcq_corrections = get_corrections_mcq(request.user.id, exam_id)
+        written_corrections = get_corrections_written(request.user.id, exam_id)
+        written_corrections_incorrect = written_corrections[0]
+        written_corrections_mispelled = written_corrections[1]
+        formula_corrections = get_corrections_formula(request.user.id, exam_id)
+        mispelled_count = len(written_corrections_mispelled)
+        formulae_count = len(formula_corrections)
+        return render(request, 'exams/review.html', {'mcq_corrections': mcq_corrections, 'written_corrections_incorrect':
+        written_corrections_incorrect, 'written_corrections_mispelled':written_corrections_mispelled,
+        'formula_corrections':formula_corrections, 'mispelled_count':mispelled_count, 'formulae_count':formulae_count
+        })
+
+@login_required
+@user_passes_test(user_is_student)
+@user_passes_test(is_finished)
+def congratulations(request):
+    return render(request, 'exams/congratulations.html')
+
+def hundred(request):
+    return render(request, 'exams/hundred.html')

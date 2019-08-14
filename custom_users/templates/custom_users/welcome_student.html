@@ -4,9 +4,9 @@
 
 <h5><strong>Welcome Student:</strong> {{student.user.get_username}}</h5>
 <p><strong>Current Level:</strong> {{student.level}}</p>
-<p>Progress</p>
-<div class="progress">
-  <div class="progress-bar bg-success" style="width:{{progress}}%; height:30px;"></div>
+<div class="progress" style="height: 40px;">
+  <div class="progress-bar bg-success" role="progressbar"
+  style="width: {{progress}}%" aria-valuemin="0" aria-valuemax="100">Progress {{progress}}%</div>
 </div>
 <br/>
 <br/>

@@ -59,9 +59,6 @@ class UserAnswer(models.Model):
     user_answer = models.CharField(max_length=1000)
     user = models.ForeignKey(StudentProfile, on_delete=models.CASCADE)
 
-    class Meta:
-        unique_together = [['user', 'question', 'user_answer']]
-
     def __str__(self):
         return self.user_answer
 
@@ -71,9 +68,6 @@ class CompletedExam(models.Model):
     exam = models.ForeignKey(Exam, on_delete=models.CASCADE)
     level = models.IntegerField(default = 1)
     percentage = models.IntegerField(default = 1)
-
-    class Meta:
-        unique_together = ['user', 'exam', 'level']
 
     def __str__(self):
         return self.user.user.username+" "+self.exam.title

@@ -1,4 +1,5 @@
 import random
+from django.db import connection, transaction
 from chempy import Substance
 from django.contrib.auth.models import User
 from custom_users.models import Class_id, StudentProfile, TeacherProfile, User
@@ -14,8 +15,9 @@ def create_user_answer(post_request, user):
         if key != 'csrfmiddlewaretoken':
             q = Question.objects.get(id = key)
             u = user
-            useranswer = UserAnswer.objects.create(question = q, user_answer = value, user = u)
-            useranswer.save()
+            with transaction.atomic():
+                useranswer = UserAnswer.objects.create(question = q, user_answer = value, user = u)
+                useranswer.save()
 
 """
 Iterate through each type of question in the submitted test and check if the users_answer
@@ -207,12 +209,13 @@ def get_next_exam(user):
         if id not in all_completed_exam_ids:
             remaining_exams.append(id)
     if len(remaining_exams) == 0:
-        CompletedExam.objects.filter(user = student).filter(level = student.level).delete()
-        for id in all_completed_exam_ids:
-            questions = Question.objects.filter(exam = id)
-            for question in questions:
-                UserAnswer.objects.filter(user = student.user_id).filter(question = question).delete()
-        next_exam = all_exam_ids[0]
+        with transaction.atomic():
+            CompletedExam.objects.filter(user = student).filter(level = student.level).delete()
+            for id in all_completed_exam_ids:
+                questions = Question.objects.filter(exam = id)
+                for question in questions:
+                    UserAnswer.objects.filter(user = student.user_id).filter(question = question).delete()
+                next_exam = all_exam_ids[0]
     else:
         next_exam = remaining_exams[0]
     student.next_exam_id = next_exam

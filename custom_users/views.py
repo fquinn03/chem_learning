@@ -44,6 +44,8 @@ def welcome_student(request):
     student = StudentProfile.objects.select_related().get(user_id = request.user.id)
     next_lesson = Lesson.objects.get(id = student.next_lesson_id)
     progress = (student.level*25)
+    if progress > 100:
+        progress = 100
     completed_exams = CompletedExam.objects.filter(user = student)
     return render(request, 'custom_users/welcome_student.html', {'student': student,
     'next_lesson':next_lesson,

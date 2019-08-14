@@ -1,4 +1,5 @@
 from .models import StudentProfile, TeacherProfile
+from exams.models import CompletedExam
 
 def sign_up_quiz_already_completed(user):
     student = StudentProfile.objects.get(user_id = user.id)
@@ -29,3 +30,12 @@ def user_is_teacher(user):
         return True
     except:
         return False
+
+def exam_not_done_before(user):
+    student = StudentProfile.objects.get(user_id = user.id)
+    return not CompletedExam.objects.filter(user = user.id).filter(exam = student.next_exam_id )
+
+
+def is_finished(user):
+    student = StudentProfile.objects.get(user_id = user.id)
+    return student.level > 4

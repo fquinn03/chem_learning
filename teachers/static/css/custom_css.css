@@ -8,6 +8,9 @@ a.bluelink {
   color:blue;
 }
 
+.bg-success {
+  background-color: mediumseagreen !important;
+}
 
 .btn {
   display: inline-block;
@@ -77,8 +80,8 @@ a.bluelink {
   padding-top: 30px;
   padding-right: 15px;
   padding-left: 15px;
-  margin-right: auto;
-  margin-left: auto;
+  margin-right: 5%;
+  margin-left: 5%;
 }
 
 small.fieldhelp{
@@ -115,6 +118,14 @@ strong.fielderror{
   margin-bottom:15px;
 }
 
+.gold{
+  color:#D4AF37;
+  text-align:center;
+}
+
+.pagination-centered {
+  text-align: center;
+}
 .eqrow {
 	width: 100%;
 	margin: 0;
