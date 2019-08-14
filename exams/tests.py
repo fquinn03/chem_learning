@@ -31,6 +31,8 @@ class ExamsTest(TestCase):
         User.objects.create(username ="student5", password="mypass")
         User.objects.create(username ="student6", password="mypass")
         User.objects.create(username ="student7", password="mypass")
+        User.objects.create(username ="student8", password="mypass")
+        User.objects.create(username ="student9", password="mypass")
         user1 = User.objects.get(id=1)
         user2 = User.objects.get(id=2)
         user3 = User.objects.get(id=3)
@@ -39,6 +41,8 @@ class ExamsTest(TestCase):
         user6 = User.objects.get(id=6)
         user7 = User.objects.get(id=7)
         user8 = User.objects.get(id=8)
+        user9 = User.objects.get(id=9)
+        user10 = User.objects.get(id=10)
         Class_id.objects.create(id = 1, name = "9y3", teacher_id = 1)
         class_id = Class_id.objects.get(id=1)
         TeacherProfile.objects.create(user = user1, is_teacher = True)
@@ -61,6 +65,12 @@ class ExamsTest(TestCase):
         student6 = StudentProfile.objects.get(user_id=7)
         StudentProfile.objects.create(user = user8, teacher = teacher, class_id = class_id, level = 7, attempt = 2)
         student7 = StudentProfile.objects.get(user_id=8)
+        StudentProfile.objects.create(user = user9, teacher = teacher, class_id = class_id, level = 2,
+        attempt = 1, details_added = True, signup_quiz_completed = False, next_lesson_id = 1)
+        student8 = StudentProfile.objects.get(user_id=9)
+        StudentProfile.objects.create(user = user10, teacher = teacher, class_id = class_id, level = 1,
+        attempt = 1, details_added = True, signup_quiz_completed = False, next_lesson_id = 1)
+        student9 = StudentProfile.objects.get(user_id=10)
         Exam.objects.create(level = 1, title = "Test Exam Title 1")
         Exam.objects.create(level = 0, title = "signup_quiz")
         Exam.objects.create(level = 2, title = "Test Exam Title 2")
@@ -71,6 +81,8 @@ class ExamsTest(TestCase):
         exam2 = Exam.objects.get(id=2)
         exam3 = Exam.objects.get(id=3)
         exam4 = Exam.objects.get(id=4)
+        exam5 = Exam.objects.get(id=5)
+        exam6 = Exam.objects.get(id=6)
         MCQ_Question.objects.create(text = "What is my favourite colour? ")
         question1 = MCQ_Question.objects.get(id=1)
         question1.exam.add(exam1)
@@ -109,6 +121,9 @@ class ExamsTest(TestCase):
         CompletedExam.objects.create(user = student7, exam = exam1, level = 7, percentage = 0)
         CompletedExam.objects.create(user = student7, exam = exam2, level = 7, percentage = 80)
         CompletedExam.objects.create(user = student7, exam = exam3, level = 7, percentage = 85)
+        CompletedExam.objects.create(user = student9, exam = exam1, level = 1, percentage = 0)
+        CompletedExam.objects.create(user = student9, exam = exam5, level = 1, percentage = 80)
+        CompletedExam.objects.create(user = student9, exam = exam6, level = 1, percentage = 85)
         Lesson.objects.create(level = 1, title = "a lesson")
 
     def setUp(self):
@@ -317,7 +332,7 @@ class ExamsTest(TestCase):
     def test_create_exam_completed_entry_student1(self):
         user = StudentProfile.objects.get(user_id=4)
         create_exam_completed_entry(user, self.exam4, 78)
-        exam_completed_entry = CompletedExam.objects.get(id = 12)
+        exam_completed_entry = CompletedExam.objects.get(id = 15)
         self.assertEqual(exam_completed_entry.exam, self.exam4)
         self.assertEqual(exam_completed_entry.percentage, 78)
         self.assertEqual(exam_completed_entry.user.user.username, "student3")
@@ -380,5 +395,15 @@ class ExamsTest(TestCase):
     # test utils.get_next_exam()
     def test_get_next_exam_same_level(self):
         get_next_exam(2)
-        student1 = StudentProfile.objects.get(user_id =2)
-        self.assertEqual(student1.next_exam_id, 5)
+        student = StudentProfile.objects.get(user_id =2)
+        self.assertEqual(student.next_exam_id, 5)
+
+    def test_get_next_exam_up_level_none_completed(self):
+        get_next_exam(9)
+        student = StudentProfile.objects.get(user_id =9)
+        self.assertEqual(student.next_exam_id, 3)
+
+    def test_get_next_exam_moving_down_with_all_completed(self):
+        get_next_exam(10)
+        student = StudentProfile.objects.get(user_id =10)
+        self.assertEqual(student.next_exam_id, 1)

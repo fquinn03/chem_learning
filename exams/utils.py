@@ -206,7 +206,7 @@ def get_next_exam(user):
         if id not in all_completed_exam_ids:
             remaining_exams.append(id)
     if len(remaining_exams) == 0:
-        next_exam = all_exams_ids[0]
+        next_exam = all_exam_ids[0]
     else:
         next_exam = remaining_exams[0]
     student.next_exam_id = next_exam
