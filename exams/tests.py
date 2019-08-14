@@ -96,6 +96,7 @@ class ExamsTest(TestCase):
         option4 = Answer.objects.get(id=4)
         UserAnswer.objects.create(question = question1, user_answer = option4, user = student1)
         UserAnswer.objects.create(question = question1, user_answer = option2, user = student2)
+        UserAnswer.objects.create(question = question1, user_answer = option3, user = student9)
         useranswer = UserAnswer.objects.get(id=1)
         Written_Question.objects.create(text = "What is my favourite film? ")
         question2 = Written_Question.objects.get(id=2)
@@ -104,12 +105,14 @@ class ExamsTest(TestCase):
         Answer.objects.create(question = question2, text = "Shrak", correct = True, correct_spelling = False)
         UserAnswer.objects.create(question = question2, user_answer = "   Shrek    ", user = student2)
         UserAnswer.objects.create(question = question2, user_answer = "   Shrak ", user = student1)
+        UserAnswer.objects.create(question = question2, user_answer = "Jaws", user = student9)
         Formula_Question.objects.create(text = "What is the chemical formula for water? ")
         question3 = Formula_Question.objects.get(id=3)
         question3.exam.add(exam1)
         Answer.objects.create(question = question3, text = "H2O", correct = True, correct_spelling = True)
         UserAnswer.objects.create(question = question3, user_answer = "h2o", user = student2)
         UserAnswer.objects.create(question = question3, user_answer = "H2O", user = student1)
+        UserAnswer.objects.create(question = question3, user_answer = "CH4", user = student9)
         CompletedExam.objects.create(user = student1, exam = exam1, level = 1, percentage =100)
         CompletedExam.objects.create(user = student1, exam = exam2, level = 0, percentage = 33)
         CompletedExam.objects.create(user = student3, exam = exam1, level = 1, percentage = 55)
@@ -245,21 +248,36 @@ class ExamsTest(TestCase):
         self.assertContains(response, "<h5>Questions you need to review</h5>")
 
     # test test_do_quiz_signup view. GET and POST requests
-    def test_do_quiz_signup_get_response(self):
+    def test_do_quiz_signup_get_already_completed_response(self):
         self.client.login(username ="student2", password="mypass")
         response=self.client.get(reverse('do_signup_quiz'))
         self.assertEqual(response.status_code, 302)
 
-    def test_do_quiz_signup_get_template(self):
+    def test_do_quiz_signup_get_already_completed_template(self):
         self.client.login(username ="student2", password="mypass")
         response=self.client.get(reverse('do_signup_quiz'), follow = True)
         self.assertTemplateUsed(response, 'custom_users/welcome_student.html')
 
-    def test_do_quiz_signup_get_html(self):
+    def test_do_quiz_signup_get_already_completed_html(self):
         self.client.login(username ="student2", password="mypass")
         response=self.client.get(reverse('do_signup_quiz'), follow = True)
         self.assertContains(response, '<h5><strong>Welcome Student:</strong> student2</h5>')
 
+    # test test_do_quiz_signup view. GET and POST requests
+    def test_do_quiz_signup_get_response(self):
+        self.client.login(username ="student1", password="mypass")
+        response=self.client.get(reverse('do_signup_quiz'))
+        self.assertEqual(response.status_code, 200)
+
+    def test_do_quiz_signup_get_template(self):
+        self.client.login(username ="student1", password="mypass")
+        response=self.client.get(reverse('do_signup_quiz'), follow = True)
+        self.assertTemplateUsed(response, 'custom_users/do_signup_quiz.html')
+
+    def test_do_quiz_signup_get_html(self):
+        self.client.login(username ="student1", password="mypass")
+        response=self.client.get(reverse('do_signup_quiz'), follow = True)
+        self.assertContains(response, '<h5>SignUp Quiz</h5>')
 
     def test_do_quiz_signup_post_response(self):
         self.client.login(username ="student1", password="mypass")
@@ -318,7 +336,7 @@ class ExamsTest(TestCase):
         self.assertEqual(corrections, {"What is my favourite colour? ": "Green"})
 
     #test utils.get_corrections_written helper method
-    def test_get_corrections_written_incorrect(self):
+    def test_get_corrections_written_all_correct(self):
         questions = Written_Question.objects.all()
         corrections = get_corrections_written(self.student1.user_id, 1)
         self.assertEqual(corrections[0], {})
@@ -327,6 +345,12 @@ class ExamsTest(TestCase):
         questions = Written_Question.objects.all()
         corrections = get_corrections_written(self.student1.user_id, 1)
         self.assertEqual(corrections[1], {'What is my favourite film? ': 'Shrek'})
+
+    def test_get_corrections_written_incorrect(self):
+        questions = Written_Question.objects.all()
+        student = StudentProfile.objects.get(user_id = 10)
+        corrections = get_corrections_written(student, 1)
+        self.assertEqual(corrections[0], {'What is my favourite film? ': 'Shrek'})
 
     # test utils.create_exam_completed_entry
     def test_create_exam_completed_entry_student1(self):

@@ -51,7 +51,6 @@ class CustomUsersTest(TestCase):
         self.class_id = Class_id.objects.get(id=1)
         self.user3 = User.objects.get(id = 4)
 
-
     """
     Models Tests
     """
@@ -119,7 +118,6 @@ class CustomUsersTest(TestCase):
         response=self.client.get(reverse('welcome_student'))
         self.assertContains(response, "<h5><strong>Welcome Student:</strong> student2</h5>")
 
-
     # test welcome teacher view
     def test_welcome_teacher_response(self):
         self.client.login(username = "teacher", password="teacher_pass")
@@ -135,7 +133,6 @@ class CustomUsersTest(TestCase):
         self.client.login(username = "teacher", password="teacher_pass")
         response=self.client.get(reverse('welcome_teacher'))
         self.assertContains(response, "<h5>Welcome Teacher: teacher</h5>")
-
 
     # test the StudentProfile form with valid and invalid data
     def test_form_not_valid(self):
@@ -484,17 +481,33 @@ class CustomUsersTest(TestCase):
         self.assertContains(response, '<option value="">---------</option>')
 
     # Test load_ajax_teachers view
-    def test_load_ajax_teachers_response(self):
+    def test_load_ajax_teachers_as_student_response(self):
+        self.client.login(username = "student2", password="student2_pass")
+        response=self.client.get(reverse('ajax_load_teachers'))
+        self.assertEqual(response.status_code, 200)
+
+    def test_load_ajax_teachers_as_student_template(self):
+        self.client.login(username = "student2", password="student2_pass")
+        response=self.client.get(reverse('ajax_load_teachers'), follow = True)
+        self.assertTemplateUsed(response, 'custom_users/ajax_load_teachers.html')
+
+    def test_load_ajax_teachers_as_student_html(self):
+        self.client.login(username = "student2", password="student2_pass")
+        response=self.client.get(reverse('ajax_load_teachers'), follow = True)
+        self.assertContains(response, '<option value="">---------</option>')
+
+    # Test load_ajax_teachers view
+    def test_load_ajax_teachers_as_teacher_response(self):
         self.client.login(username = "teacher", password="teacher_pass")
         response=self.client.get(reverse('ajax_load_teachers'))
         self.assertEqual(response.status_code, 302)
 
-    def test_load_ajax_teachers_template(self):
+    def test_load_ajax_teachers_as_teacher_template(self):
         self.client.login(username = "teacher", password="teacher_pass")
         response=self.client.get(reverse('ajax_load_teachers'), follow = True)
         self.assertTemplateUsed(response, 'custom_users/welcome_teacher.html')
 
-    def test_load_ajax_teachers_html(self):
+    def test_load_ajax_teachers_as_teacher_html(self):
         self.client.login(username = "teacher", password="teacher_pass")
         response=self.client.get(reverse('ajax_load_teachers'), follow = True)
         self.assertContains(response, '<h5>Welcome Teacher: teacher</h5>')
