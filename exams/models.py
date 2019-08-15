@@ -17,7 +17,7 @@ class Exam(models.Model):
 
 # Questions belong to an exam.
 class Question(models.Model):
-    exam = models.ManyToManyField(Exam)
+    exam = models.ForeignKey(Exam, on_delete=models.CASCADE)
     text = models.CharField(max_length=1000, unique = True)
     def __str__(self):
         return self.text
@@ -68,6 +68,7 @@ class CompletedExam(models.Model):
     exam = models.ForeignKey(Exam, on_delete=models.CASCADE)
     level = models.IntegerField(default = 1)
     percentage = models.IntegerField(default = 1)
+    attempt = models.IntegerField(default = 1)
 
     def __str__(self):
         return self.user.user.username+" "+self.exam.title

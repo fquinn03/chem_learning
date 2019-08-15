@@ -33,7 +33,7 @@ def user_is_teacher(user):
 
 def exam_not_done_before(user):
     student = StudentProfile.objects.get(user_id = user.id)
-    return not CompletedExam.objects.filter(user = user.id).filter(exam = student.next_exam_id )
+    return not CompletedExam.objects.filter(user = user.id).filter(exam = student.next_exam_id ).filter(attempt = student.attempt)
 
 
 def is_finished(user):

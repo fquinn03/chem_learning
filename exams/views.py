@@ -7,8 +7,8 @@ have_student_signup, is_finished, sign_up_quiz_already_completed)
 from .models import (Answer, Exam, CompletedExam, Formula_Question,
 MCQ_Question, Question, UserAnswer, Written_Question)
 from .utils import (calculate_percentage, create_exam_completed_entry, create_user_answer,
-get_corrections_formula, get_corrections_mcq, get_corrections_written, get_formula,
-get_level, get_next_exam, get_next_lesson)
+delete_completed_exam_record, get_corrections_formula, get_corrections_mcq,
+get_corrections_written, get_formula, get_level, get_next_exam, get_next_lesson)
 """
 Use the exam_id to get all the questions for the exam. If GET request display the questions
 and answer options.If POST request, use utils.create_user_answer to add a user_answer to
@@ -21,6 +21,7 @@ the database for each question answered and then display finish_test template
 @user_passes_test(exam_not_done_before)
 def dotest(request, exam_id):
     student = StudentProfile.objects.get(user_id = request.user.id)
+    delete_completed_exam_record(student, exam_id)
     exam = Exam.objects.get(id = exam_id)
     questions = Question.objects.filter(exam = exam_id)
     written_questions = Written_Question.objects.filter(exam = exam_id)
@@ -83,13 +84,12 @@ def show_result(request, exam_id):
     exam = Exam.objects.get(id = exam_id)
     questions = Question.objects.all().filter(exam = exam_id)
     percentage_result = calculate_percentage(questions, request.user.id, exam_id)
-    with transaction.atomic():
-        create_exam_completed_entry(student, exam, percentage_result)
+    create_exam_completed_entry(student, exam, percentage_result)
     get_level(request.user.id)
-    get_next_exam(request.user.id)
-    get_next_lesson(request.user.id)
     if student.level > 4:
         return redirect('congratulations')
+    get_next_exam(request.user.id)
+    get_next_lesson(request.user.id)
     return render(request, 'exams/show_result.html', {'percentage_result': percentage_result,
     'exam':exam,
     })

@@ -9,21 +9,19 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
   <script type="text/x-mathjax-config">MathJax.Hub.Config({TeX: {extensions: ["mhchem.js"]}});</script>
-  <script type="text/javascript"
-  async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML"></script>
+  <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML"></script>
   <script src="{% static 'js/javascriptsource.js' %}"></script>
   <SCRIPT LANGUAGE="JavaScript">
-    <!-- Original:  Matthew Hoesch (mdih@msn.com) -->
-
-    <!-- Begin
-    function display (Name, Number, Weight, Melt, Freeze) {
-    document.table.name.value=Name;
-    document.table.number.value=Number;
-    document.table.weight.value=Weight;
-    document.table.melt.value=Melt;
-    document.table.freeze.value=Freeze;
-    }
-    // End -->
+  <!-- Original:  Matthew Hoesch (mdih@msn.com) -->
+  <!-- Begin
+  function display (Name, Number, Weight, Melt, Freeze) {
+  document.table.name.value=Name;
+  document.table.number.value=Number;
+  document.table.weight.value=Weight;
+  document.table.melt.value=Melt;
+  document.table.freeze.value=Freeze;
+  }
+  // End -->
   </script>
   <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
   <link rel="stylesheet" href="{% static 'css/custom_css.css' %}">
@@ -48,10 +46,9 @@
   </div>
 </nav>
 <div class="container">
-<div class="col-sm-12">
     {% block content %}
     {% endblock %}
 </div>
-</div>
+<hr class="d-sm-none">
 </body>
 </html>

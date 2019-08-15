@@ -31,14 +31,14 @@
     <table class = "table" >
       <thead class = "thead-light" >
         <tr>
-          <th>Level</th>
+          <th>Attempt</th>
           <th>Exam</th>
           <th>Percentage</th>
         </tr>
       </thead>
     {% for exam in completed_exams %}
     <tr >
-    <td>{{exam.exam.level}}</td>
+    <td>{{exam.attempt}}</td>
     <td>{{exam.exam.title}}</td>
     <td><a class = "bluelink" href ="{% url 'show_result' exam_id=exam.exam.id %}">{{exam.percentage}}</a></td>
     </tr>
@@ -46,6 +46,4 @@
     </table>
   </div>
 </div>
-
-
 {% endblock %}

@@ -113,20 +113,20 @@ class ExamsTest(TestCase):
         UserAnswer.objects.create(question = question3, user_answer = "h2o", user = student2)
         UserAnswer.objects.create(question = question3, user_answer = "H2O", user = student1)
         UserAnswer.objects.create(question = question3, user_answer = "CH4", user = student9)
-        CompletedExam.objects.create(user = student1, exam = exam1, level = 1, percentage =100)
-        CompletedExam.objects.create(user = student1, exam = exam2, level = 0, percentage = 33)
-        CompletedExam.objects.create(user = student3, exam = exam1, level = 1, percentage = 55)
-        CompletedExam.objects.create(user = student3, exam = exam3, level = 2, percentage = 85)
-        CompletedExam.objects.create(user = student4, exam = exam4, level = 4, percentage = 0)
-        CompletedExam.objects.create(user = student2, exam = exam3, level = 2, percentage = 45)
-        CompletedExam.objects.create(user = student6, exam = exam3, level = 5, percentage = 45)
-        CompletedExam.objects.create(user = student6, exam = exam4, level = 5, percentage = 65)
-        CompletedExam.objects.create(user = student7, exam = exam1, level = 7, percentage = 0)
-        CompletedExam.objects.create(user = student7, exam = exam2, level = 7, percentage = 80)
-        CompletedExam.objects.create(user = student7, exam = exam3, level = 7, percentage = 85)
-        CompletedExam.objects.create(user = student9, exam = exam1, level = 1, percentage = 0)
-        CompletedExam.objects.create(user = student9, exam = exam5, level = 1, percentage = 80)
-        CompletedExam.objects.create(user = student9, exam = exam6, level = 1, percentage = 85)
+        CompletedExam.objects.create(user = student1, exam = exam1, level = 1, percentage =100, attempt = 1)
+        CompletedExam.objects.create(user = student1, exam = exam2, level = 0, percentage = 33, attempt = 1)
+        CompletedExam.objects.create(user = student3, exam = exam1, level = 1, percentage = 55, attempt = 3)
+        CompletedExam.objects.create(user = student3, exam = exam3, level = 2, percentage = 85, attempt = 3)
+        CompletedExam.objects.create(user = student4, exam = exam4, level = 4, percentage = 0, attempt = 3)
+        CompletedExam.objects.create(user = student2, exam = exam3, level = 2, percentage = 45, attempt = 1)
+        CompletedExam.objects.create(user = student6, exam = exam3, level = 5, percentage = 45, attempt = 2)
+        CompletedExam.objects.create(user = student6, exam = exam4, level = 5, percentage = 65, attempt = 2)
+        CompletedExam.objects.create(user = student7, exam = exam1, level = 7, percentage = 0, attempt = 2)
+        CompletedExam.objects.create(user = student7, exam = exam2, level = 7, percentage = 80, attempt = 2)
+        CompletedExam.objects.create(user = student7, exam = exam3, level = 7, percentage = 85, attempt = 2)
+        CompletedExam.objects.create(user = student9, exam = exam1, level = 1, percentage = 0, attempt = 1)
+        CompletedExam.objects.create(user = student9, exam = exam5, level = 1, percentage = 80, attempt = 1)
+        CompletedExam.objects.create(user = student9, exam = exam6, level = 1, percentage = 85, attempt = 1)
         Lesson.objects.create(level = 1, title = "a lesson")
         Lesson.objects.create(level = 1, title = "another lesson")
         Lesson.objects.create(level = 2, title = "a third lesson")
@@ -236,19 +236,19 @@ class ExamsTest(TestCase):
 
     # test review view
     def test_review_get_response_code(self):
-        self.client.login(username ="student2", password="mypass")
+        self.client.login(username ="student1", password="mypass")
         response = self.client.get(reverse('review', args=[1,]))
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 302)
 
     def test_review_get_template_used(self):
-        self.client.login(username ="student2", password="mypass")
-        response = self.client.get(reverse('review', args=[1,]))
-        self.assertTemplateUsed(response, 'exams/review.html')
+        self.client.login(username ="student1", password="mypass")
+        response = self.client.get(reverse('review', args=[1,]), follow = True)
+        self.assertTemplateUsed(response, 'custom_users/do_signup_quiz.html')
 
     def test_review_get_html(self):
-        self.client.login(username ="student2", password="mypass")
-        response = self.client.get(reverse('review', args=[1,]))
-        self.assertContains(response, "<h5>Questions you need to review</h5>")
+        self.client.login(username ="student1", password="mypass")
+        response = self.client.get(reverse('review', args=[1,]), follow = True)
+        self.assertContains(response, "<h5>SignUp Quiz</h5>")
 
     # test test_do_quiz_signup view. GET and POST requests
     def test_do_quiz_signup_get_already_completed_response(self):

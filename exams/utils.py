@@ -15,9 +15,8 @@ def create_user_answer(post_request, user):
         if key != 'csrfmiddlewaretoken':
             q = Question.objects.get(id = key)
             u = user
-            with transaction.atomic():
-                useranswer = UserAnswer.objects.create(question = q, user_answer = value, user = u)
-                useranswer.save()
+            useranswer = UserAnswer.objects.create(question = q, user_answer = value, user = u)
+            useranswer.save()
 
 """
 Iterate through each type of question in the submitted test and check if the users_answer
@@ -34,7 +33,7 @@ def calculate_percentage(questions, user_id, exam_id):
     #mark each question in each category
     for question in mcq_questions:
         student_answer = UserAnswer.objects.get(question = question.id, user = user_id)
-        correct_answers =  Answer.objects.filter(question = question.id, correct=True)
+        correct_answers =  Answer.objects.filter(question = question.id).filter(correct=True)
         for answer in correct_answers:
             if student_answer.user_answer == answer.text:
                 right +=1
@@ -45,7 +44,6 @@ def calculate_percentage(questions, user_id, exam_id):
         for answer in correct_answers:
             if student_answer.user_answer.lower().strip() == answer.text.lower():
                 right +=1
-
 
     for question in formula_questions:
         student_answer = UserAnswer.objects.get(question = question.id, user = user_id)
@@ -196,27 +194,42 @@ Get the students current level. Find the next lesson object for that level.
 """
 def get_next_exam(user):
     student = StudentProfile.objects.get(user_id = user)
-    all_exams = Exam.objects.filter(level = student.level)
-    all_exam_ids = []
-    for exam in all_exams:
-        all_exam_ids.append(exam.id)
-    completed_exams = CompletedExam.objects.select_related().filter(user = student).filter(level = student.level)
-    all_completed_exam_ids = []
-    for exam in completed_exams:
-        all_completed_exam_ids.append(exam.exam.id)
-    remaining_exams = []
-    for id in all_exam_ids:
-        if id not in all_completed_exam_ids:
-            remaining_exams.append(id)
+    all_exam_ids = get_all_available_exam_ids(student)
+    all_completed_exam_ids = get_all_completed_exam_ids(student)
+    remaining_exams = get_remaining_exams(all_exam_ids, all_completed_exam_ids)
     if len(remaining_exams) == 0:
-        with transaction.atomic():
-            CompletedExam.objects.filter(user = student).filter(level = student.level).delete()
-            for id in all_completed_exam_ids:
-                questions = Question.objects.filter(exam = id)
-                for question in questions:
-                    UserAnswer.objects.filter(user = student.user_id).filter(question = question).delete()
-                next_exam = all_exam_ids[0]
+        next_exam = all_exam_ids[0]
     else:
         next_exam = remaining_exams[0]
     student.next_exam_id = next_exam
     student.save()
+
+def get_all_available_exam_ids(student):
+    all_exams = Exam.objects.filter(level = student.level)
+    all_exam_ids = []
+    for exam in all_exams:
+        all_exam_ids.append(exam.id)
+    return all_exam_ids
+
+def get_all_completed_exam_ids(student):
+    completed_exams = CompletedExam.objects.select_related().filter(user = student).filter(level = student.level)
+    all_completed_exam_ids = []
+    for exam in completed_exams:
+        all_completed_exam_ids.append(exam.exam.id)
+    return all_completed_exam_ids
+
+def get_remaining_exams(all_exam_ids, all_completed_exam_ids):
+    remaining_exams = []
+    for id in all_exam_ids:
+        if id not in all_completed_exam_ids:
+            remaining_exams.append(id)
+    return remaining_exams
+
+def delete_completed_exam_record(student, exam_id):
+    try:
+        CompletedExam.objects.get(user = student, exam = exam_id).delete()
+        questions = Question.objects.filter(exam = exam_id)
+        for question in questions:
+            UserAnswer.objects.get(user = student, question = question).delete()
+    except CompletedExam.DoesNotExist:
+        print("Completed exam not found")
