@@ -8,7 +8,8 @@ from .models import (Answer, Exam, CompletedExam, Formula_Question,
 MCQ_Question, Question, UserAnswer, Written_Question)
 from .utils import (calculate_percentage, create_exam_completed_entry, create_user_answer,
 delete_completed_exam_record, get_corrections_formula, get_corrections_mcq,
-get_corrections_written, get_formula, get_level, get_next_exam, get_next_lesson)
+get_corrections_written, get_formula, get_level, get_next_exam, get_next_lesson,
+get_starting_level)
 """
 Use the exam_id to get all the questions for the exam. If GET request display the questions
 and answer options.If POST request, use utils.create_user_answer to add a user_answer to
@@ -55,10 +56,7 @@ def do_signup_quiz(request):
         for key, value in request.POST.items():
             if key != 'csrfmiddlewaretoken':
                 answers.append(value)
-
-        for i in range(len(answers)):
-            if answers[i] == "True":
-                level = i+1
+        level = get_starting_level(answers)
         student = StudentProfile.objects.get(user_id = request.user.id)
         student.level = level
         student.signup_quiz_completed = True
@@ -126,5 +124,7 @@ def review(request, exam_id):
 def congratulations(request):
     return render(request, 'exams/congratulations.html')
 
+@login_required
+@user_passes_test(user_is_student)
 def hundred(request):
     return render(request, 'exams/hundred.html')

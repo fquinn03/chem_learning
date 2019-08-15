@@ -281,24 +281,24 @@ class ExamsTest(TestCase):
 
     def test_do_quiz_signup_post_response(self):
         self.client.login(username ="student1", password="mypass")
-        response=self.client.post(reverse('do_signup_quiz'), {'2':'True', '3': 'True', '4': 'False'}, follow = True)
+        response=self.client.post(reverse('do_signup_quiz'), {'2':'True', '3': 'True', '4': 'False', '5':'False'}, follow = True)
         self.assertEqual(response.status_code, 200)
 
     def test_do_quiz_signup_post_student_level_2(self):
         self.client.force_login(User.objects.get(id=2))
-        response=self.client.post(reverse('do_signup_quiz'), {'2':'True', '3': 'True', '4': 'False'}, follow = True)
+        response=self.client.post(reverse('do_signup_quiz'), {'2':'True', '3': 'True', '4': 'False', '5':'False'}, follow = True)
         student = StudentProfile.objects.get(user_id = 2)
         self.assertEqual(student.level, 2)
 
     def test_do_quiz_signup_post_student_level_3(self):
         self.client.force_login(User.objects.get(id=2))
-        response=self.client.post(reverse('do_signup_quiz'), {'2':'True', '3': 'True', '4': 'True'}, follow = True)
+        response=self.client.post(reverse('do_signup_quiz'), {'2':'True', '3': 'True', '4': 'True', '5':'False'}, follow = True)
         student = StudentProfile.objects.get(user_id = 2)
         self.assertEqual(student.level, 3)
 
     def test_do_quiz_signup_post_template(self):
         self.client.force_login(User.objects.get(id=2))
-        response=self.client.post(reverse('do_signup_quiz'), {'2':'True', '3': 'True', '4': 'False'}, follow = True)
+        response=self.client.post(reverse('do_signup_quiz'), {'2':'True', '3': 'True', '4': 'False', '5':'False'}, follow = True)
         self.assertTemplateUsed(response, 'custom_users/welcome_student.html')
 
     def test_do_quiz_signup_post_html(self):

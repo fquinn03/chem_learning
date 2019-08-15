@@ -242,4 +242,16 @@ def delete_completed_exam_record(student, exam_id):
         for question in questions:
             UserAnswer.objects.get(user = student, question = question).delete()
     except CompletedExam.DoesNotExist:
-        print("Completed exam not found")
+        pass
+
+def get_starting_level(answers):
+    for answer in answers[len(answers)//2::-1]:
+        if answer == "True":
+            i = answers.index(answer)
+            if answers[i-1] == True and answers[i-2]==True:
+                return answers.index(answer)
+    for answer in answers[:len(answers)//2:-1]:
+        if answers[i] =="True":
+            i = answers.index(answer)
+            return i
+    return 1
