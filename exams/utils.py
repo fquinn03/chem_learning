@@ -81,15 +81,19 @@ def get_corrections_written(user_id, exam_id):
     for question in written_questions:
         student_answer = UserAnswer.objects.get(question = question.id, user = user_id) # get the student's answer
         correct_answers =  Answer.objects.filter(question = question.id, correct=True, correct_spelling = True)# get the correct answer
+        correct_answer_to_display = Answer.objects.get(question = question.id, correct_answer_to_display = True )
         possible_answers =  Answer.objects.filter(question = question.id, correct=True, correct_spelling = False)# get any acceptable mispelled answers
         for possible_answer in possible_answers:
             acceptable_answers.append(possible_answer.text.lower()) # get a list of all acceptable mispelled answers
+        correct_answer_found = False
         for correct_answer in correct_answers:
-            if student_answer.user_answer.lower().strip() != correct_answer.text.lower():
-                if student_answer.user_answer.lower().strip() in acceptable_answers:
-                    mispelled[question.text] = correct_answer.text # add the question and correct spelling for any incorrectly spelled answers
-                else:
-                    written_corrections[question.text] = correct_answer.text # add the question and correct anser  for any incorrect answers
+            if student_answer.user_answer.lower().strip() == correct_answer.text.lower():
+                correct_answer_found = True
+        if not correct_answer_found:
+            if student_answer.user_answer.lower().strip() in acceptable_answers:
+                mispelled[question.text] = correct_answer.text # add the question and correct spelling for any incorrectly spelled answers
+            else:
+                written_corrections[question.text] = correct_answer_to_display.text # add the question and correct answer for any incorrect answers
     return (written_corrections, mispelled)
 
 def get_corrections_formula(user_id, exam_id):
@@ -129,46 +133,15 @@ and their attempt at this new level is reset to zero.
 Otherwise the user stays on the same level and their attempts at this level is incremented.
 """
 def get_level(user_id):
-    # get the student object
     student = StudentProfile.objects.get(user_id = user_id)
     level = student.level
     # get the exams the student has completed
-    completed_exams = CompletedExam.objects.filter(level = level).filter(user = student)
-    results = []
-
-    # get a list of results for the exams completed
-    for exam in completed_exams:
-        results.append(exam.percentage)
-
+    results = get_all_exam_results_for_level(student)
     # calculate a weighted mean for the exams completed
-    number_of_results = len(results)
-    if number_of_results == 0:
-        score = -1
-    elif number_of_results == 1:
-        score = results[0] * 1
-    elif number_of_results == 2:
-        score = results[1]*0.95 + results[0]*0.05
-    else:
-        score = results[number_of_results-1]*0.9 + results[number_of_results-2]*0.1
+    weighted_mean = get_weighted_mean(results)
+    # adjust level/attempts according to the weighted_mean
+    adjust_level_and_attempts(student, weighted_mean)
 
-    # check the users score and adjust level/attempts accordingly
-    if score > 80:
-        student.level += 1
-        student.attempt = 0
-    elif score == -1:
-        student.level = level
-        student.attempt = 0
-    elif score < 80 and student.attempt >= 3:
-        if level > 1:
-            student.level -= 1
-            student.attempt = 0
-        else:
-            student.level = 1
-            student.attempt = 0
-    else:
-        student.attempt += 1
-
-    student.save()
 
 """
 Find the next lesson for a student and display it on the welcome student screen.
@@ -202,6 +175,43 @@ def get_next_exam(user):
     else:
         next_exam = remaining_exams[0]
     student.next_exam_id = next_exam
+    student.save()
+
+def get_all_exam_results_for_level(student):
+    completed_exams = CompletedExam.objects.filter(level = student.level).filter(user = student)
+    results = []
+    # get a list of results for the exams completed
+    for exam in completed_exams:
+        results.append(exam.percentage)
+    return results
+
+def get_weighted_mean(results):
+    if len(results) == 0:
+        weighted_mean = -1
+    elif len(results) == 1:
+        weighted_mean = results[0] * 1
+    elif len(results) == 2:
+        weighted_mean = results[1]*0.95 + results[0]*0.05
+    else:
+        weighted_mean = results[len(results)-1]*0.9 + results[len(results)-2]*0.1
+    return weighted_mean
+
+def adjust_level_and_attempts(student, weighted_mean):
+    if weighted_mean > 80:
+        student.level += 1
+        student.attempt = 0
+    elif weighted_mean == -1:
+        student.attempt = 0
+    elif weighted_mean < 80 and student.attempt >= 3:
+        if student.level > 1:
+            student.level -= 1
+            student.attempt = 0
+        else:
+            student.level = 1
+            student.attempt = 0
+    else:
+        student.attempt += 1
+
     student.save()
 
 def get_all_available_exam_ids(student):

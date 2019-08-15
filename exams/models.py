@@ -49,6 +49,7 @@ class Answer(models.Model):
     text = models.CharField(max_length=1000)
     correct = models.BooleanField(default = False)
     correct_spelling = models.BooleanField(default = True)
+    correct_answer_to_display = models.BooleanField(default = False)
 
     def __str__(self):
         return self.text

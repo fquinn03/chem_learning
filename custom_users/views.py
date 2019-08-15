@@ -43,7 +43,7 @@ Shows a students next lesson, test and gives overall summary of progress.
 def welcome_student(request):
     student = StudentProfile.objects.select_related().get(user_id = request.user.id)
     next_lesson = Lesson.objects.get(id = student.next_lesson_id)
-    progress = (student.level*25)
+    progress = ((student.level-1)*25) #hardcoded depending on how many levels 
     if progress > 100:
         progress = 100
     completed_exams = CompletedExam.objects.filter(user = student)

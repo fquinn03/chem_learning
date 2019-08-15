@@ -83,9 +83,8 @@ class ExamsTest(TestCase):
         exam4 = Exam.objects.get(id=4)
         exam5 = Exam.objects.get(id=5)
         exam6 = Exam.objects.get(id=6)
-        MCQ_Question.objects.create(text = "What is my favourite colour? ")
+        MCQ_Question.objects.create(text = "What is my favourite colour? ", exam = exam1)
         question1 = MCQ_Question.objects.get(id=1)
-        question1.exam.add(exam1)
         Answer.objects.create(question = question1, text = "Yellow", correct = False)
         Answer.objects.create(question = question1, text = "Blue", correct = False)
         Answer.objects.create(question = question1, text = "Red", correct = False)
@@ -98,17 +97,15 @@ class ExamsTest(TestCase):
         UserAnswer.objects.create(question = question1, user_answer = option2, user = student2)
         UserAnswer.objects.create(question = question1, user_answer = option3, user = student9)
         useranswer = UserAnswer.objects.get(id=1)
-        Written_Question.objects.create(text = "What is my favourite film? ")
+        Written_Question.objects.create(text = "What is my favourite film? ", exam = exam1)
         question2 = Written_Question.objects.get(id=2)
-        question2.exam.add(exam1)
-        Answer.objects.create(question = question2, text = "Shrek", correct = True, correct_spelling = True)
+        Answer.objects.create(question = question2, text = "Shrek", correct = True, correct_spelling = True, correct_answer_to_display = True)
         Answer.objects.create(question = question2, text = "Shrak", correct = True, correct_spelling = False)
         UserAnswer.objects.create(question = question2, user_answer = "   Shrek    ", user = student2)
         UserAnswer.objects.create(question = question2, user_answer = "   Shrak ", user = student1)
         UserAnswer.objects.create(question = question2, user_answer = "Jaws", user = student9)
-        Formula_Question.objects.create(text = "What is the chemical formula for water? ")
+        Formula_Question.objects.create(text = "What is the chemical formula for water? ", exam = exam1)
         question3 = Formula_Question.objects.get(id=3)
-        question3.exam.add(exam1)
         Answer.objects.create(question = question3, text = "H2O", correct = True, correct_spelling = True)
         UserAnswer.objects.create(question = question3, user_answer = "h2o", user = student2)
         UserAnswer.objects.create(question = question3, user_answer = "H2O", user = student1)
@@ -190,32 +187,32 @@ class ExamsTest(TestCase):
     # test dotest view. GET and POST requests
     def test_do_test_get_response_code(self):
         self.client.login(username ="student2", password="mypass")
-        response = self.client.get(reverse('dotest', args=[1,]))
+        response = self.client.get(reverse('dotest'))
         self.assertEqual(response.status_code, 200)
 
     def test_do_test_get_template_used(self):
         self.client.login(username ="student2", password="mypass")
-        response = self.client.get(reverse('dotest', args=[1,]))
+        response = self.client.get(reverse('dotest'))
         self.assertTemplateUsed(response, 'exams/dotest.html')
 
     def test_do_test_get_html(self):
         self.client.login(username ="student2", password="mypass")
-        response = self.client.get(reverse('dotest', args=[1,]))
+        response = self.client.get(reverse('dotest'))
         self.assertContains(response, "<p><strong>What is my favourite colour? </strong></p>")
 
     def test_do_test_post_response_code(self):
         self.client.login(username ="student2", password="mypass")
-        response = self.client.post(reverse('dotest', args=[1,]))
+        response = self.client.post(reverse('dotest'))
         self.assertEqual(response.status_code, 302)
 
     def test_do_test_post_template_used(self):
         self.client.login(username ="student2", password="mypass")
-        response = self.client.post(reverse('dotest', args=[1,]), follow=True)
+        response = self.client.post(reverse('dotest'), follow=True)
         self.assertTemplateUsed(response, 'exams/show_result.html')
 
     def test_do_test_post_html(self):
         self.client.login(username ="student2", password="mypass")
-        response = self.client.post(reverse('dotest', args=[1,]), follow=True)
+        response = self.client.post(reverse('dotest'), follow=True)
         self.assertContains(response, "<h5>You scored: 33% on Test Exam Title 1<br><br/></h5>")
 
     # test show_result view.

@@ -32,7 +32,7 @@ urlpatterns = [
     path('complete_lesson/<lesson_id>', complete_lesson, name = 'complete_lesson'),
     path('class_list', class_list, name = 'class_list'),
     path('admin/', admin.site.urls),
-    path('dotest/<exam_id>', dotest, name='dotest'),
+    path('dotest', dotest, name='dotest'),
     path('not_teacher', class_list),
     path('finish_test', dotest, name='finish_test'),
     path('show_result/<exam_id>', show_result, name = 'show_result'),

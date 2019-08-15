@@ -3,7 +3,7 @@
 {% block content %}
 
 <div class="row">
-  <div class="col-sm-5">
+  <div class="col-sm-4">
     <form name = "form" action = "" method="POST">
     {% csrf_token %}
     {% for question in mcq_questions %}
@@ -32,7 +32,7 @@
     </form>
   </div>
   <div class="col-sm-2"> </div>
-  <div class="col-sm-5">
+  <div class="col-sm-6">
     <p ><strong>Formula Checker</strong></p>
     <label for="Formula input">Enter a formula: </label>
     <input type ='text' class = "formula_input" id = "formula_input" required/>

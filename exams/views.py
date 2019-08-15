@@ -18,15 +18,14 @@ the database for each question answered and then display finish_test template
 @user_passes_test(user_is_student)
 @user_passes_test(have_student_details, login_url = 'edit_student',  redirect_field_name = 'get_student_details' )
 @user_passes_test(have_student_signup,  login_url = 'do_signup_quiz', redirect_field_name = 'do_signup_quiz')
-@user_passes_test(exam_not_done_before)
-def dotest(request, exam_id):
+def dotest(request):
     student = StudentProfile.objects.get(user_id = request.user.id)
-    delete_completed_exam_record(student, exam_id)
-    exam = Exam.objects.get(id = exam_id)
-    questions = Question.objects.filter(exam = exam_id)
-    written_questions = Written_Question.objects.filter(exam = exam_id)
-    mcq_questions = MCQ_Question.objects.filter(exam = exam_id)
-    formula_questions = Formula_Question.objects.filter(exam = exam_id)
+    delete_completed_exam_record(student, student.next_exam_id)
+    exam = Exam.objects.get(id = student.next_exam_id)
+    questions = Question.objects.filter(exam = student.next_exam_id)
+    written_questions = Written_Question.objects.filter(exam = student.next_exam_id)
+    mcq_questions = MCQ_Question.objects.filter(exam = student.next_exam_id)
+    formula_questions = Formula_Question.objects.filter(exam = student.next_exam_id)
     if request.method == 'POST':
         create_user_answer(request.POST, StudentProfile.objects.get(user_id = request.user.id))
         return redirect('show_result', exam_id = exam.id)
