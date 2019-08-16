@@ -24,7 +24,7 @@ Gets all of a teachers classes and displays a button for each.
 @user_passes_test(user_is_teacher)
 @user_passes_test(have_teacher_details, login_url = 'edit_teacher',  redirect_field_name = 'get_teacher_details' )
 def welcome_teacher(request):
-    teacher = TeacherProfile.objects.select_related().get(user_id = request.user.id)
+    teacher = TeacherProfile.objects.get(user_id = request.user.id)
     classes = Class_id.objects.filter(teacher = teacher)
     return render(request, 'custom_users/welcome_teacher.html', {'teacher': teacher,
     'classes':classes
@@ -43,7 +43,7 @@ Shows a students next lesson, test and gives overall summary of progress.
 def welcome_student(request):
     student = StudentProfile.objects.select_related().get(user_id = request.user.id)
     next_lesson = Lesson.objects.get(id = student.next_lesson_id)
-    progress = ((student.level-1)*25) #hardcoded depending on how many levels 
+    progress = ((student.level-1)*25) #hardcoded depending on how many levels
     if progress > 100:
         progress = 100
     completed_exams = CompletedExam.objects.filter(user = student)
@@ -242,3 +242,15 @@ def ajax_load_classes(request):
     teacher_id = request.GET.get('teacher')
     class_ids = Class_id.objects.filter(teacher=teacher_id).order_by('name')
     return render(request, 'custom_users/ajax_load_classes.html', {'class_ids': class_ids})
+
+def get_help(request):
+    student = StudentProfile.objects.get(user_id = request.user.id)
+    student.needs_help = True
+    student.save()
+    return redirect('welcome_student')
+
+def cancel_help(request):
+    student = StudentProfile.objects.get(user_id = request.user.id)
+    student.needs_help = False
+    student.save()
+    return redirect('welcome_student')

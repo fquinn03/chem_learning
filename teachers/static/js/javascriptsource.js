@@ -1,5 +1,9 @@
 $(document).ready(function(){
 
+  $(function () {
+    $('[data-toggle="popover"]').popover()
+  })
+
   $('#convert').click(function() {
     var output = document.getElementById("formula_output")
     output.innerHTML=""

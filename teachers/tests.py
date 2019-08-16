@@ -89,7 +89,7 @@ class TeacherTest(TestCase):
     def test_show_students_html(self):
         self.client.login(username = "teacher", password = "mypass")
         response = self.client.get(reverse('show_students', args=['9y3']))
-        self.assertContains(response, "<th>Student</th>")
+        self.assertContains(response, "<h5>Class: 9y3</h5>")
 
     # test class_list view. Logged in as Teacher and Student
     def test_class_list_teacher_response(self):

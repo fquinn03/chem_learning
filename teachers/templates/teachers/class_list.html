@@ -6,7 +6,9 @@
 <p>Click on class below to view your student's progress</p>
 <p>
 {% for class in classes %}
-<a type="button" class="btn btn-success" href ="{% url 'show_students' class_name=class.name %}">{{class.name}}</a><br></br>
+<a><button class="btn btn-success"
+  href ="{% url 'show_students' class_name=class.name %}">{{class.name}}</button>
+</a>
 </p>
 {% endfor %}
 

@@ -4,6 +4,8 @@
 
 <h5>You scored: {{percentage_result}}% on {{exam.title}}<br><br/></h5>
 
-<a type="button" class="btn btn-success" href ="{% url 'review' exam_id=exam.id %}">Review Exam</a><br></br>
+<a href ="{% url 'review' exam_id=exam.id %}">
+  <button class="btn btn-success" >Review Exam</button>
+</a>
 
 {% endblock %}

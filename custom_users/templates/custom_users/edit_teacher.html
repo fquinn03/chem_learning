@@ -14,8 +14,9 @@
         <br/>
         {% endfor %}
         <p ><strong class="fielderror">Don't see your school? Add it</strong></p>
-        <a type="button" class="btn btn-success button-eqcenter" href ="{% url 'add_school' %}">Add School</a>
-        <button type="submit" class="btn btn-success button-right">Update</button>
+        <a href ="{% url 'add_school' %}"><button type="button"
+          class="btn btn-success button-eqcenter">Add School</button></a>
+        <a><button type="submit" class="btn btn-success button-right">Update</button></a>
       </form>
     </div>
   </div>

@@ -58,6 +58,9 @@ class StudentProfile(models.Model):
     completed_lessons = models.ManyToManyField(Lesson, blank = True)
     details_added = models.BooleanField(default=False)
     signup_quiz_completed = models.BooleanField(default=False)
+    needs_help = models.BooleanField(default=False)
+    progress = models.IntegerField(default=1000)
+    starting_level = models.IntegerField(default=1)
 
     def __str__(self):
         return self.user.username

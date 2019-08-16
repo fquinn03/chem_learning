@@ -3,17 +3,52 @@
 {% block content %}
 <h5>Class: {{group.name}}</h5>
 
-<table class = "table">
+<table class = "table" id = "mytable">
   <thead class = "thead-light">
     <tr>
-      <th>Student</th>
+      <th style = "width: 20%;">Student</th>
+      <th style = "width: 10%;">Starting Level</th>
+      <th style = "width: 10%;">Needs Help</th>
+      <th style = "width: 10%;">Current Level</th>
+      <th style = "width: 15%;">Progress</th>
+      <th style = "width: 22%;">Quizzes</th>
+      <th style = "width: 13%;">Percentage</th>
     </tr>
   </thead>
 {% for student in students %}
 <tr>
 <td>{{student.user.username}}</td>
+<td>{{student.starting_level}}</td>
+{% if student.needs_help == True %}
+<td>&#9989;</td>
+{% else %}
+<td> </td>
+{% endif %}
+<td>{{student.level}}</td>
+{% if student.progress == 1 %}
+<td><svg height="22" width="22">
+  <circle cx="11" cy="11" r="10" stroke="white" stroke-width="3" fill="green" />
+</svg></td>
+{% elif student.progress == 2  %}
+<td> <svg height="22" width="22">
+  <circle cx="11" cy="11" r="10" stroke="white" stroke-width="3" fill="yellow" />
+</svg></td>
+{% else %}
+<td><svg height="22" width="22">
+  <circle cx="11" cy="11" r="10" stroke="white" stroke-width="3" fill="red" />
+</svg></td>
+{% endif %}
+<td>
+{% for completedexam in student.completedexam_set.all %}
+{{completedexam.exam.title}}<br/>
+{% endfor %}
+</td>
+<td>
+{% for completedexam in student.completedexam_set.all %}
+{{completedexam.percentage}}%<br/>
+{% endfor %}
+</td>
 </tr>
 {% endfor %}
 </table>
-
 {% endblock %}

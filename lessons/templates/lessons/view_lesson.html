@@ -2,11 +2,35 @@
 
 {% block content %}
 <h5>Lesson Title: {{lesson.title}}</h5>
-<div class = "container">
-  <div class="powerpoint">
-      {{lesson.link|safe}}
-      <button style = "margin-bottom:50px"
-      type="submit" class="btn btn-success button-right" href = "{% url 'welcome_student' %}">Lesson Complete</button>
+  <div class="row">
+    <div class="col-sm-10">
+      <div class="iframe-container">
+        {{lesson.link|safe}}
+      </div>
+    </div>
+    <div class="col-sm-2">
+      <div class="nav flex-column">
+        {% load static %}
+      <a id="next_lesson" href="complete_lesson" style ="text-align:center">
+      <img data-toggle="tooltip" data-placement="top" title="Next Lesson" class="img-fluid" src = "{% static 'images\learning-svgrepo-com.svg' %}"
+      style="width:75px;height:48px;" alt="complete_lesson"/>
+      </a>
+      <br/>
+      <br/>
+      <a id="next_quiz" href="dotest" style ="text-align:center">
+      <img data-toggle="tooltip" data-placement="top" title="Next Quiz" class="img-fluid"src="{% static 'images\school-material-paper-svgrepo-com.svg' %}"
+      alt="do a Quiz" style="width:75px;height:48px;" >
+      </a>
+      <br/>
+      <br/>
+      <a id="welcome_student" href="welcome_student" style ="text-align:center">
+      <img data-toggle="tooltip" data-placement="top" title="Back To Welcome Student" class="img-fluid"src="{% static 'images\welcome-svgrepo-com.svg' %}"
+      alt="welcome_student" style="width:75px;height:48px;">
+      </a>
+      <br/>
+      <br/>
+    </div>
   </div>
 </div>
+
 {% endblock %}

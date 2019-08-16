@@ -34,7 +34,8 @@ def dotest(request):
         return render(request, 'exams/dotest.html', {
             'mcq_questions': mcq_questions, 'written_questions':written_questions,
             'formula_questions':formula_questions,
-            'questions': questions
+            'questions': questions,
+            'exam':exam
         })
 
 """
@@ -83,7 +84,7 @@ def show_result(request, exam_id):
     percentage_result = calculate_percentage(questions, request.user.id, exam_id)
     create_exam_completed_entry(student, exam, percentage_result)
     get_level(request.user.id)
-    if student.level > 4:
+    if student.level >= 4:
         return redirect('congratulations')
     get_next_exam(request.user.id)
     get_next_lesson(request.user.id)

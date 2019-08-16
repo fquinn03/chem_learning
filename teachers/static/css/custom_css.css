@@ -34,22 +34,38 @@ a.bluelink {
 .btn-success {
   color: #ffffff;
   background-color: MediumSeaGreen;
-  border-color: MediumSeaGreen;
   width:115px;
+  margin-bottom: 4%;
 }
 
 .btn-success:hover {
   color: MediumSeaGreen;
   background-color: #ffffff;
-  border-color: MediumSeaGreen;
 }
 
+.btn-success-navigation{
+  color: #ffffff;
+  background-color: MediumSeaGreen;
+  width:100%;
+  margin-bottom: 4%;
+}
+.btn-success-navigation:hover{
+  color: MediumSeaGreen;
+  background-color: #ffffff;
+}
 .button-right{
   float:right;
 }
 
 .button-eqcenter{
   float:center;
+}
+
+.btn-group-right{
+  position: relative;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  text-align: right;
 }
 
 .card {
@@ -78,10 +94,28 @@ a.bluelink {
   height: 100%;
   width: 100%;
   padding-top: 30px;
-  padding-right: 15px;
-  padding-left: 15px;
   margin-right: auto;
   margin-left: auto;
+}
+
+.iframe-container {
+  overflow: hidden;
+  padding-top: 56.25%;
+  position: relative;
+}
+
+.iframe-container iframe {
+   border: 0;
+   height: 100%;
+   left: 0;
+   position: absolute;
+   top: 0;
+   width: 100%;
+}
+
+/* 4x3 Aspect Ratio */
+.iframe-container-4x3 {
+  padding-top: 75%;
 }
 
 small.fieldhelp{
@@ -126,6 +160,34 @@ strong.fielderror{
 .imagecentre {
   text-align: center;
 }
+
+.table {
+  width:100%;
+  margin-bottom: 5rem;
+  color: #212529;
+  border-bottom:1px solid #dee2e6;
+  border-left:1px solid #dee2e6;
+}
+
+.table th,
+.table td {
+  padding: 0.75rem;
+  vertical-align: left;
+  border-top: 1px solid #dee2e6;
+  border-right: 1px solid #dee2e6;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.table thead th {
+  vertical-align: left;
+  border-bottom: 2px solid #dee2e6;
+}
+
+.table tbody + tbody {
+  border-top: 2px solid #dee2e6;
+
+}
+
 .eqrow {
 	width: 100%;
 	margin: 0;

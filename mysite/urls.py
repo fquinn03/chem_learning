@@ -21,15 +21,19 @@ from django.urls import path, include
 from django.views.generic.base import TemplateView
 from exams.views import (dotest, show_result, review, do_signup_quiz, congratulations,
 hundred)
-from lessons.views import complete_lesson
+from lessons.views import (complete_lesson, mark_lesson_as_complete, take_the_next_quiz,
+go_back_to_welcome_student)
 from teachers.views import class_list, show_students
 from custom_users.views import (welcome_student, welcome_teacher, signup, signup_form_student,
-signup_form_teacher, home, edit_student, edit_teacher, student_details_added, teacher_details_added,
+signup_form_teacher, home, edit_student, edit_teacher, get_help, cancel_help,
+student_details_added, teacher_details_added,
 ajax_load_teachers, ajax_load_classes, add_school)
 
 urlpatterns = [
+    path('get_help', get_help, name='get_help'),
+    path('cancel_help', cancel_help, name='cancel_help'),
     path('show_students/<class_name>', show_students, name = 'show_students'),
-    path('complete_lesson/<lesson_id>', complete_lesson, name = 'complete_lesson'),
+    path('complete_lesson', complete_lesson, name = 'complete_lesson'),
     path('class_list', class_list, name = 'class_list'),
     path('admin/', admin.site.urls),
     path('dotest', dotest, name='dotest'),
@@ -53,6 +57,8 @@ urlpatterns = [
     path('add_school', add_school, name = 'add_school'),
     path('congratulations', congratulations, name='congratulations'),
     path('hundred', hundred, name = 'hundred'),
+    path('mark_lesson_as_complete', mark_lesson_as_complete, name = 'mark_lesson_as_complete'),
+    path('take_the_next_quiz', take_the_next_quiz, name = 'take_the_next_quiz'),
+    path('go_back_to_welcome_student', go_back_to_welcome_student, name = 'go_back_to_welcome_student'),
     path('', home, name='home'),
-
 ]

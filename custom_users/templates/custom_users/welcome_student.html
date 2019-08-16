@@ -1,49 +1,77 @@
 {% extends 'base.html' %}
 
 {% block content %}
-
 <h5><strong>Welcome Student:</strong> {{student.user.get_username}}</h5>
-<p><strong>Current Level:</strong> {{student.level}}</p>
+<p><strong><strong>Current Level:</strong> {{student.level}}</strong></p>
+
 <div class="progress" style="height: 40px;">
   <div class="progress-bar bg-success" role="progressbar"
   style="width: {{progress}}%" aria-valuemin="0" aria-valuemax="100">Progress {{progress}}%</div>
 </div>
 <br/>
-<br/>
 <div class="row">
   <div class="col-sm-4">
-    <p> Complete the next lesson </p>
+    <p><strong>Next Lesson</strong></p>
     {% load static %}
-    <a href="complete_lesson/{{student.next_lesson_id}}">
-    <img src = {{next_lesson.image_link}} style="width:300px;height:200px;" alt="Element Lesson Title Page"/>
+    <a href="complete_lesson">
+    <img data-toggle="tooltip" data-placement="top" title="Next Lesson" class="img-fluid"
+     src = "{% static 'images\learning-svgrepo-com.svg' %}"
+     style="width:200px;height:125px;" alt="complete_lesson"/>
     </a>
 
   </div>
   <div class="col-sm-4">
-    <p> Complete the next quiz </p>
-    {% load static %}
-    <a href="dotest/{{student.next_exam_id}}">
-    <img src="{% static 'images/challenge.jpg' %}" alt="Complete a challenge" style="width:300px;height:200px;">
+    <p><strong>Next Quiz </strong></p>
+    <a href="dotest">
+    <img data-toggle="tooltip" data-placement="top" title="Next Quiz" class="img-fluid"
+    src="{% static 'images\school-material-paper-svgrepo-com.svg' %}"
+    alt="do a Quiz" style="width:200px;height:125px;">
     </a>
   </div>
-  <div class="col-sm-4" style="width:325px; height:250px; overflow:auto;">
-    <p> Completed Quizzes </p>
+  <div class="col-sm-4" style="width:250px;height:150px;">
+    <p><strong> Completed Quizzes </strong></p>
     <table class = "table" >
       <thead class = "thead-light" >
         <tr>
-          <th>Attempt</th>
           <th>Exam</th>
           <th>Percentage</th>
         </tr>
       </thead>
     {% for exam in completed_exams %}
     <tr >
-    <td>{{exam.attempt}}</td>
     <td>{{exam.exam.title}}</td>
-    <td><a class = "bluelink" href ="{% url 'show_result' exam_id=exam.exam.id %}">{{exam.percentage}}</a></td>
+    <td><a class = "bluelink"
+    href ="{% url 'show_result' exam_id=exam.exam.id %}">{{exam.percentage}}</a></td>
     </tr>
     {% endfor %}
     </table>
   </div>
 </div>
+<br/>
+<div class="row">
+  <div class="col-sm-4">
+    <p><strong> Revise</strong></p>
+    <a href="#">
+      <img data-toggle="tooltip" data-placement="top" title="Revise" class="img-fluid"
+      src="{% static 'images\school-material-write-svgrepo-com.svg' %}"
+      alt="Revise" style="width:200px;height:125px;" >
+    </a>
+
+  </div>
+  <div class="col-sm-4">
+    {% if student.needs_help %}
+      <p><strong> Help Requested</strong></p>
+      <a href = 'cancel_help'>
+        <img data-toggle="tooltip" data-placement="top" title="Help Requested"
+        class="img-fluid" src="{% static 'images/help-svgrepo-com.svg' %}"
+        alt="Help Requested" style="width:200px; height:125px; opacity: 0.2;" >
+      </a>
+    {% else %}
+      <p><strong> Request help</strong></p>
+      <a href= 'get_help'>
+        <img data-toggle="tooltip" data-placement="top" title="Request Help"
+        class="img-fluid" src="{% static 'images/help-svgrepo-com.svg' %}"
+        alt="Request Help" style="width:200px;height:125px;" >
+      </a>
+    {% endif %}
 {% endblock %}

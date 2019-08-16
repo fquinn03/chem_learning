@@ -100,15 +100,15 @@ class LessonsTest(TestCase):
     """
     # test complete_lesson view
     def test_complete_lesson_response(self):
-        response = self.client.get(reverse('complete_lesson', args=[1,]))
+        response = self.client.get(reverse('complete_lesson'))
         self.assertEqual(response.status_code, 200)
 
     def test_complete_lesson_template(self):
-        response = self.client.get(reverse('complete_lesson', args=[1,]))
+        response = self.client.get(reverse('complete_lesson'))
         self.assertTemplateUsed(response, 'lessons/view_lesson.html')
 
     def test_complete_lesson_html(self):
-        response = self.client.get(reverse('complete_lesson', args=[1,]))
+        response = self.client.get(reverse('complete_lesson'))
         self.assertContains(response, "<h5>Lesson Title: test_lesson_1_1</h5>")
 
     """
