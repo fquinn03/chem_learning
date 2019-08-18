@@ -6,10 +6,13 @@
 <p>Click on class below to view your student's progress</p>
 <p>
 {% for class in classes %}
-<a><button class="btn btn-success"
-  href ="{% url 'show_students' class_name=class.name %}">{{class.name}}</button>
+{% load static %}
+<a href ="{% url 'show_students' class_name=class.name %}">
+<img data-toggle="tooltip" data-placement="top" title={{class.name}} class="img-fluid"
+ src = "{% static 'images\students-student-svgrepo-com.svg' %}"
+ style="width:200px;height:125px;" alt="show_students"/>
 </a>
-</p>
+<p>{{class.name}}</p>
 {% endfor %}
 
 {% endblock %}

@@ -1,18 +1,30 @@
 {% extends 'base.html' %}
 {% block content %}
-<div class="container w-50" style ="text-align: left;">
-  <div class="card">
-    <div class="card-headergreen">
-      Login
-    </div>
-    <div class="card-body">
-    <form method="post">
-      {% csrf_token %}
-      {{ form.as_p }}
-    <button class= "btn btn-success button-right" type="submit" %>Login</button>
-    </form>
+<div class = "col-sm-12" style = "margin-left:auto; margin-right:auto;">
+  <div class="container w-50" style ="text-align: left; ">
+    <div class="cardlogin" >
+      <div class="card-headergreen">
+        <h5>Login</h5>
+      </div>
+      <div class="card-body">
+      <form method="post">
+        {% csrf_token %}
+        {% for field in form %}
+          <p>
+          {{field.label}}<br/>
+          {% if field.help_text %}
+          <small class = "fieldhelp">{{field.help_text|safe}}</small><br/>
+          {% endif %}
+          {{field}}
+          {% for error in field.errors %}
+            <strong class = "fielderror">{{error}}</strong><br/>
+          {% endfor %}
+        {% endfor %}
+        </p>
+      <button class= "btn btn-success button-right" type="submit" %>Login</button>
+      </form>
+      </div>
     </div>
   </div>
 </div>
-
 {% endblock %}

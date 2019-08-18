@@ -46,7 +46,8 @@ a.bluelink {
 .btn-success-navigation{
   color: #ffffff;
   background-color: MediumSeaGreen;
-  width:100%;
+  width:75%;
+  height:45px;
   margin-bottom: 4%;
 }
 .btn-success-navigation:hover{
@@ -69,6 +70,20 @@ a.bluelink {
 }
 
 .card {
+  position: relative;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  min-width: 0;
+  word-wrap: break-word;
+  background-color: #fff;
+  background-clip: border-box;
+  border: 1px solid rgba(0, 0, 0, 0.125);
+  border-radius: 0.25rem;
+}
+
+.cardlogin {
   position: relative;
   display: -ms-flexbox;
   display: flex;

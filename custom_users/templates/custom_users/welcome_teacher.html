@@ -4,11 +4,18 @@
 
 <h5>Welcome Teacher: {{user.get_username}}</h5>
 <p>Click on class below to view your student's progress</p>
-<p>
+<div class="row">
 {% for class in classes %}
+{% load static %}
+<div class="col-sm-2">
 <a href ="{% url 'show_students' class_name=class.name %}">
-  <button type="button" class="btn btn-success">{{class.name}}</button>
+<img data-toggle="tooltip" data-placement="top" title={{class.name}} class="img-fluid"
+ src = "{% static 'images\students-student-svgrepo-com.svg' %}"
+  alt="show_students"/>
 </a>
-</p>
+<h5 style = "text-align:center; margin-left:auto; margin-right:auto;">{{class.name}}</h5>
+</div>
+<div class="col-sm-1"></div>
 {% endfor %}
+</div>
 {% endblock %}
