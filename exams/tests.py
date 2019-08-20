@@ -7,8 +7,8 @@ from lessons.models import Lesson
 from .models import (Answer, Exam, Formula_Question, MCQ_Question, Question,
 UserAnswer, Written_Question, CompletedExam)
 from .utils import (calculate_percentage, create_exam_completed_entry,
-create_user_answer, get_corrections_formula, get_corrections_mcq,
-get_corrections_written, get_corrections_written, get_formula,
+create_user_answer, delete_completed_exam_record, get_corrections_formula,
+get_corrections_mcq, get_corrections_written, get_corrections_written, get_formula,
 get_level, get_next_exam)
 from .views import dotest, show_result, review
 
@@ -151,7 +151,7 @@ class ExamsTest(TestCase):
         question4 = Written_Question.objects.get(id = 4)
         Answer.objects.create(question = question4, text = "Cola",
         correct = True, correct_spelling = True, correct_answer_to_display = True)
-        UserAnswer.objects.create(question = question4, user_answer = "Jaws", user = student10)
+        UserAnswer.objects.create(question = question4, user_answer = "Cola", user = student10)
         CompletedExam.objects.create(user = student10, exam = exam7, level = 7, percentage = 100, attempt = 1)
 
     def setUp(self):
@@ -338,29 +338,34 @@ class ExamsTest(TestCase):
 
     def test_do_quiz_signup_post_response(self):
         self.client.login(username ="student1", password="mypass")
-        response=self.client.post(reverse('do_signup_quiz'), {'2':'True', '3': 'True', '4': 'False', '5':'False'}, follow = True)
+        response=self.client.post(reverse('do_signup_quiz'),
+        {'2':'True', '3': 'True', '4': 'False', '5':'False'}, follow = True)
         self.assertEqual(response.status_code, 200)
 
     def test_do_quiz_signup_post_student_level_2(self):
         self.client.force_login(User.objects.get(id=2))
-        response=self.client.post(reverse('do_signup_quiz'), {'2':'True', '3': 'True', '4': 'False', '5':'False'}, follow = True)
+        response=self.client.post(reverse('do_signup_quiz'),
+        {'2':'True', '3': 'True', '4': 'False', '5':'False'}, follow = True)
         student = StudentProfile.objects.get(user_id = 2)
         self.assertEqual(student.level, 2)
 
     def test_do_quiz_signup_post_student_level_3(self):
         self.client.force_login(User.objects.get(id=2))
-        response=self.client.post(reverse('do_signup_quiz'), {'2':'True', '3': 'True', '4': 'True', '5':'False'}, follow = True)
+        response=self.client.post(reverse('do_signup_quiz'),
+        {'2':'True', '3': 'True', '4': 'True', '5':'False'}, follow = True)
         student = StudentProfile.objects.get(user_id = 2)
         self.assertEqual(student.level, 3)
 
     def test_do_quiz_signup_post_template(self):
         self.client.force_login(User.objects.get(id=2))
-        response=self.client.post(reverse('do_signup_quiz'), {'2':'True', '3': 'True', '4': 'False', '5':'False'}, follow = True)
+        response=self.client.post(reverse('do_signup_quiz'),
+        {'2':'True', '3': 'True', '4': 'False', '5':'False'}, follow = True)
         self.assertTemplateUsed(response, 'custom_users/welcome_student.html')
 
     def test_do_quiz_signup_post_html(self):
         self.client.force_login(User.objects.get(id=2))
-        response=self.client.post(reverse('do_signup_quiz'), {'2':'True', '3': 'True', '4': 'False'}, follow = True)
+        response=self.client.post(reverse('do_signup_quiz'),
+        {'2':'True', '3': 'True', '4': 'False'}, follow = True)
         self.assertContains(response, "<h5><strong>Welcome Student:</strong> student1</h5>")
 
     """
@@ -396,6 +401,11 @@ class ExamsTest(TestCase):
     def test_get_corrections_written_all_correct(self):
         questions = Written_Question.objects.all()
         corrections = get_corrections_written(self.student1.user_id, 1)
+        self.assertEqual(corrections[0], {})
+
+    def test_get_corrections_written_all_correct2(self):
+        questions = Written_Question.objects.all()
+        corrections = get_corrections_written(11, 7)
         self.assertEqual(corrections[0], {})
 
     def test_get_corrections_written_mispelled(self):
@@ -488,3 +498,8 @@ class ExamsTest(TestCase):
         get_next_exam(10)
         student = StudentProfile.objects.get(user_id =10)
         self.assertEqual(student.next_exam_id, 1)
+
+    def test_delete_exam_record(self):
+        delete_completed_exam_record(11, 7)
+        with self.assertRaises(CompletedExam.DoesNotExist):
+            CompletedExam.objects.get(user_id = 11)
