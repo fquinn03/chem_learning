@@ -4,6 +4,7 @@ from custom_users.models import User, StudentProfile
 from exams.models import CompletedExam, Exam
 from exams.utils import get_level, get_next_lesson
 from .models import Lesson
+from .utils import add_lesson_completed
 
 """
 Unit tests for all of the lessons views.
@@ -29,7 +30,8 @@ class LessonsTest(TestCase):
         studentuser3 = User.objects.get(id = 5)
         studentuser4 = User.objects.get(id = 6)
         studentuser5 = User.objects.get(id = 7)
-        StudentProfile.objects.create(user = studentuser, level = 1)
+        StudentProfile.objects.create(user = studentuser, level = 1,
+         details_added = True, signup_quiz_completed = True, next_lesson_id=1, next_exam_id=1)
         StudentProfile.objects.create(user = studentuser1, level = 1 )
         StudentProfile.objects.create(user = studentuser2, level = 2, attempt = 3 )
         StudentProfile.objects.create(user = studentuser3, level = 2, attempt = 3 )
@@ -41,9 +43,6 @@ class LessonsTest(TestCase):
         student4 = StudentProfile.objects.get(user_id = 5)
         student5 = StudentProfile.objects.get(user_id = 6)
         student6 = StudentProfile.objects.get(user_id = 7)
-        student1.details_added = True
-        student1.signup_quiz_completed = True
-        student1.next_lesson_id = 1
         Lesson.objects.create(level = 1, title = "test_lesson_1_1", link = "www.testlink1.com")
         Lesson.objects.create(level = 1, title = "test_lesson_1_2", link = "www.testlink2.com")
         Lesson.objects.create(level = 1, title = "test_lesson_1_3", link = "www.testlink3.com")
@@ -74,6 +73,7 @@ class LessonsTest(TestCase):
         self.lesson = Lesson.objects.get(id=1)
         self.client = Client()
         self.client.login(username = 'student1', password = 'student1_pass')
+        self.student1 = StudentProfile.objects.get(user_id = 2)
 
     """
     Models Tests
@@ -110,6 +110,42 @@ class LessonsTest(TestCase):
     def test_complete_lesson_html(self):
         response = self.client.get(reverse('complete_lesson'))
         self.assertContains(response, "<h5>Lesson Title: test_lesson_1_1</h5>")
+
+    def test_mark_lesson_as_complete_response(self):
+        response = self.client.get(reverse('mark_lesson_as_complete'))
+        self.assertEqual(response.status_code, 302)
+
+    def test_mark_lesson_as_complete_template(self):
+        response = self.client.get(reverse('mark_lesson_as_complete'), follow=True)
+        self.assertTemplateUsed(response, 'lessons/view_lesson.html')
+
+    def test_mark_lesson_as_complete_html(self):
+        response = self.client.get(reverse('mark_lesson_as_complete'), follow=True)
+        self.assertContains(response, "<h5>Lesson Title: test_lesson_1_2</h5>")
+
+    def test_take_the_next_quiz_response(self):
+        response = self.client.get(reverse('take_the_next_quiz'))
+        self.assertEqual(response.status_code, 302)
+
+    def test_take_the_next_quiz_template(self):
+        response = self.client.get(reverse('take_the_next_quiz'), follow=True)
+        self.assertTemplateUsed(response, 'exams/dotest.html')
+
+    def test_take_the_next_quiz_html(self):
+        response = self.client.get(reverse('take_the_next_quiz'), follow=True)
+        self.assertContains(response, "<h5>test_exam1</h5>")
+
+    def test_go_back_to_welcome_student_response(self):
+        response = self.client.get(reverse('go_back_to_welcome_student'))
+        self.assertEqual(response.status_code, 302)
+
+    def test_go_back_to_welcome_student_template(self):
+        response = self.client.get(reverse('go_back_to_welcome_student'), follow=True)
+        self.assertTemplateUsed(response, 'custom_users/welcome_student.html')
+
+    def test_go_back_to_welcome_student_html(self):
+        response = self.client.get(reverse('go_back_to_welcome_student'), follow=True)
+        self.assertContains(response, "<h5><strong>Welcome Student:</strong> student1</h5>")
 
     """
     Tests for get_next_lesson()
@@ -151,3 +187,9 @@ class LessonsTest(TestCase):
         get_next_lesson(7)
         self.assertEqual(StudentProfile.objects.get(user_id = 7).level, 1)
         self.assertEqual(StudentProfile.objects.get(user_id = 7).next_lesson_id, 1)
+
+    # test add_lesson_completed.utils
+    def test_add_lesson_completed(self):
+        add_lesson_completed(self.student1.user_id)
+        completed_lessons = self.student1.completed_lessons
+        self.assertQuerysetEqual(self.student1.completed_lessons.all(),  ["<Lesson: test_lesson_1_1>"])

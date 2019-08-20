@@ -21,20 +21,29 @@ def complete_lesson(request):
     'lesson': lesson,
     })
 
+"""
+View to move from view_lesson.html on to the next lesson
+"""
 @login_required
 @user_passes_test(user_is_student)
 def mark_lesson_as_complete(request):
-    add_lesson_completed(request)
+    add_lesson_completed(request.user.id)
     return redirect('complete_lesson')
-
+    
+"""
+View to move from view_lesson.html on to the next quiz
+"""
 @login_required
 @user_passes_test(user_is_student)
 def take_the_next_quiz(request):
-    add_lesson_completed(request)
+    add_lesson_completed(request.user.id)
     return redirect('dotest')
 
+"""
+View to move from view_lesson.html back to the welcome screen
+"""
 @login_required
 @user_passes_test(user_is_student)
 def go_back_to_welcome_student(request):
-    add_lesson_completed(request)
+    add_lesson_completed(request.user.id)
     return redirect('welcome_student')

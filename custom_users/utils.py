@@ -37,4 +37,4 @@ def exam_not_done_before(user):
 
 def is_finished(user):
     student = StudentProfile.objects.get(user_id = user.id)
-    return student.level > 4
+    return student.level >= 4

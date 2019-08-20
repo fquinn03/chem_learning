@@ -1,28 +1,29 @@
 {% extends 'base.html' %}
 
 {% block content %}
+{% load static %}
 <h5>{{exam.title}}</h5>
 <div class="row">
   <div class="col-sm-4">
     <form name = "form" action = "" method="POST" style ="overflow: auto;">
     {% csrf_token %}
     {% for question in mcq_questions %}
-        <p><strong>{{question.text}}</strong></p>
+        <p><strong>{{question.text|safe}}</strong></p>
           {% for answer in question.answer_set.all %}
             <input type ='radio' name= "{{question.id}}" id ="answer{{forloop.counter}}"
             value = "{{answer.text}}" required/>
-            <label for = "answer{{forloop.counter}}">{{answer.text}}</label>
+            <label for = "answer{{forloop.counter}}">{{answer.text|safe}}</label>
             <br/>
           {% endfor %}
     {% endfor %}
     {% for question in written_questions %}
-        <p><strong>{{question.text}}</strong></p>
+        <p><strong>{{question.text|safe}}</strong></p>
         <label for = "answer{{forloop.counter}}">Answer</label>
         <input type ='text' name= "{{question.id}}" id ="answer{{forloop.counter}}"  required />
         <br/>
     {% endfor %}
     {% for question in formula_questions %}
-          <p><strong>{{question.text}}</strong></p>
+          <p><strong>{{question.text|safe}}</strong></p>
           <label for = "answer{{forloop.counter}}">Formula</label>
           <input type ='text' name= "{{question.id}}" id ="answer{{forloop.counter}}" required/>
           <br/>

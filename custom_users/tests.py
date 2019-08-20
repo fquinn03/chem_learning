@@ -192,7 +192,7 @@ class CustomUsersTest(TestCase):
         student.signup_quiz_completed = False
         self.client.login(username = "student2", password="student2_pass")
         response=self.client.get(reverse('signup_form_student'))
-        self.assertContains(response,'<div class="card-headergreen">Student sign up</div>')
+        self.assertContains(response,'<div class="card-headergreen"><h5>Student sign up</h5></div>')
 
     def test_sign_up_form_student_post_response(self):
         response=self.client.post(reverse('signup_form_student'),
@@ -223,8 +223,7 @@ class CustomUsersTest(TestCase):
     def test_sign_up_form_student_post_html(self):
         response=self.client.post(reverse('signup_form_student'),
         {'username': 'student5', 'password1': 'pass1234', 'password2': 'pass1234'}, follow = True)
-        self.assertContains(response, '<div class="card-headergreen">Add Student Details</div>')
-
+        self.assertContains(response, '<div class="card-headergreen"><h5>Add Student Details</h5></div>')
 
     # test signup_form_teacher views. GET and POST requests.
     def test_sign_up_form_teacher_get_response(self):
@@ -240,7 +239,7 @@ class CustomUsersTest(TestCase):
     def test_sign_up_form_teacher_get_html(self):
         self.client.login(username = "teacher", password="teacher_pass")
         response=self.client.get(reverse('signup_form_teacher'))
-        self.assertContains(response,'<div class="card-headergreen">Teacher sign up</div>')
+        self.assertContains(response,'<div class="card-headergreen"><h5>Teacher sign up</h5></div>')
 
     def test_sign_up_form_teacher_post_response(self):
         response=self.client.post(reverse('signup_form_teacher'),
@@ -349,7 +348,7 @@ class CustomUsersTest(TestCase):
     def test_edit_student_get_html(self):
         self.client.login(username = "student2", password="student2_pass")
         response=self.client.get(reverse('edit_student'))
-        self.assertContains(response, '<div class="card-headergreen">Add Student Details</div>')
+        self.assertContains(response, '<div class="card-headergreen"><h5>Add Student Details</h5></div>')
 
     def test_edit_student_post_html(self):
         self.client.login(username = "student2", password="student2_pass")
