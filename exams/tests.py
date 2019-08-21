@@ -9,7 +9,7 @@ UserAnswer, Written_Question, CompletedExam)
 from .utils import (calculate_percentage, create_exam_completed_entry,
 create_user_answer, delete_completed_exam_record, get_corrections_formula,
 get_corrections_mcq, get_corrections_written, get_corrections_written, get_formula,
-get_level, get_next_exam)
+get_level, get_next_exam, get_starting_level)
 from .views import dotest, show_result, review
 
 """
@@ -503,3 +503,24 @@ class ExamsTest(TestCase):
         delete_completed_exam_record(11, 7)
         with self.assertRaises(CompletedExam.DoesNotExist):
             CompletedExam.objects.get(user_id = 11)
+
+    # test utils.get_starting_level
+    def test_get_starting_level(self):
+        answers = ["True", "False", "True", "True", "True"]
+        level = get_starting_level(answers)
+        self.assertEqual(level, 5)
+
+    def test_get_starting_level_2(self):
+        answers = ["True", "False", "True", "False", "True"]
+        level = get_starting_level(answers)
+        self.assertEqual(level, 1)
+
+    def test_get_starting_level_3(self):
+        answers = ["False", "False", "False", "False", "False"]
+        level = get_starting_level(answers)
+        self.assertEqual(level, 1)
+
+    def test_get_starting_level_4(self):
+        answers = ["False", "True", "True", "True", "False"]
+        level = get_starting_level(answers)
+        self.assertEqual(level, 4)

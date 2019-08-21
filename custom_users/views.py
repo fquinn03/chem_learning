@@ -243,6 +243,9 @@ def ajax_load_classes(request):
     class_ids = Class_id.objects.filter(teacher=teacher_id).order_by('name')
     return render(request, 'custom_users/ajax_load_classes.html', {'class_ids': class_ids})
 
+"""
+Used to change "help" icon on welcome_student page
+"""
 def get_help(request):
     student = StudentProfile.objects.get(user_id = request.user.id)
     student.needs_help = True

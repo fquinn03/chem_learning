@@ -245,13 +245,14 @@ def delete_completed_exam_record(student, exam_id):
         pass
 
 def get_starting_level(answers):
-    for answer in answers[len(answers)//2::-1]:
-        if answer == "True":
-            i = answers.index(answer)
-            if answers[i-1] == True and answers[i-2]==True:
-                return answers.index(answer)
-    for answer in answers[:len(answers)//2:-1]:
-        if answers[i] =="True":
-            i = answers.index(answer)
-            return i
-    return 1
+    i = len(answers)-1
+    while i >= 2:
+        if answers[i] == "True":
+            if answers[i-1] == "True" and answers[i-2]== "True":
+                return i+1
+        i -= 1
+    else:
+        if answers[1] == "True":
+            return 2
+        else:
+            return 1
