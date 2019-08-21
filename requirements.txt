@@ -4,12 +4,15 @@ backcall==0.1.0
 bleach==3.1.0
 chempy==0.7.8
 colorama==0.4.1
+confusable-homoglyphs==3.2.0
 coverage==4.5.3
 cycler==0.10.0
 decorator==4.4.0
 defusedxml==0.6.0
 Django==2.0.13
+django-registration==3.0.1
 entrypoints==0.3
+flake8==3.7.8
 importlib-metadata==0.19
 ipykernel==5.1.1
 ipython==7.7.0
@@ -23,7 +26,9 @@ jupyter-client==5.3.1
 jupyter-console==6.0.0
 jupyter-core==4.5.0
 kiwisolver==1.1.0
+logilab-common==1.4.3
 MarkupSafe==1.1.1
+mccabe==0.6.1
 mistune==0.8.4
 more-itertools==7.2.0
 mpmath==1.1.0
@@ -40,6 +45,8 @@ prometheus-client==0.7.1
 prompt-toolkit==2.0.9
 PuLP==1.6.10
 py==1.8.0
+pycodestyle==2.5.0
+pyflakes==2.1.1
 Pygments==2.4.2
 pyneqsys==0.5.6
 pyodesys==0.12.5
