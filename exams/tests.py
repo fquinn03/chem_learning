@@ -524,3 +524,8 @@ class ExamsTest(TestCase):
         answers = ["False", "True", "True", "True", "False"]
         level = get_starting_level(answers)
         self.assertEqual(level, 4)
+
+    def test_get_starting_level_5(self):
+        answers = ["False", "True", "True", "False", "True"]
+        level = get_starting_level(answers)
+        self.assertEqual(level, 2)

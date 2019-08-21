@@ -6,7 +6,7 @@ from django.shortcuts import render, redirect, get_list_or_404, get_object_or_40
 from lessons.models import Lesson
 from .forms import AddSchoolForm, StudentForm, TeacherForm, StudentProfileForm, TeacherProfileForm
 from .models import Class_id, School, TeacherProfile, StudentProfile
-from .utils import (user_is_teacher, user_is_student, have_student_details, have_teacher_details,
+from .utils import (get_progress, user_is_teacher, user_is_student, have_student_details, have_teacher_details,
 have_student_signup, sign_up_quiz_already_completed)
 from exams.models import CompletedExam
 
@@ -43,9 +43,7 @@ Shows a students next lesson, test and gives overall summary of progress.
 def welcome_student(request):
     student = StudentProfile.objects.select_related().get(user_id = request.user.id)
     next_lesson = Lesson.objects.get(id = student.next_lesson_id)
-    progress = ((student.level-1)*25) #hardcoded depending on how many levels
-    if progress > 100:
-        progress = 100
+    progress = get_progress(request.user.id)
     completed_exams = CompletedExam.objects.filter(user = student)
     return render(request, 'custom_users/welcome_student.html', {'student': student,
     'next_lesson':next_lesson,
@@ -147,8 +145,6 @@ def edit_student(request):
             student.details_added = True
             student.save()
             return redirect('student_details_added')
-        else:
-            return render(request, 'custom_users/edit_student.html', {'form': form})
     else:
         form=StudentProfileForm()
         return render(request, 'custom_users/edit_student.html', {'form': form})

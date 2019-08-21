@@ -30,11 +30,18 @@ def user_is_teacher(user):
         return True
     except:
         return False
-
+"""
 def exam_not_done_before(user):
     student = StudentProfile.objects.get(user_id = user.id)
     return CompletedExam.objects.filter(user = user.id).filter(exam = student.next_exam_id ).filter(attempt = student.attempt)
-
+"""
 def is_finished(user):
     student = StudentProfile.objects.get(user_id = user.id)
-    return student.level >= 4
+    return student.level > 4 #hard_code final level number
+
+def get_progress(user):
+    student = StudentProfile.objects.get(user_id = user)
+    progress = ((student.level-1)*25) #hardcoded depending on how many levels
+    if progress > 100:
+        progress = 100
+    return progress

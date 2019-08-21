@@ -2,7 +2,7 @@ from django.db import transaction
 from django.contrib.auth.decorators import user_passes_test, login_required
 from django.shortcuts import render, redirect
 from custom_users.models import StudentProfile
-from custom_users.utils import (exam_not_done_before, user_is_teacher, user_is_student, have_student_details,
+from custom_users.utils import (user_is_teacher, user_is_student, have_student_details,
 have_student_signup, is_finished, sign_up_quiz_already_completed)
 from .models import (Answer, Exam, CompletedExam, Formula_Question,
 MCQ_Question, Question, UserAnswer, Written_Question)
@@ -52,7 +52,6 @@ def do_signup_quiz(request):
     exam = Exam.objects.get(title = "signup_quiz")
     questions = Question.objects.filter(exam = exam.id)
     answers = []
-    level = 1
     if request.method == 'POST':
         for key, value in request.POST.items():
             if key != 'csrfmiddlewaretoken':
@@ -68,6 +67,7 @@ def do_signup_quiz(request):
     else:
         return render(request, 'custom_users/do_signup_quiz.html', {'questions': questions
         })
+
 """
 Use the exam_id to get all the questions for the exam.  Use utils.calculate_percentage to
 check if the user_answer in the database for each question is correct, calculate the user's
@@ -84,7 +84,7 @@ def show_result(request, exam_id):
     percentage_result = calculate_percentage(questions, request.user.id, exam_id)
     create_exam_completed_entry(student, exam, percentage_result)
     get_level(request.user.id)
-    if student.level >= 4:
+    if is_finished(request.user):
         return redirect('congratulations')
     get_next_exam(request.user.id)
     get_next_lesson(request.user.id)
