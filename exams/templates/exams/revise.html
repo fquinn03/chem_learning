@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h5>Revision</h5>
+<div class="row">
+  <div class="col-sm-6">
+    {% if number_of_q != 0 %}
+      {% for question in incorrect_questions %}
+      {{question.question.text|safe}}<br/>
+      {{question.question.review|safe}}<br/>
+      {% endfor %}
+    {% else %}
+      <p> You have nothing to revise </p>
+    {% endif %}
+    <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+    {% load static %}
+    <a id="welcome_student" href="go_back_to_welcome_student" >
+    <img data-toggle="tooltip" data-placement="top" title="Back To Welcome Student" class="img-fluid"src="{% static 'images\welcome-svgrepo-com.svg' %}"
+    alt="welcome_student" style="width:90px;height:55px;margin-left:55%">
+    </a>
+  </div>
+  <div class="col-sm-6">
+    <img src = "{% static 'images\revise.jpg'%}" style="width:80%;height:80%;"/>
+  </div>
+
+{% endblock %}

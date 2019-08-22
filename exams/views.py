@@ -1,10 +1,11 @@
 from django.db import transaction
 from django.contrib.auth.decorators import user_passes_test, login_required
 from django.shortcuts import render, redirect
+from random import shuffle
 from custom_users.models import StudentProfile
 from custom_users.utils import (user_is_teacher, user_is_student, have_student_details,
 have_student_signup, is_finished, sign_up_quiz_already_completed)
-from .models import (Answer, Exam, CompletedExam, Formula_Question,
+from .models import (Answer, Exam, CompletedExam, IncorrectAnswer, Formula_Question,
 MCQ_Question, Question, UserAnswer, Written_Question)
 from .utils import (calculate_percentage, create_exam_completed_entry, create_user_answer,
 delete_completed_exam_record, delete_completed_exam_total, get_corrections_formula, get_corrections_mcq,
@@ -124,6 +125,23 @@ def review(request, exam_id):
         written_corrections_incorrect, 'written_corrections_mispelled':written_corrections_mispelled,
         'formula_corrections':formula_corrections, 'mispelled_count':mispelled_count, 'formulae_count':formulae_count
         })
+
+@login_required
+@user_passes_test(user_is_student)
+@user_passes_test(have_student_details, login_url = 'edit_student',  redirect_field_name = 'get_student_details' )
+@user_passes_test(have_student_signup,  login_url = 'do_signup_quiz', redirect_field_name = 'do_signup_quiz')
+def revise(request):
+    student = StudentProfile.objects.get(user_id = request.user.id)
+    incorrect_questions = IncorrectAnswer.objects.filter(user = student.user_id)
+    incorrect_questions = list(incorrect_questions)
+    number_of_q = len(incorrect_questions)
+    shuffle(incorrect_questions)
+    if len(incorrect_questions) > 5:
+        incorrect_questions = incorrect_questions[0:4]
+    return render(request, 'exams/revise.html', {
+    'incorrect_questions':incorrect_questions,
+    'number_of_q':number_of_q
+    })
 
 @login_required
 @user_passes_test(user_is_student)

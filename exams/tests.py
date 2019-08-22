@@ -259,17 +259,17 @@ class ExamsTest(TestCase):
     # test show_result view finished all levels.
     def test_show_result_get_response_finished(self):
         self.client.login(username ="student10", password="mypass")
-        response = self.client.get(reverse('show_result', args=[7,]))
+        response = self.client.get(reverse('welcome_student'))
         self.assertEqual(response.status_code, 302)
 
     def test_show_result_get_template_used_finished(self):
         self.client.login(username ="student10", password="mypass")
-        response = self.client.get(reverse('show_result', args=[7,]), follow=True)
+        response = self.client.get(reverse('welcome_student'), follow=True)
         self.assertTemplateUsed(response, 'exams/congratulations.html')
 
     def test_show_result_get_html_finished(self):
         self.client.login(username ="student10", password="mypass")
-        response = self.client.get(reverse('show_result', args=[7,]), follow=True)
+        response = self.client.get(reverse('welcome_student'), follow=True)
         self.assertContains(response,
         "<h1 class='gold .animation-lightSpeedin'>Congratulations you have completed ChemLearning</h1>")
     # test review view

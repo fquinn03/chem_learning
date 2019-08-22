@@ -40,7 +40,7 @@ class CustomUsersTest(TestCase):
         class_id = class_id, school_id = school.id, level = 1, attempt = 1, details_added = True,
         signup_quiz_completed = True, next_lesson_id = 1)
         StudentProfile.objects.create(user=student4, teacher=teacherprofile,
-        class_id = class_id, school_id = school.id, level = 7, attempt = 1, details_added = True,
+        class_id = class_id, school_id = school.id, level = 4, attempt = 1, details_added = True,
         signup_quiz_completed = True, next_lesson_id = 1)
         Lesson.objects.create(level = 1, title = "test_lesson_1_1", link = "www.testlink1.com")
 
@@ -637,4 +637,4 @@ class CustomUsersTest(TestCase):
         self.client.login(username = "student4", password="my_pass")
         response = self.client.get(reverse('welcome_student'))
         #full image
-        self.assertContains(response, 'style="width: 100%"' )
+        self.assertContains(response, 'style="width: 75%"' )

@@ -18,7 +18,8 @@ class Exam(models.Model):
 # Questions belong to an exam.
 class Question(models.Model):
     exam = models.ForeignKey(Exam, on_delete=models.CASCADE)
-    text = models.CharField(max_length=1000, unique = True)
+    text = models.CharField(max_length=250, unique = True)
+    review = models.CharField(max_length=1000)
     def __str__(self):
         return self.text
 
@@ -73,3 +74,11 @@ class CompletedExam(models.Model):
 
     def __str__(self):
         return self.user.user.username+" "+self.exam.title
+
+# Model for storing a StudentProfile users answers
+class IncorrectAnswer(models.Model):
+    question = models.ForeignKey(Question, on_delete=models.CASCADE)
+    user = models.ForeignKey(StudentProfile, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.user.user.username+ " "+self.question.text

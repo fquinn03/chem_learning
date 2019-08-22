@@ -4,7 +4,7 @@ from chempy import Substance
 from django.contrib.auth.models import User
 from custom_users.models import Class_id, StudentProfile, TeacherProfile, User
 from .models import (Answer, CompletedExam, Exam, Formula_Question,
-MCQ_Question, Question, UserAnswer, Written_Question)
+MCQ_Question, IncorrectAnswer, Question, UserAnswer, Written_Question)
 from lessons.models import Lesson
 
 """
@@ -63,6 +63,7 @@ If incorrect add correct answer to reveiw object corrections and display through
 """
 # correct MCQ style questions
 def get_corrections_mcq(user_id, exam_id):
+    student = StudentProfile.objects.get(user_id = user_id)
     mcq_questions = MCQ_Question.objects.filter(exam = exam_id) #Get all the MCQ questions on the exam
     mcq_corrections = {}
     for question in mcq_questions:
@@ -70,10 +71,15 @@ def get_corrections_mcq(user_id, exam_id):
         correct_answer =  Answer.objects.get(question = question.id, correct=True, correct_spelling = True)# get the correct answer
         if student_answer.user_answer != correct_answer.text: # compare answers and if incorrect
             mcq_corrections[question.text] = correct_answer.text # add to mcq_corrections for use later
+            try:
+                IncorrectAnswer.objects.get(question = question, user = student)
+            except IncorrectAnswer.DoesNotExist:
+                IncorrectAnswer.objects.create(question = question, user = student)
     return mcq_corrections
 
 # correct Written style questions
 def get_corrections_written(user_id, exam_id):
+    student = StudentProfile.objects.get(user_id = user_id)
     written_questions = Written_Question.objects.filter(exam = exam_id) # get all the written questions on the exam.
     written_corrections = {}
     mispelled = {}
@@ -94,9 +100,14 @@ def get_corrections_written(user_id, exam_id):
                 mispelled[question.text] = correct_answer.text # add the question and correct spelling for any incorrectly spelled answers
             else:
                 written_corrections[question.text] = correct_answer_to_display.text # add the question and correct answer for any incorrect answers
+                try:
+                    IncorrectAnswer.objects.get(question = question, user = student)
+                except IncorrectAnswer.DoesNotExist:
+                    IncorrectAnswer.objects.create(question = question, user = student)
     return (written_corrections, mispelled)
 
 def get_corrections_formula(user_id, exam_id):
+    student = StudentProfile.objects.get(user_id = user_id)
     formula_questions = Formula_Question.objects.filter(exam = exam_id) #Get all the Formula questions on the exam
     formula_corrections = {}
     for question in formula_questions:
@@ -104,6 +115,10 @@ def get_corrections_formula(user_id, exam_id):
         correct_answer =  Answer.objects.get(question = question.id, correct=True, correct_spelling = True) #get correct answer
         if student_answer.user_answer != correct_answer.text:
             formula_corrections[question.text] = get_formula(correct_answer.text) #if user answer not correct add to formula_corrections
+            try:
+                IncorrectAnswer.objects.get(question = question, user = student)
+            except IncorrectAnswer.DoesNotExist:
+                IncorrectAnswer.objects.create(question = question, user = student)
     return formula_corrections
 
 
@@ -203,10 +218,11 @@ def adjust_level_and_attempts(student, weighted_mean):
         student.attempt = 0
         student.progress = 1
         student.needs_help = False
-        
+
     elif weighted_mean == -1:
         student.attempt = 0
         student.progress = 2
+        student.needs_help = False
 
     elif weighted_mean < 80 and student.attempt >= 3:
         if student.level > 1:
@@ -218,9 +234,11 @@ def adjust_level_and_attempts(student, weighted_mean):
             student.level = 1
             student.attempt = 0
             student.progress = 2
+            student.needs_help = True
     else:
         student.attempt += 1
         student.progress = 2
+        student.needs_help = False
 
     student.save()
 

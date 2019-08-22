@@ -1,7 +1,7 @@
 from django.contrib import admin
 from .models import (Answer, CompletedExam, Exam,
 Formula_Question, MCQ_Question, UserAnswer,
-Written_Question)
+Written_Question, IncorrectAnswer)
 
 class AnswerAdmin(admin.ModelAdmin):
     pass
@@ -32,6 +32,11 @@ class UserAnswerAdmin(admin.ModelAdmin):
     pass
 
 admin.site.register(UserAnswer, UserAnswerAdmin)
+
+class IncorrectAnswerAdmin(admin.ModelAdmin):
+    pass
+
+admin.site.register(IncorrectAnswer, IncorrectAnswerAdmin)
 
 class CompletedExamAdmin(admin.ModelAdmin):
     pass

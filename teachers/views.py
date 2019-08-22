@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 from custom_users.models import Class_id, StudentProfile, TeacherProfile
 from exams.models import Exam, Question, UserAnswer
+from .forms import AddClassForm
 
 """
 If user is a teacher, a list of their classes is sent to the template
@@ -38,6 +39,9 @@ def show_students(request, class_name):
     'students': students,
     })
 
+@login_required
+@user_passes_test(user_is_teacher)
+@user_passes_test(have_teacher_details, login_url = 'edit_teacher',  redirect_field_name = 'get_teacher_details' )
 def see_student_test(request, exam_id, student_id):
     student = StudentProfile.objects.get(user_id = student_id)
     exam = Exam.objects.get(id = exam_id)
@@ -50,5 +54,21 @@ def see_student_test(request, exam_id, student_id):
     'question_and_answer': question_and_answer,
     'student':student,
     'exam':exam
-    
     })
+
+@login_required
+@user_passes_test(user_is_teacher)
+@user_passes_test(have_teacher_details, login_url = 'edit_teacher',  redirect_field_name = 'get_teacher_details' )
+def add_class(request):
+    if request.method == 'POST':
+        teacher = TeacherProfile.objects.get(user_id = request.user.id)
+        form = AddClassForm(request.POST)
+        if form.is_valid():
+            class_name = form.cleaned_data['name']
+            Class_id.objects.create(name = class_name, teacher = teacher)
+            return redirect('welcome_teacher')
+        else:
+            return render(request, 'teachers/add_class.html', {'form': form})
+    else:
+        form=AddClassForm()
+        return render(request, 'teachers/add_class.html', {'form': form})

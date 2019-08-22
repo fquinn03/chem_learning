@@ -17,5 +17,13 @@
 </div>
 <div class="col-sm-1"></div>
 {% endfor %}
+  <div class="col-sm-2">
+  <a href ="{% url 'add_class' %}">
+    <img data-toggle="tooltip" data-placement="top" title={{class.name}} class="img-fluid"
+     style = "opacity:0.2" src = "{% static 'images\students-student-svgrepo-com.svg' %}"
+      alt="show_students"/>
+    </a>
+    <h5 style = "text-align:center; margin-left:auto; margin-right:auto;">Add Class</h5>
+  </div>
 </div>
 {% endblock %}

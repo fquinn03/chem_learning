@@ -53,7 +53,7 @@
 <div class="row">
   <div class="col-sm-4">
     <p><strong> Revise</strong></p>
-    <a href="#">
+    <a href="{% url 'revise' %}">
       <img data-toggle="tooltip" data-placement="top" title="Revise" class="img-fluid"
       src="{% static 'images\school-material-write-svgrepo-com.svg' %}"
       alt="Revise" style="width:200px;height:125px;" >
@@ -63,7 +63,7 @@
 
   <div class="col-sm-4">
     {% if student.needs_help %}
-      <p><strong> Help Requested</strong></p>
+      <p><strong> Help is coming</strong></p>
       <a href = 'cancel_help'>
         <img data-toggle="tooltip" data-placement="top" title="Help Requested"
         class="img-fluid" src="{% static 'images/help-svgrepo-com.svg' %}"

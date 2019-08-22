@@ -31,7 +31,7 @@ class TeacherProfile(models.Model):
 
 # One teacher can have many classes, can be named by user.
 class Class_id(models.Model):
-    name = models.CharField(max_length=100, default="My Class", unique = True)
+    name = models.CharField(max_length=100)
     teacher = models.ForeignKey(TeacherProfile, on_delete=models.CASCADE)
 
     def __str__(self):

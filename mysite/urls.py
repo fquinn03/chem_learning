@@ -20,10 +20,10 @@ from django.contrib.auth import views as auth_views
 from django.urls import path, include
 from django.views.generic.base import TemplateView
 from exams.views import (dotest, show_result, review, do_signup_quiz, congratulations,
-hundred)
+hundred, revise)
 from lessons.views import (complete_lesson, mark_lesson_as_complete, take_the_next_quiz,
 go_back_to_welcome_student)
-from teachers.views import class_list, show_students, see_student_test
+from teachers.views import class_list, show_students, see_student_test, add_class
 from custom_users.views import (welcome_student, welcome_teacher, signup, signup_form_student,
 signup_form_teacher, home, edit_student, edit_teacher, get_help, cancel_help,
 student_details_added, teacher_details_added,
@@ -61,5 +61,7 @@ urlpatterns = [
     path('take_the_next_quiz', take_the_next_quiz, name = 'take_the_next_quiz'),
     path('go_back_to_welcome_student', go_back_to_welcome_student, name = 'go_back_to_welcome_student'),
     path('see_student_test/<exam_id>/<student_id>', see_student_test, name='see_student_test'),
+    path('revise', revise, name='revise'),
+    path('add_class', add_class, name = 'add_class'),
     path('', home, name='home'),
 ]
