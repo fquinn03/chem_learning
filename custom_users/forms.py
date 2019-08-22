@@ -8,7 +8,6 @@ Forms used to capture new user, username and password at signup,
 and student or teacher data at signup.
 """
 
-
 """
 First part of new student signup.
 Form to create a new user.

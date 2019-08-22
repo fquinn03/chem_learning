@@ -1,7 +1,10 @@
 {% extends 'base_with_refresh.html' %}
 
 {% block content %}
-<h5>Class: {{group.name}}</h5>
+<h5>Class: {{group.name}}
+<a href = "{% url 'welcome_teacher' %}"><button type="button" class="btn btn-success button-right">
+Back To Class Lists</button></a>
+</h5>
 <table class = "table" id = "mytable">
   <thead class = "thead-light">
     <tr>
