@@ -59,7 +59,7 @@ class StudentProfile(models.Model):
     details_added = models.BooleanField(default=False)
     signup_quiz_completed = models.BooleanField(default=False)
     needs_help = models.BooleanField(default=False)
-    progress = models.IntegerField(default=1000)
+    progress = models.IntegerField(default=2)
     starting_level = models.IntegerField(default=1)
 
     def __str__(self):

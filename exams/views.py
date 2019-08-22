@@ -7,7 +7,7 @@ have_student_signup, is_finished, sign_up_quiz_already_completed)
 from .models import (Answer, Exam, CompletedExam, Formula_Question,
 MCQ_Question, Question, UserAnswer, Written_Question)
 from .utils import (calculate_percentage, create_exam_completed_entry, create_user_answer,
-delete_completed_exam_record, get_corrections_formula, get_corrections_mcq,
+delete_completed_exam_record, delete_completed_exam_total, get_corrections_formula, get_corrections_mcq,
 get_corrections_written, get_formula, get_level, get_next_exam, get_next_lesson,
 get_starting_level)
 """
@@ -21,23 +21,25 @@ the database for each question answered and then display finish_test template
 @user_passes_test(have_student_signup,  login_url = 'do_signup_quiz', redirect_field_name = 'do_signup_quiz')
 def dotest(request):
     student = StudentProfile.objects.get(user_id = request.user.id)
-    delete_completed_exam_record(student, student.next_exam_id)
-    exam = Exam.objects.get(id = student.next_exam_id)
-    questions = Question.objects.filter(exam = student.next_exam_id)
-    written_questions = Written_Question.objects.filter(exam = student.next_exam_id)
-    mcq_questions = MCQ_Question.objects.filter(exam = student.next_exam_id)
-    formula_questions = Formula_Question.objects.filter(exam = student.next_exam_id)
-    if request.method == 'POST':
-        create_user_answer(request.POST, StudentProfile.objects.get(user_id = request.user.id))
-        return redirect('show_result', exam_id = exam.id)
-    else:
-        return render(request, 'exams/dotest.html', {
-            'mcq_questions': mcq_questions, 'written_questions':written_questions,
-            'formula_questions':formula_questions,
-            'questions': questions,
-            'exam':exam
-        })
-
+    delete_completed_exam_total(student, student.next_exam_id)
+    try:
+        exam = Exam.objects.get(id = student.next_exam_id)
+        questions = Question.objects.filter(exam = student.next_exam_id)
+        written_questions = Written_Question.objects.filter(exam = student.next_exam_id)
+        mcq_questions = MCQ_Question.objects.filter(exam = student.next_exam_id)
+        formula_questions = Formula_Question.objects.filter(exam = student.next_exam_id)
+        if request.method == 'POST':
+            create_user_answer(request.POST, StudentProfile.objects.get(user_id = request.user.id))
+            return redirect('show_result', exam_id = exam.id)
+        else:
+            return render(request, 'exams/dotest.html', {
+                'mcq_questions': mcq_questions, 'written_questions':written_questions,
+                'formula_questions':formula_questions,
+                'questions': questions,
+                'exam':exam
+            })
+    except Exam.DoesNotExist:
+        return redirect(request, 'congratulations')
 """
 On signup a student user will complete this short quiz. This is the basis to assign their starting level.
 If GET request the questions and answer options are displayed.
@@ -82,15 +84,19 @@ def show_result(request, exam_id):
     exam = Exam.objects.get(id = exam_id)
     questions = Question.objects.all().filter(exam = exam_id)
     percentage_result = calculate_percentage(questions, request.user.id, exam_id)
+    delete_completed_exam_record(student, exam_id)
     create_exam_completed_entry(student, exam, percentage_result)
     get_level(request.user.id)
-    if is_finished(request.user):
-        return redirect('congratulations')
-    get_next_exam(request.user.id)
-    get_next_lesson(request.user.id)
-    return render(request, 'exams/show_result.html', {'percentage_result': percentage_result,
-    'exam':exam,
-    })
+    try:
+        get_next_exam(request.user.id)
+        get_next_lesson(request.user.id)
+        return render(request, 'exams/show_result.html', {'percentage_result': percentage_result,
+        'exam':exam,
+        })
+    except IndexError:
+        return render(request, 'exams/show_result.html', {'percentage_result': percentage_result,
+        'exam':exam,
+        })
 
 """
 Use the exam_id to get all the questions for the exam.  Use utils.test_get_corrections to add

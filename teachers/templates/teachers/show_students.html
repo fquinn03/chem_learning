@@ -2,7 +2,6 @@
 
 {% block content %}
 <h5>Class: {{group.name}}</h5>
-
 <table class = "table" id = "mytable">
   <thead class = "thead-light">
     <tr>
@@ -45,7 +44,9 @@
 </td>
 <td>
 {% for completedexam in student.completedexam_set.all %}
-{{completedexam.percentage}}%<br/>
+<a class = "bluelink"
+  href = "{% url 'see_student_test' exam_id=completedexam.exam.id student_id=student.user_id %}">
+  {{completedexam.percentage}}</a><br/>
 {% endfor %}
 </td>
 </tr>

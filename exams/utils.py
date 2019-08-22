@@ -161,6 +161,7 @@ def get_next_lesson(user):
     student.next_lesson_id = next_lesson.id
     student.save()
 
+
 """
 Find the next exam for a student and display it on the welcome student screen.
 Get the students current level. Find the next lesson object for that level.
@@ -200,17 +201,26 @@ def adjust_level_and_attempts(student, weighted_mean):
     if weighted_mean > 80:
         student.level += 1
         student.attempt = 0
+        student.progress = 1
+        student.needs_help = False
+        
     elif weighted_mean == -1:
         student.attempt = 0
+        student.progress = 2
+
     elif weighted_mean < 80 and student.attempt >= 3:
         if student.level > 1:
             student.level -= 1
             student.attempt = 0
+            student.progress = 3
+            student.needs_help = True
         else:
             student.level = 1
             student.attempt = 0
+            student.progress = 2
     else:
         student.attempt += 1
+        student.progress = 2
 
     student.save()
 
@@ -235,12 +245,19 @@ def get_remaining_exams(all_exam_ids, all_completed_exam_ids):
             remaining_exams.append(id)
     return remaining_exams
 
-def delete_completed_exam_record(student, exam_id):
+def delete_completed_exam_total(student, exam_id):
     try:
         CompletedExam.objects.get(user = student, exam = exam_id).delete()
         questions = Question.objects.filter(exam = exam_id)
         for question in questions:
             UserAnswer.objects.get(user = student, question = question).delete()
+    except CompletedExam.DoesNotExist:
+        pass
+
+def delete_completed_exam_record(student, exam_id):
+    try:
+        CompletedExam.objects.get(user = student, exam = exam_id).delete()
+        questions = Question.objects.filter(exam = exam_id)
     except CompletedExam.DoesNotExist:
         pass
 

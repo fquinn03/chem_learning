@@ -3,7 +3,7 @@ from custom_users.utils import user_is_teacher, user_is_student, have_teacher_de
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 from custom_users.models import Class_id, StudentProfile, TeacherProfile
-from exams.models import Exam
+from exams.models import Exam, Question, UserAnswer
 
 """
 If user is a teacher, a list of their classes is sent to the template
@@ -36,4 +36,19 @@ def show_students(request, class_name):
     return render(request, 'teachers/show_students.html', {
     'group': group,
     'students': students,
+    })
+
+def see_student_test(request, exam_id, student_id):
+    student = StudentProfile.objects.get(user_id = student_id)
+    exam = Exam.objects.get(id = exam_id)
+    questions = Question.objects.all().filter(exam = exam_id)
+    question_and_answer = {}
+    for question in questions:
+        answer = UserAnswer.objects.get(question = question.id, user = student.user_id)
+        question_and_answer[question.text] = answer.user_answer
+    return render(request, 'teachers/see_student_test.html', {
+    'question_and_answer': question_and_answer,
+    'student':student,
+    'exam':exam
+    
     })

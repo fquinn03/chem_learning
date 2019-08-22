@@ -7,7 +7,7 @@ from lessons.models import Lesson
 from .forms import AddSchoolForm, StudentForm, TeacherForm, StudentProfileForm, TeacherProfileForm
 from .models import Class_id, School, TeacherProfile, StudentProfile
 from .utils import (get_progress, user_is_teacher, user_is_student, have_student_details, have_teacher_details,
-have_student_signup, sign_up_quiz_already_completed)
+have_student_signup,is_finished, sign_up_quiz_already_completed)
 from exams.models import CompletedExam
 
 """
@@ -31,7 +31,6 @@ def welcome_teacher(request):
     })
 
 
-
 """
 Welcome student view. Displays the default template for any authenticated student user.
 Shows a students next lesson, test and gives overall summary of progress.
@@ -42,6 +41,8 @@ Shows a students next lesson, test and gives overall summary of progress.
 @user_passes_test(have_student_signup,  login_url = 'do_signup_quiz', redirect_field_name = 'do_signup_quiz')
 def welcome_student(request):
     student = StudentProfile.objects.select_related().get(user_id = request.user.id)
+    if is_finished(request.user):
+        return redirect('congratulations')
     next_lesson = Lesson.objects.get(id = student.next_lesson_id)
     progress = get_progress(request.user.id)
     completed_exams = CompletedExam.objects.filter(user = student)
