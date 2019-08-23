@@ -5,11 +5,11 @@
 
 <h5>Questions you need to review</h5>
 {% for key, value in mcq_corrections.items %}
-{{key|safe}}&nbsp;Correct Answer:&nbsp;{{value|safe}}<br></br>
+{{key|safe}}&nbsp;Answer:&nbsp;{{value|safe}}<br></br>
 {% endfor %}
 
 {% for key, value in written_corrections_incorrect.items %}
-{{key|safe}}&nbsp;Correct Answer:&nbsp;{{value|safe}}<br></br>
+{{key|safe}}&nbsp;Answer:&nbsp;{{value|safe}}<br></br>
 {% endfor %}
 
 {% if formulae_count > 0 %}

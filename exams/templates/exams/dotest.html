@@ -4,11 +4,11 @@
 {% load static %}
 <h5>{{exam.title}}</h5>
 <div class="row">
-  <div class="col-sm-4">
-    <form name = "form" action = "" method="POST" style ="overflow: auto;">
+  <div class="col-sm-7">
+    <form name = "form" action = "" method="POST" style ="overflow: auto; text-align:left;">
     {% csrf_token %}
     {% for question in mcq_questions %}
-        <p><strong>{{question.text|safe}}</strong></p>
+        <br/><p><strong>{{question.text|safe}}</strong></p>
           {% for answer in question.answer_set.all %}
             <input type ='radio' name= "{{question.id}}" id ="answer{{forloop.counter}}"
             value = "{{answer.text}}" required/>
@@ -17,13 +17,13 @@
           {% endfor %}
     {% endfor %}
     {% for question in written_questions %}
-        <p><strong>{{question.text|safe}}</strong></p>
+        <br/><p><strong>{{question.text|safe}}</strong></p>
         <label for = "answer{{forloop.counter}}">Answer</label>
         <input type ='text' name= "{{question.id}}" id ="answer{{forloop.counter}}"  required />
         <br/>
     {% endfor %}
     {% for question in formula_questions %}
-          <p><strong>{{question.text|safe}}</strong></p>
+          <br/><p><strong>{{question.text|safe}}</strong></p>
           <label for = "answer{{forloop.counter}}">Formula</label>
           <input type ='text' name= "{{question.id}}" id ="answer{{forloop.counter}}" required/>
           <br/>
@@ -32,8 +32,8 @@
     <a><button class="btn btn-success button-right" type="submit" value="Submit">Submit</button></a>
     </form>
   </div>
-  <div class="col-sm-2"> </div>
-  <div class="col-sm-6">
+  <div class="col-sm-1"> </div>
+  <div class="col-sm-4">
     <p ><strong>Formula Checker</strong></p>
     <label for="Formula input">Enter a formula: </label>
     <input type ='text' class = "formula_input" id = "formula_input" required/>
