@@ -9,16 +9,14 @@
       alt="welcome_student" style="width:90px;height:55px;margin-left:80%">
     </a>
 </h4>
-<div class="row">
-  <div class="col-sm-12">
     {% if number_of_q != 0 %}
       {% for question in incorrect_questions %}
-      <strong>{{question.question.text|safe}}</strong><br/>
+      <br/><strong>{{question.question.text|safe}}</strong><br/>
       {{question.question.review|safe}}<br/>
       {% endfor %}
     {% else %}
       <p> You have nothing to revise </p>
+
     {% endif %}
-  </div>
-</div>
+
 {% endblock %}
