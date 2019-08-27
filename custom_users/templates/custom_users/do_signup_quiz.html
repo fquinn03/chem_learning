@@ -1,15 +1,16 @@
 {% extends 'base.html' %}
 
 {% block content %}
-
+{% load static %}
 <form name = "form" action = "" method="POST">
 {% csrf_token %}
 <h5>SignUp Quiz</h5>
+{% load static %}
 {% for question in questions %}
-    <p><strong>{{question.text}}</strong></p>
+    <strong>{{question.text|safe}}</strong>
       {% for answer in question.answer_set.all %}
         <input type ='radio' name= "{{question.id}}" id ="answer{{forloop.counter}}" value = "{{answer.text}}" required/>
-        <label for = "answer{{forloop.counter}}">{{answer.text}}</label>
+        <label for = "answer{{forloop.counter}}">{{answer.text|safe}}</label>
         <br/>
       {% endfor %}
 {% endfor %}

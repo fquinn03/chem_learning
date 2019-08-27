@@ -11,6 +11,7 @@ from .utils import (calculate_percentage, create_exam_completed_entry, create_us
 delete_completed_exam_record, delete_completed_exam_total, get_corrections_formula, get_corrections_mcq,
 get_corrections_written, get_formula, get_level, get_next_exam, get_next_lesson,
 get_starting_level)
+
 """
 Use the exam_id to get all the questions for the exam. If GET request display the questions
 and answer options.If POST request, use utils.create_user_answer to add a user_answer to
@@ -22,6 +23,7 @@ the database for each question answered and then display finish_test template
 @user_passes_test(have_student_signup,  login_url = 'do_signup_quiz', redirect_field_name = 'do_signup_quiz')
 def dotest(request):
     student = StudentProfile.objects.get(user_id = request.user.id)
+    #if the student has previously completed this exam delete the record
     delete_completed_exam_total(student, student.next_exam_id)
     try:
         exam = Exam.objects.get(id = student.next_exam_id)
@@ -30,6 +32,7 @@ def dotest(request):
         mcq_questions = MCQ_Question.objects.filter(exam = student.next_exam_id)
         formula_questions = Formula_Question.objects.filter(exam = student.next_exam_id)
         if request.method == 'POST':
+            #create a record of the students answer
             create_user_answer(request.POST, StudentProfile.objects.get(user_id = request.user.id))
             return redirect('show_result', exam_id = exam.id)
         else:
@@ -39,8 +42,11 @@ def dotest(request):
                 'questions': questions,
                 'exam':exam
             })
+    # the student has completed all the levels and does not have a next_exam_id
     except Exam.DoesNotExist:
         return redirect(request, 'congratulations')
+
+
 """
 On signup a student user will complete this short quiz. This is the basis to assign their starting level.
 If GET request the questions and answer options are displayed.
@@ -71,6 +77,7 @@ def do_signup_quiz(request):
         return render(request, 'custom_users/do_signup_quiz.html', {'questions': questions
         })
 
+
 """
 Use the exam_id to get all the questions for the exam.  Use utils.calculate_percentage to
 check if the user_answer in the database for each question is correct, calculate the user's
@@ -84,9 +91,11 @@ def show_result(request, exam_id):
     student = StudentProfile.objects.get(user_id = request.user.id)
     exam = Exam.objects.get(id = exam_id)
     questions = Question.objects.all().filter(exam = exam_id)
+    # calculate teh percentage score
     percentage_result = calculate_percentage(questions, request.user.id, exam_id)
-    delete_completed_exam_record(student, exam_id)
+    # create a new CompletedExam record
     create_exam_completed_entry(student, exam, percentage_result)
+    # based on the percentage result get the next level
     get_level(request.user.id)
     try:
         get_next_exam(request.user.id)
@@ -94,15 +103,18 @@ def show_result(request, exam_id):
         return render(request, 'exams/show_result.html', {'percentage_result': percentage_result,
         'exam':exam,
         })
+    # if there is no next_exam or next_lesson just show the results
     except IndexError:
         return render(request, 'exams/show_result.html', {'percentage_result': percentage_result,
         'exam':exam,
         })
 
+
 """
-Use the exam_id to get all the questions for the exam.  Use utils.test_get_corrections to add
-check if the user_answer in the database for each question is correct, calculate the user's result
-and then display show_result template.
+Use the exam_id to get all the questions for the exam.  Check the student's percentage for the exam.
+If 100 just show 100% congratulations image
+Else  go through their answers and use the utils.get_corrections_mcq, get_corrections_written, get_corrections_formula
+functions and show the student their corrections
 """
 @login_required
 @user_passes_test(user_is_student)
@@ -125,14 +137,22 @@ def review(request, exam_id):
         written_corrections_incorrect, 'written_corrections_mispelled':written_corrections_mispelled,
         'formula_corrections':formula_corrections, 'mispelled_count':mispelled_count, 'formulae_count':formulae_count
         })
-
+        
+"""
+Get a list of the questions the student has previously answered incorrectly.
+Shuffle the list.
+If the list has less that 5 questions display them all
+Else display the first 5 questions in the list
+"""
 @login_required
 @user_passes_test(user_is_student)
 @user_passes_test(have_student_details, login_url = 'edit_student',  redirect_field_name = 'get_student_details' )
 @user_passes_test(have_student_signup,  login_url = 'do_signup_quiz', redirect_field_name = 'do_signup_quiz')
 def revise(request):
     student = StudentProfile.objects.get(user_id = request.user.id)
+    #get incorrect answers from db
     incorrect_questions = IncorrectAnswer.objects.filter(user = student.user_id)
+    #convert queryset into a list
     incorrect_questions = list(incorrect_questions)
     number_of_q = len(incorrect_questions)
     shuffle(incorrect_questions)

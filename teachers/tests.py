@@ -18,7 +18,7 @@ class TeacherTest(TestCase):
     # set up test database
     def setUpTestData(cls):
         Lesson.objects.create(level = 1, title = "test_lesson",
-        link = "a_doc_link", image_link = "an_image_link")
+        link = "a_doc_link")
         User.objects.create_user(username ="teacher", password="mypass")
         User.objects.create_user(username ="student1", password="mypass")
         Class_id.objects.create(name = "9y3", teacher_id = 1)
@@ -89,7 +89,7 @@ class TeacherTest(TestCase):
     def test_show_students_html(self):
         self.client.login(username = "teacher", password = "mypass")
         response = self.client.get(reverse('show_students', args=['9y3']))
-        self.assertContains(response, "<h5>Class: 9y3</h5>")
+        self.assertContains(response, "<h5>Class: 9y3")
 
     # test class_list view. Logged in as Teacher and Student
     def test_class_list_teacher_response(self):

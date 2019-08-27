@@ -241,7 +241,8 @@ def ajax_load_classes(request):
     return render(request, 'custom_users/ajax_load_classes.html', {'class_ids': class_ids})
 
 """
-Used to change "help" icon on welcome_student page
+Used to change a student's needs_help stats
+which in turn changes the "help" icon on welcome_student page
 """
 def get_help(request):
     student = StudentProfile.objects.get(user_id = request.user.id)

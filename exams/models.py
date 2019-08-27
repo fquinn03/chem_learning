@@ -75,7 +75,7 @@ class CompletedExam(models.Model):
     def __str__(self):
         return self.user.user.username+" "+self.exam.title
 
-# Model for storing a StudentProfile users answers
+# Model for storing a stuedent's incorrect answers
 class IncorrectAnswer(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
     user = models.ForeignKey(StudentProfile, on_delete=models.CASCADE)

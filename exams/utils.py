@@ -70,7 +70,7 @@ def get_corrections_mcq(user_id, exam_id):
         student_answer = UserAnswer.objects.get(question = question.id, user = user_id) # get the student's answer
         correct_answer =  Answer.objects.get(question = question.id, correct=True, correct_spelling = True)# get the correct answer
         if student_answer.user_answer != correct_answer.text: # compare answers and if incorrect
-            mcq_corrections[question.text] = correct_answer.text # add to mcq_corrections for use later
+            mcq_corrections[question.text] = correct_answer.text  # add to mcq_corrections for use later
             try:
                 IncorrectAnswer.objects.get(question = question, user = student)
             except IncorrectAnswer.DoesNotExist:
@@ -279,10 +279,23 @@ def delete_completed_exam_record(student, exam_id):
     except CompletedExam.DoesNotExist:
         pass
 
+"""
+Assign i to the index of the answer for the highest level on the course.
+Go backwards through the levels.
+If a student feels confident on a level in the second half of the course
+check they are also confident on the previous 2 levels, start them on that level.
+If not decrement i and repeat the process.
+If the level is in the first half of the course, start a student on the level
+above the highest one they are confident completing.
+Otherwise start the student on level 1
+"""
 def get_starting_level(answers):
+    #assign i the value of the index of the highest level in the course
     i = len(answers)-1
+    #the level is in second part of the course
     while i >= len(answers)//2:
         if answers[i] == "True":
+            #check for confidence on the previous 2 levels too
             if answers[i-1] == "True" and answers[i-2]== "True":
                 return i+1
         i -= 1
