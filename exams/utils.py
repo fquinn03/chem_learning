@@ -57,11 +57,9 @@ def calculate_percentage(questions, user_id, exam_id):
     return percentage_result
 
 """
-Iterate through each question in the submitted test and check if the users_answer is correct.
-If correct but incorrectly mispelled add the correct spelling to the review item.
-If incorrect add correct answer to reveiw object corrections and display through review template.
+Iterate through each MCQ question in the submitted test and check if the student's answer is correct.
+If incorrect add question and correct answer to mcq_corrections dictionary
 """
-# correct MCQ style questions
 def get_corrections_mcq(user_id, exam_id):
     student = StudentProfile.objects.get(user_id = user_id)
     mcq_questions = MCQ_Question.objects.filter(exam = exam_id) #Get all the MCQ questions on the exam
@@ -70,13 +68,21 @@ def get_corrections_mcq(user_id, exam_id):
         student_answer = UserAnswer.objects.get(question = question.id, user = user_id) # get the student's answer
         correct_answer =  Answer.objects.get(question = question.id, correct=True, correct_spelling = True)# get the correct answer
         if student_answer.user_answer != correct_answer.text: # compare answers and if incorrect
-            mcq_corrections[question.text] = correct_answer.text  # add to mcq_corrections for use later
+            mcq_corrections[question.text] = correct_answer.text  # add to mcq_corrections dictionary
             try:
+                # check if this IncorrectAnswer has already been saved for revision for this student
                 IncorrectAnswer.objects.get(question = question, user = student)
             except IncorrectAnswer.DoesNotExist:
+                # create a record of the IncorrectAnswer for revision
                 IncorrectAnswer.objects.create(question = question, user = student)
     return mcq_corrections
 
+"""
+Iterate through each Written question in the submitted test and check if the student's answer is correct.
+For many written questions there are a number of acceptable answers e.g 100, hundred, a hundred
+If incorrect add question and correct answer to written_corrections dictionary
+If correct but mispelled add question and correct spelling to mispelled dictionary
+"""
 # correct Written style questions
 def get_corrections_written(user_id, exam_id):
     student = StudentProfile.objects.get(user_id = user_id)
@@ -85,39 +91,63 @@ def get_corrections_written(user_id, exam_id):
     mispelled = {}
     acceptable_answers =[]
     for question in written_questions:
-        student_answer = UserAnswer.objects.get(question = question.id, user = user_id) # get the student's answer
-        correct_answers =  Answer.objects.filter(question = question.id, correct=True, correct_spelling = True)# get the correct answer
+        # get the student's answer
+        student_answer = UserAnswer.objects.get(question = question.id, user = user_id)
+        # get any corrects, there may be more than one
+        correct_answers =  Answer.objects.filter(question = question.id, correct=True, correct_spelling = True)
+        #since there are many possible answers, this is the correct one to display in the review page
         correct_answer_to_display = Answer.objects.get(question = question.id, correct_answer_to_display = True )
-        possible_answers =  Answer.objects.filter(question = question.id, correct=True, correct_spelling = False)# get any acceptable mispelled answers
+        # get any acceptable mispelled answers
+        possible_answers =  Answer.objects.filter(question = question.id, correct=True, correct_spelling = False)
         for possible_answer in possible_answers:
             acceptable_answers.append(possible_answer.text.lower()) # get a list of all acceptable mispelled answers
         correct_answer_found = False
         for correct_answer in correct_answers:
+            # if the student's answer matches any of the acceptable correct answers the student is correct
             if student_answer.user_answer.lower().strip() == correct_answer.text.lower():
                 correct_answer_found = True
+        # check if the student's answer is correct but mispelled
         if not correct_answer_found:
             if student_answer.user_answer.lower().strip() in acceptable_answers:
-                mispelled[question.text] = correct_answer.text # add the question and correct spelling for any incorrectly spelled answers
+                #add the correct spelling to the review items
+                mispelled[question.text] = correct_answer.text
             else:
-                written_corrections[question.text] = correct_answer_to_display.text # add the question and correct answer for any incorrect answers
+                # student answer is incorrect
+                written_corrections[question.text] = correct_answer_to_display.text
                 try:
+                    # check if this IncorrectAnswer has already been saved for revision for this student
                     IncorrectAnswer.objects.get(question = question, user = student)
                 except IncorrectAnswer.DoesNotExist:
+                    # create a record of the IncorrectAnswer for revision
                     IncorrectAnswer.objects.create(question = question, user = student)
     return (written_corrections, mispelled)
 
+"""
+Iterate through each Formula_Question in the submitted test and check if the student's answer is correct.
+If incorrect add question and correct answer to the formula_corrections dictionary
+the correct_answer.text must be converted to HTML using the get_formula function
+so that it is displayed correctly in the review page
+"""
 def get_corrections_formula(user_id, exam_id):
     student = StudentProfile.objects.get(user_id = user_id)
-    formula_questions = Formula_Question.objects.filter(exam = exam_id) #Get all the Formula questions on the exam
+    #Get all the Formula questions on the exam
+    formula_questions = Formula_Question.objects.filter(exam = exam_id)
     formula_corrections = {}
     for question in formula_questions:
-        student_answer = UserAnswer.objects.get(question = question.id, user = user_id) # get user answer
-        correct_answer =  Answer.objects.get(question = question.id, correct=True, correct_spelling = True) #get correct answer
+        # get user answer
+        student_answer = UserAnswer.objects.get(question = question.id, user = user_id)
+        #get correct answer
+        correct_answer =  Answer.objects.get(question = question.id, correct=True, correct_spelling = True)
         if student_answer.user_answer != correct_answer.text:
-            formula_corrections[question.text] = get_formula(correct_answer.text) #if user answer not correct add to formula_corrections
+            #if user answer not correct add to formula_corrections, the answer in the database
+            # that the student answer is compared to must be converted to
+            #H2O to H<sub>2</sub>O so that it displays correctly on the review page, use get_formula
+            formula_corrections[question.text] = get_formula(correct_answer.text)
             try:
+                # check if this IncorrectAnswer has already been saved for revision for this student
                 IncorrectAnswer.objects.get(question = question, user = student)
             except IncorrectAnswer.DoesNotExist:
+                # create a record of the IncorrectAnswer for revision
                 IncorrectAnswer.objects.create(question = question, user = student)
     return formula_corrections
 
@@ -126,8 +156,10 @@ def get_corrections_formula(user_id, exam_id):
 Convert a string chemical formula to HTML chemical formula to display on webpage.
 """
 def get_formula(raw_formula):
-    formula = Substance.from_formula(raw_formula) #use chempy to convert string raw_formula to chemical formula, gives correct subscripting
-    html_formula = formula.html_name #use chempy to give html for formula eg H<sub>2</sub>O
+    #use ChemPy to convert string raw_formula to chemical formula
+    formula = Substance.from_formula(raw_formula)
+    #use ChemPy to give html for formula eg H<sub>2</sub>O
+    html_formula = formula.html_name
     return html_formula
 
 """

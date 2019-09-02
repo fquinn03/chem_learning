@@ -26,16 +26,20 @@ def dotest(request):
     #if the student has previously completed this exam delete the record
     delete_completed_exam_total(student, student.next_exam_id)
     try:
+        # if a student does not have a next_exam_id they have finished the course
         exam = Exam.objects.get(id = student.next_exam_id)
+        # get all the questions in the exam
         questions = Question.objects.filter(exam = student.next_exam_id)
-        written_questions = Written_Question.objects.filter(exam = student.next_exam_id)
+        # the types of question get more challenging from start to end of test
         mcq_questions = MCQ_Question.objects.filter(exam = student.next_exam_id)
+        written_questions = Written_Question.objects.filter(exam = student.next_exam_id)
         formula_questions = Formula_Question.objects.filter(exam = student.next_exam_id)
         if request.method == 'POST':
             #create a record of the students answer
             create_user_answer(request.POST, StudentProfile.objects.get(user_id = request.user.id))
             return redirect('show_result', exam_id = exam.id)
         else:
+            #if GET request show the questions and answer options/input
             return render(request, 'exams/dotest.html', {
                 'mcq_questions': mcq_questions, 'written_questions':written_questions,
                 'formula_questions':formula_questions,
@@ -91,19 +95,21 @@ def show_result(request, exam_id):
     student = StudentProfile.objects.get(user_id = request.user.id)
     exam = Exam.objects.get(id = exam_id)
     questions = Question.objects.all().filter(exam = exam_id)
-    # calculate teh percentage score
+    # calculate the percentage score
     percentage_result = calculate_percentage(questions, request.user.id, exam_id)
     # create a new CompletedExam record
     create_exam_completed_entry(student, exam, percentage_result)
     # based on the percentage result get the next level
     get_level(request.user.id)
     try:
+        # get the next exam/level for the student
         get_next_exam(request.user.id)
         get_next_lesson(request.user.id)
         return render(request, 'exams/show_result.html', {'percentage_result': percentage_result,
         'exam':exam,
         })
-    # if there is no next_exam or next_lesson just show the results
+    # if there is no next_exam or next_lesson, the student is finished course
+    # just show the results,
     except IndexError:
         return render(request, 'exams/show_result.html', {'percentage_result': percentage_result,
         'exam':exam,
@@ -133,11 +139,13 @@ def review(request, exam_id):
         formula_corrections = get_corrections_formula(request.user.id, exam_id)
         mispelled_count = len(written_corrections_mispelled)
         formulae_count = len(formula_corrections)
-        return render(request, 'exams/review.html', {'mcq_corrections': mcq_corrections, 'written_corrections_incorrect':
-        written_corrections_incorrect, 'written_corrections_mispelled':written_corrections_mispelled,
-        'formula_corrections':formula_corrections, 'mispelled_count':mispelled_count, 'formulae_count':formulae_count
+        return render(request, 'exams/review.html', {'mcq_corrections': mcq_corrections,
+        'written_corrections_incorrect': written_corrections_incorrect,
+        'written_corrections_mispelled':written_corrections_mispelled,
+        'formula_corrections':formula_corrections, 'mispelled_count':mispelled_count,
+        'formulae_count':formulae_count
         })
-        
+
 """
 Get a list of the questions the student has previously answered incorrectly.
 Shuffle the list.
