@@ -5,9 +5,9 @@ from django.utils.decorators import method_decorator
 from custom_users.models import Class_id, StudentProfile, TeacherProfile
 from lessons.models import Lesson
 from .models import (Answer, Exam, Formula_Question, MCQ_Question, Question,
-UserAnswer, Written_Question, CompletedExam)
+UserAnswer, Written_Question, CompletedExam, IncorrectAnswer)
 from .utils import (calculate_percentage, create_exam_completed_entry,
-create_user_answer, delete_completed_exam_record, get_corrections_formula,
+create_user_answer, delete_completed_exam_total, get_corrections_formula,
 get_corrections_mcq, get_corrections_written, get_corrections_written, get_formula,
 get_level, get_next_exam, get_starting_level)
 from .views import dotest, show_result, review
@@ -34,6 +34,7 @@ class ExamsTest(TestCase):
         User.objects.create(username ="student8", password="mypass")
         User.objects.create(username ="student9", password="mypass")
         User.objects.create_user(username ="student10", password="mypass")
+        User.objects.create_user(username ="student11", password="mypass")
         user1 = User.objects.get(id=1)
         user2 = User.objects.get(id=2)
         user3 = User.objects.get(id=3)
@@ -45,6 +46,7 @@ class ExamsTest(TestCase):
         user9 = User.objects.get(id=9)
         user10 = User.objects.get(id=10)
         user11 = User.objects.get(id = 11)
+        user12 = User.objects.get(id = 12)
         Class_id.objects.create(id = 1, name = "9y3", teacher_id = 1)
         class_id = Class_id.objects.get(id=1)
         TeacherProfile.objects.create(user = user1, is_teacher = True)
@@ -153,6 +155,11 @@ class ExamsTest(TestCase):
         correct = True, correct_spelling = True, correct_answer_to_display = True)
         UserAnswer.objects.create(question = question4, user_answer = "Cola", user = student10)
         CompletedExam.objects.create(user = student10, exam = exam7, level = 7, percentage = 100, attempt = 1)
+        IncorrectAnswer.objects.create(user= student9, question = question2)
+        user12 = User.objects.get(id = 12)
+        student11 = StudentProfile.objects.create(user = user12 , teacher = teacher, class_id = class_id, level = 7,
+        attempt = 1, details_added = True, signup_quiz_completed = True, next_lesson_id = 1)
+
 
     def setUp(self):
         # set up Exams TestCase
@@ -172,6 +179,9 @@ class ExamsTest(TestCase):
         self.student2.level = 1
         self.user = User.objects.get(id=3)
         self.questions = Question.objects.all()
+        self.incorrectanswer = IncorrectAnswer.objects.get(id =1)
+        self.question = Question.objects.get(id = 2)
+
 
     """
     Models Tests
@@ -191,6 +201,9 @@ class ExamsTest(TestCase):
 
     def test_completed_exam_str(self):
         self.assertEqual(CompletedExam.objects.get(id = 1).__str__(), "student1 Test Exam Title 1" )
+
+    def test_incomplete_answer_str(self):
+        self.assertEqual(self.incorrectanswer.__str__(), "student9 What is my favourite film? ")
 
     """
     Views and Template testing
@@ -499,8 +512,9 @@ class ExamsTest(TestCase):
         student = StudentProfile.objects.get(user_id =10)
         self.assertEqual(student.next_exam_id, 1)
 
-    def test_delete_exam_record(self):
-        delete_completed_exam_record(11, 7)
+    # test utils.py delete_completed_exam_total
+    def test_delete_exam_record_does_not_exist(self):
+        delete_completed_exam_total (11, 7)
         with self.assertRaises(CompletedExam.DoesNotExist):
             CompletedExam.objects.get(user_id = 11)
 
@@ -523,6 +537,7 @@ class ExamsTest(TestCase):
     def test_get_starting_level_4(self):
         answers = ["False", "True", "True", "True", "False"]
         level = get_starting_level(answers)
+
         self.assertEqual(level, 4)
 
     def test_get_starting_level_5(self):

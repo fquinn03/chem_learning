@@ -29,6 +29,8 @@ class TeacherProfile(models.Model):
     def __str__(self):
         return self.user.username
 
+
+
 # One teacher can have many classes, can be named by user.
 class Class_id(models.Model):
     name = models.CharField(max_length=100)

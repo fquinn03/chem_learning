@@ -8,7 +8,7 @@ have_student_signup, is_finished, sign_up_quiz_already_completed)
 from .models import (Answer, Exam, CompletedExam, IncorrectAnswer, Formula_Question,
 MCQ_Question, Question, UserAnswer, Written_Question)
 from .utils import (calculate_percentage, create_exam_completed_entry, create_user_answer,
-delete_completed_exam_record, delete_completed_exam_total, get_corrections_formula, get_corrections_mcq,
+delete_completed_exam_total, get_corrections_formula, get_corrections_mcq,
 get_corrections_written, get_formula, get_level, get_next_exam, get_next_lesson,
 get_starting_level)
 

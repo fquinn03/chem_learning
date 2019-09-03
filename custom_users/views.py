@@ -179,11 +179,11 @@ Gets form to add a new school, validates data and saves valid
 information to the database.
 """
 @login_required
-@user_passes_test(user_is_teacher)
+@user_passes_test(user_is_teacher, login_url = 'welcome_student')
 def add_school(request):
     if request.method == 'POST':
         user = request.user
-        teacher = get_object_or_404(TeacherProfile, user_id = user.id)
+        teacher = TeacherProfile.objects.get(user_id = user.id)
         form = AddSchoolForm(request.POST)
         if form.is_valid():
             school = form.save()
@@ -222,7 +222,7 @@ When a student has selected their school this view updates the select teacher
 dropdown menu, so that only teachers in that school can be selected.
 """
 @login_required
-@user_passes_test(user_is_student)
+@user_passes_test(user_is_student, login_url = 'welcome_teacher')
 def ajax_load_teachers(request):
     school_id = request.GET.get('school')
     teachers = TeacherProfile.objects.filter(school=school_id).order_by('user_id')
@@ -234,7 +234,7 @@ When a student has selected their school and their teacher this view updates the
 dropdown menu, so that only classes beloning to that teacher can be selected.
 """
 @login_required
-@user_passes_test(user_is_student)
+@user_passes_test(user_is_student, login_url = 'welcome_teacher')
 def ajax_load_classes(request):
     teacher_id = request.GET.get('teacher')
     class_ids = Class_id.objects.filter(teacher=teacher_id).order_by('name')

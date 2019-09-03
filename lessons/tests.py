@@ -24,12 +24,14 @@ class LessonsTest(TestCase):
         User.objects.create(id = 5, username = "student4", password="student_pass")
         User.objects.create(id = 6, username = "student5", password="student_pass")
         User.objects.create(id = 7, username = "student6", password="student_pass")
+        User.objects.create_user(id = 8, username = "student7", password="student_pass")
         studentuser = User.objects.get(id = 2)
         studentuser1 = User.objects.get(id = 3)
         studentuser2 = User.objects.get(id = 4)
         studentuser3 = User.objects.get(id = 5)
         studentuser4 = User.objects.get(id = 6)
         studentuser5 = User.objects.get(id = 7)
+        studentuser7 = User.objects.get(id = 8)
         StudentProfile.objects.create(user = studentuser, level = 1,
          details_added = True, signup_quiz_completed = True, next_lesson_id=1, next_exam_id=1)
         StudentProfile.objects.create(user = studentuser1, level = 1 )
@@ -37,6 +39,8 @@ class LessonsTest(TestCase):
         StudentProfile.objects.create(user = studentuser3, level = 2, attempt = 3 )
         StudentProfile.objects.create(user = studentuser4, level = 1, attempt = 2 )
         StudentProfile.objects.create(user = studentuser5, level = 1, attempt = 2 )
+        StudentProfile.objects.create(user = studentuser7, level = 5, next_lesson_id = 7,
+        signup_quiz_completed = True, details_added = True, )
         student1 = StudentProfile.objects.get(user_id = 2)
         student2 = StudentProfile.objects.get(user_id = 3)
         student3 = StudentProfile.objects.get(user_id = 4)
@@ -74,6 +78,7 @@ class LessonsTest(TestCase):
         self.client = Client()
         self.client.login(username = 'student1', password = 'student1_pass')
         self.student1 = StudentProfile.objects.get(user_id = 2)
+        self.student7 = StudentProfile.objects.get(user_id = 8)
 
     """
     Models Tests
@@ -193,3 +198,26 @@ class LessonsTest(TestCase):
         add_lesson_completed(self.student1.user_id)
         completed_lessons = self.student1.completed_lessons
         self.assertQuerysetEqual(self.student1.completed_lessons.all(),  ["<Lesson: test_lesson_1_1>"])
+
+    """
+    Test if student.next_lesson does not exist.
+    Student is finished the course, student.level > levels in the course(15)
+    """
+    def test_lesson_does_not_exist(self):
+        self.assertEqual(add_lesson_completed(8), None)
+
+    def test_complete_lesson_student_finished_response(self):
+        self.client.login(username="student7", password = "student_pass")
+        response = self.client.get(reverse('complete_lesson'), follow = True )
+        self.assertEqual(response.status_code, 200)
+
+    def test_complete_lesson_student_finished_template(self):
+        self.client.login(username="student7", password = "student_pass")
+        response = self.client.get(reverse('complete_lesson'), follow = True )
+        self.assertTemplateUsed(response, 'exams/congratulations.html')
+
+    def test_complete_lesson_student_finished_html(self):
+        self.student7.next_lesson_id = 3
+        self.client.login(username="student7", password = "student_pass")
+        response = self.client.get(reverse('complete_lesson'), follow = True )
+        self.assertContains(response, "<h1 class='gold .animation-lightSpeedin'>")

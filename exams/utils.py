@@ -303,14 +303,14 @@ def delete_completed_exam_total(student, exam_id):
             UserAnswer.objects.get(user = student, question = question).delete()
     except CompletedExam.DoesNotExist:
         pass
-
+"""
 def delete_completed_exam_record(student, exam_id):
     try:
         CompletedExam.objects.get(user = student, exam = exam_id).delete()
         questions = Question.objects.filter(exam = exam_id)
     except CompletedExam.DoesNotExist:
-        pass
-
+        return "CompletedExam does not exist"
+"""
 """
 Assign i to the index of the answer for the highest level on the course.
 Go backwards through the levels.

@@ -11,7 +11,7 @@ If user is a teacher, a list of their classes is sent to the template
 If not they are redirected to not teacher template
 """
 @login_required
-@user_passes_test(user_is_teacher)
+@user_passes_test(user_is_teacher, login_url = 'welcome_student')
 @user_passes_test(have_teacher_details, login_url = 'edit_teacher',  redirect_field_name = 'get_teacher_details' )
 def class_list(request):
     user = request.user

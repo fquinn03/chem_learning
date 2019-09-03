@@ -25,10 +25,11 @@ class CustomUsersTest(TestCase):
         User.objects.create_user(id = 3, username = "student2", password="student2_pass")
         User.objects.create(id = 4, username = "student3", password="student3_pass")
         User.objects.create_user(id = 5, username = "student4", password="my_pass")
+        User.objects.create_user(id = 6, username = "student5", password="my_pass")
         Class_id.objects.create(id = 1, name = "9y3", teacher_id=1)
         teacher = User.objects.get(id = 1)
         student = User.objects.get(id = 2)
-        another_student = User.objects.get(id=3)
+        student2 = User.objects.get(id=3)
         student4 = User.objects.get(id=5)
         school = School.objects.get(id =1)
         class_id=Class_id.objects.get(id = 1)
@@ -36,11 +37,15 @@ class CustomUsersTest(TestCase):
         school_id = school.id, details_added = True)
         teacherprofile=TeacherProfile.objects.get(user_id = 1)
         StudentProfile.objects.create(user=student, teacher=teacherprofile, class_id = class_id, school_id = school.id)
-        StudentProfile.objects.create(user=another_student, teacher=teacherprofile,
+        StudentProfile.objects.create(user=student2, teacher=teacherprofile,
         class_id = class_id, school_id = school.id, level = 1, attempt = 1, details_added = True,
-        signup_quiz_completed = True, next_lesson_id = 1)
+        signup_quiz_completed = True, next_lesson_id = 1, is_teacher = False, is_student = True)
         StudentProfile.objects.create(user=student4, teacher=teacherprofile,
         class_id = class_id, school_id = school.id, level = 4, attempt = 1, details_added = True,
+        signup_quiz_completed = True, next_lesson_id = 1)
+        student5 = User.objects.get(id=6)
+        StudentProfile.objects.create(user=student5, teacher=teacherprofile,
+        class_id = class_id, school_id = school.id, level = 7, attempt = 1, details_added = True,
         signup_quiz_completed = True, next_lesson_id = 1)
         Lesson.objects.create(level = 1, title = "test_lesson_1_1", link = "www.testlink1.com")
 
@@ -203,14 +208,14 @@ class CustomUsersTest(TestCase):
 
     def test_sign_up_form_student_post_response(self):
         response=self.client.post(reverse('signup_form_student'),
-        {'username': 'student5', 'password1': 'pass1234', 'password2': 'pass1234'}, follow = True)
+        {'username': 'student6', 'password1': 'pass1234', 'password2': 'pass1234'}, follow = True)
         self.assertEqual(response.status_code, 200)
 
     # check that when a new user signs up, a new User is added to the database
     def test_sign_up_form_student_post_count_users(self):
         count = User.objects.all().count()
         response=self.client.post(reverse('signup_form_student'),
-        {'username': 'student5', 'password1': 'pass1234', 'password2': 'pass1234'})
+        {'username': 'student6', 'password1': 'pass1234', 'password2': 'pass1234'})
         count2 = User.objects.all().count()
         self.assertEqual(count2, count+1)
 
@@ -218,44 +223,44 @@ class CustomUsersTest(TestCase):
     def test_sign_up_form_student_post_count_students(self):
         count = StudentProfile.objects.all().count()
         response=self.client.post(reverse('signup_form_student'),
-        {'username': 'student5', 'password1': 'pass1234', 'password2': 'pass1234'})
+        {'username': 'student6', 'password1': 'pass1234', 'password2': 'pass1234'})
         count2 = StudentProfile.objects.all().count()
         self.assertEqual(count2, count+1)
 
     def test_sign_up_form_student_post_template(self):
         response=self.client.post(reverse('signup_form_student'),
-        {'username': 'student5', 'password1': 'pass1234', 'password2': 'pass1234'}, follow = True)
+        {'username': 'student6', 'password1': 'pass1234', 'password2': 'pass1234'}, follow = True)
         self.assertTemplateUsed(response, 'custom_users/edit_student.html')
 
     # test that given invalid data a user is not signed up
     def test_sign_up_form_student_post_invalid_response(self):
         response=self.client.post(reverse('signup_form_student'),
-        {'username': 'student5', 'password1': 'pass1234', 'password2': 'pass4321'}, follow = True)
+        {'username': 'student6', 'password1': 'pass1234', 'password2': 'pass4321'}, follow = True)
         self.assertEqual(response.status_code, 200)
 
     # check user not added to the database
     def test_sign_up_form_student_post_count_invalid_users(self):
         count = User.objects.all().count()
         response=self.client.post(reverse('signup_form_student'),
-        {'username': 'student5', 'password1': 'pass1234', 'password2': 'pass4321'})
+        {'username': 'student6', 'password1': 'pass1234', 'password2': 'pass4321'})
         count2 = User.objects.all().count()
         self.assertEqual(count2, count)
 
     def test_sign_up_form_student_post_count_invalid_students(self):
         count = StudentProfile.objects.all().count()
         response=self.client.post(reverse('signup_form_student'),
-        {'username': 'student5', 'password1': 'pass1234', 'password2': 'pass4321'})
+        {'username': 'student6', 'password1': 'pass1234', 'password2': 'pass4321'})
         count2 = StudentProfile.objects.all().count()
         self.assertEqual(count2, count)
 
     def test_sign_up_form_student_post_invaid_template(self):
         response=self.client.post(reverse('signup_form_student'),
-        {'username': 'student5', 'password1': 'pass1234', 'password2': 'pass4321'}, follow = True)
+        {'username': 'student6', 'password1': 'pass1234', 'password2': 'pass4321'}, follow = True)
         self.assertTemplateUsed(response, 'signup_form_student.html')
 
     def test_sign_up_form_student_post_invalid_html(self):
         response=self.client.post(reverse('signup_form_student'),
-        {'username': 'student5', 'password1': 'pass1234', 'password2': 'pass4321'}, follow = True)
+        {'username': 'student6', 'password1': 'pass1234', 'password2': 'pass4321'}, follow = True)
         self.assertContains(response, '<div class="card-headergreen"><h5>Student sign up</h5></div>')
 
     # test that given invalid data a user is not signed up
@@ -450,7 +455,7 @@ class CustomUsersTest(TestCase):
         self.assertContains(response, '<div class="card-headergreen">Teacher Details Added</div>')
 
     # test add_school view GET and POST requests
-    def test_add_school_get_response(self):
+    def test_add_school_get_response_teacher(self):
         self.client.login(username = "teacher", password="teacher_pass")
         response=self.client.get(reverse('add_school'))
         self.assertEqual(response.status_code, 200)
@@ -460,16 +465,21 @@ class CustomUsersTest(TestCase):
         response=self.client.post(reverse('add_school'), {'name': 'schoolName', 'post_code': 'my_postcode'})
         self.assertEqual(response.status_code, 302)
 
-    def test_add_school_get_template(self):
-        self.client.login(username = "student2", password="student2_pass")
-        response=self.client.get(reverse('add_school'), follow = True)
-        self.assertTemplateUsed(response, 'custom_users/welcome_student.html')
-
     def test_add_school_post_template(self):
         self.client.login(username = "teacher", password="teacher_pass")
         response=self.client.post(reverse('add_school'), {'name': 'schoolName', 'post_code': 'my_postcode'}
         , follow = True)
         self.assertTemplateUsed(response, 'custom_users/edit_teacher.html')
+
+    def test_add_school_get_response_student(self):
+        self.client.login(username = "student2", password="student2_pass")
+        response=self.client.get(reverse('add_school'), follow = True)
+        self.assertEqual(response.status_code, 200)
+
+    def test_add_school_get_template(self):
+        self.client.login(username = "student2", password="student2_pass")
+        response=self.client.get(reverse('add_school'), follow = True)
+        self.assertTemplateUsed(response, 'custom_users/welcome_student.html')
 
     def test_add_school_get_html(self):
         self.client.login(username = "student2", password="student2_pass")
@@ -630,11 +640,10 @@ class CustomUsersTest(TestCase):
     def test_get_cancel_help_unclick_html(self):
         self.client.login(username = "student2", password="student2_pass")
         response = self.client.get(reverse('cancel_help'),follow=True)
-        #full image
+        #full image not opaque
         self.assertContains(response,  'style="width:200px;height:125px;')
 
+    # test that get_progress does not return over 100%
     def test_progress_100(self):
-        self.client.login(username = "student4", password="my_pass")
-        response = self.client.get(reverse('welcome_student'))
-        #full image
-        self.assertContains(response, 'style="width: 75%"' )
+        progress = get_progress(6)
+        self.assertEqual(100, progress)

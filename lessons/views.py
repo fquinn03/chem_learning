@@ -21,7 +21,7 @@ def complete_lesson(request):
         'lesson': lesson,
         })
     except Lesson.DoesNotExist:
-        return redirect(request, 'congratulations')
+        return redirect('congratulations')
 
 """
 View to move from view_lesson.html on to the next lesson
@@ -29,11 +29,8 @@ View to move from view_lesson.html on to the next lesson
 @login_required
 @user_passes_test(user_is_student)
 def mark_lesson_as_complete(request):
-    try:
-        add_lesson_completed(request.user.id)
-        return redirect('complete_lesson')
-    except IndexError:
-        return redirect('congratulations')
+    add_lesson_completed(request.user.id)
+    return redirect('complete_lesson')
 
 """
 View to move from view_lesson.html on to the next quiz
@@ -41,11 +38,8 @@ View to move from view_lesson.html on to the next quiz
 @login_required
 @user_passes_test(user_is_student)
 def take_the_next_quiz(request):
-    try:
-        add_lesson_completed(request.user.id)
-        return redirect('dotest')
-    except IndexError:
-        return redirect('congratulations')
+    add_lesson_completed(request.user.id)
+    return redirect('dotest')
 
 """
 View to move from view_lesson.html back to the welcome screen
@@ -53,8 +47,5 @@ View to move from view_lesson.html back to the welcome screen
 @login_required
 @user_passes_test(user_is_student)
 def go_back_to_welcome_student(request):
-    try:
-        add_lesson_completed(request.user.id)
-        return redirect('welcome_student')
-    except IndexError:
-        return redirect('congratulations')
+    add_lesson_completed(request.user.id)
+    return redirect('welcome_student')
