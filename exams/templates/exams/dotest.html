@@ -17,6 +17,7 @@
             <br/>
           {% endfor %}
     {% endfor %}
+    <br/>
     {% for question in written_questions %}
         <br/><p><strong>{{question.text|safe}}</strong></p>
         <label for = "answer{{forloop.counter}}">Answer</label>
