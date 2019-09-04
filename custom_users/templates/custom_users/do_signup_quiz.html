@@ -1,11 +1,11 @@
 {% extends 'base.html' %}
 
 {% block content %}
-{% load static %}
+{% load staticfiles %}
 <form name = "form" action = "" method="POST">
 {% csrf_token %}
 <h5>SignUp Quiz</h5>
-{% load static %}
+
 {% for question in questions %}
     <strong>{{question.text|safe}}</strong>
       {% for answer in question.answer_set.all %}
