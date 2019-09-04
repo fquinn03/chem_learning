@@ -48,7 +48,7 @@ def dotest(request):
             })
     # the student has completed all the levels and does not have a next_exam_id
     except Exam.DoesNotExist:
-        return redirect(request, 'congratulations')
+        return redirect('congratulations')
 
 
 """

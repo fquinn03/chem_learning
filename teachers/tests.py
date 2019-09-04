@@ -3,6 +3,7 @@ from django.test import TestCase, Client
 from django.urls import reverse
 from custom_users.models import (Class_id, TeacherProfile,
 School, StudentProfile)
+from exams.models import Answer, Exam, UserAnswer, Written_Question
 from lessons.models import Lesson
 
 """
@@ -30,9 +31,13 @@ class TeacherTest(TestCase):
         TeacherProfile.objects.create(user = teacher, is_teacher = True,
         is_student = False, school = school, details_added = True )
         teacherprofile = TeacherProfile.objects.get(user_id=1)
-        StudentProfile.objects.create(user = student, teacher = teacherprofile,
+        student1 = StudentProfile.objects.create(user = student, teacher = teacherprofile,
         class_id = class_id, details_added = True, signup_quiz_completed = True,
         next_lesson_id = 1 )
+        exam1 = Exam.objects.create(title="exam1", level = 1)
+        question = Written_Question.objects.create(exam = exam1, text = "What is my favourite colour", review = "Green: I'm Irish!!!!")
+        answer = Answer.objects.create(question = question, text = "Green", correct = True, correct_spelling = True, correct_answer_to_display = True)
+        UserAnswer.objects.create(question = question, user_answer = "Blue", user = student1)
 
     def setUp(self):
         #set up TeacerTest TestCase
@@ -121,3 +126,77 @@ class TeacherTest(TestCase):
         self.client.login(username = "student1", password = "mypass")
         response = self.client.get(reverse('class_list'), follow = True)
         self.assertContains(response, "<h5><strong>Welcome Student:</strong> student1</h5>")
+
+    # test see_student_test
+    def test_see_student_test_student_response(self):
+        exam = Exam.objects.get(id = 1)
+        student = StudentProfile.objects.get(user_id = 2)
+        self.client.login(username = "teacher", password = "mypass")
+        response = self.client.get(reverse('see_student_test', args=[exam.id, student.user_id]))
+        self.assertTrue(response.status_code, 200)
+
+    def test_see_student_test_student_template(self):
+        exam = Exam.objects.get(id = 1)
+        student = StudentProfile.objects.get(user_id = 2)
+        self.client.login(username = "teacher", password = "mypass")
+        response = self.client.get(reverse('see_student_test', args=[exam.id, student.user_id]))
+        self.assertTemplateUsed(response, "teachers/see_student_test.html")
+
+    def test_class_see_student_test_html(self):
+        exam = Exam.objects.get(id = 1)
+        student = StudentProfile.objects.get(user_id = 2)
+        self.client.login(username = "teacher", password = "mypass")
+        response = self.client.get(reverse('see_student_test', args=[exam.id, student.user_id]))
+        self.assertContains(response, "<h5>student1 answers to exam1</h5>")
+
+    # test add_class with GET and POST requests and Valid and Invalid data
+    def test_add_class_get_response(self):
+        self.client.login(username = "teacher", password = "mypass")
+        response = self.client.get(reverse('add_class'))
+        self.assertTrue(response.status_code, 200)
+
+    def test_add_class_get_template(self):
+        self.client.login(username = "teacher", password = "mypass")
+        response = self.client.get(reverse('add_class'))
+        self.assertTemplateUsed(response, "teachers/add_class.html")
+
+    def test_add_class_get_html(self):
+        self.client.login(username = "teacher", password = "mypass")
+        response = self.client.get(reverse('add_class'))
+        self.assertContains(response, '<div class="card-headergreen">Add Class</div>')
+
+    def test_add_class_post_valid_response(self):
+        self.client.login(username = "teacher", password = "mypass")
+        response = self.client.post(reverse('add_class'),
+        {'name': 'my_new_class', 'teacher': self.teacher })
+        self.assertTrue(response.status_code, 302)
+
+    def test_add_class_post_valid_template(self):
+        self.client.login(username = "teacher", password = "mypass")
+        response = self.client.post(reverse('add_class'),
+        {'name': 'my_new_class', 'teacher': self.teacher }, follow = True)
+        self.assertTemplateUsed(response, "custom_users/welcome_teacher.html")
+
+    def test_add_class_post_valid_html(self):
+        self.client.login(username = "teacher", password = "mypass")
+        response = self.client.post(reverse('add_class'),
+        {'name': 'my_new_class', 'teacher': self.teacher }, follow = True)
+        self.assertContains(response, '<h5>Welcome Teacher: teacher</h5>')
+
+    def test_add_class_post_invalid_response(self):
+        self.client.login(username = "teacher", password = "mypass")
+        response = self.client.post(reverse('add_class'),
+        {'teacher': self.teacher })
+        self.assertTrue(response.status_code, 200)
+
+    def test_add_class_post_invalid_template(self):
+        self.client.login(username = "teacher", password = "mypass")
+        response = self.client.post(reverse('add_class'),
+        {'teacher': self.teacher })
+        self.assertTemplateUsed(response, "teachers/add_class.html")
+
+    def test_add_class_post_invalid_html(self):
+        self.client.login(username = "teacher", password = "mypass")
+        response = self.client.post(reverse('add_class'),
+        {'teacher': self.teacher })
+        self.assertContains(response, '<div class="card-headergreen">Add Class</div>')
