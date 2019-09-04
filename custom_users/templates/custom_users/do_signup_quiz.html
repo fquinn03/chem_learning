@@ -1,7 +1,9 @@
 {% extends 'base.html' %}
 
 {% block content %}
-{% load staticfiles %}
+{% load static %}
+<div class="row">
+<div class="col-sm-8">
 <form name = "form" action = "" method="POST">
 {% csrf_token %}
 <h5>SignUp Quiz</h5>
@@ -17,5 +19,7 @@
 <br/>
 <a><button class="btn btn-success button-right" type="submit" value="Submit">Submit</button></a>
 </form>
+</div>
+</div>
 
 {% endblock %}
