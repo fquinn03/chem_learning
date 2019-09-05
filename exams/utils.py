@@ -211,7 +211,6 @@ def get_next_lesson(user):
     student.next_lesson_id = next_lesson.id
     student.save()
 
-
 """
 Find the next exam for a student and display it on the welcome student screen.
 Get the students current level. Find the next lesson object for that level.
