@@ -19,6 +19,7 @@ class Exam(models.Model):
 class Question(models.Model):
     exam = models.ForeignKey(Exam, on_delete=models.CASCADE)
     text = models.CharField(max_length=250, unique = True)
+    questionimage = models.CharField(max_length=250)
     review = models.CharField(max_length=1000)
     def __str__(self):
         return self.text
