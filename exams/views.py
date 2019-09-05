@@ -1,15 +1,14 @@
-from django.db import transaction
 from django.contrib.auth.decorators import user_passes_test, login_required
 from django.shortcuts import render, redirect
 from random import shuffle
 from custom_users.models import StudentProfile
-from custom_users.utils import (user_is_teacher, user_is_student, have_student_details,
+from custom_users.utils import (user_is_student, have_student_details,
 have_student_signup, is_finished, sign_up_quiz_already_completed)
-from .models import (Answer, Exam, CompletedExam, IncorrectAnswer, Formula_Question,
-MCQ_Question, Question, UserAnswer, Written_Question)
+from .models import (Exam, CompletedExam, IncorrectAnswer, Formula_Question,
+MCQ_Question, Question, Written_Question)
 from .utils import (calculate_percentage, create_exam_completed_entry, create_user_answer,
-delete_completed_exam_total, get_corrections_formula, get_corrections_mcq,
-get_corrections_written, get_formula, get_level, get_next_exam, get_next_lesson,
+delete_completed_exam_record, delete_completed_exam_total, get_corrections_formula, get_corrections_mcq,
+get_corrections_written, get_level, get_next_exam, get_next_lesson,
 get_starting_level)
 
 """
@@ -95,21 +94,16 @@ def show_result(request, exam_id):
     student = StudentProfile.objects.get(user_id = request.user.id)
     exam = Exam.objects.get(id = exam_id)
     questions = Question.objects.all().filter(exam = exam_id)
-    # calculate the percentage score
     percentage_result = calculate_percentage(questions, request.user.id, exam_id)
-    # create a new CompletedExam record
+    delete_completed_exam_record(student, exam_id)
     create_exam_completed_entry(student, exam, percentage_result)
-    # based on the percentage result get the next level
     get_level(request.user.id)
     try:
-        # get the next exam/level for the student
         get_next_exam(request.user.id)
         get_next_lesson(request.user.id)
         return render(request, 'exams/show_result.html', {'percentage_result': percentage_result,
         'exam':exam,
         })
-    # if there is no next_exam or next_lesson, the student is finished course
-    # just show the results,
     except IndexError:
         return render(request, 'exams/show_result.html', {'percentage_result': percentage_result,
         'exam':exam,

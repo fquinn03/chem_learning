@@ -171,6 +171,8 @@ an entry with their percentage is created in the CompletedExams table.
 def create_exam_completed_entry(user, exam, result):
     CompletedExam.objects.create(user = user, exam = exam, level = exam.level, percentage = result)
 
+
+
 """
 Method to calculate a users score for a given level.  The method finds all the exams the user has taken
 in that level. Calculates a weighted mean as the user's score for that level.
@@ -198,13 +200,14 @@ def get_next_lesson(user):
     student = StudentProfile.objects.get(user_id = user)
     all_lessons = Lesson.objects.filter(level = student.level)
     completed_lessons = student.completed_lessons.filter(level = student.level)
-    remaining_lessons = all_lessons.difference(completed_lessons)
-    if remaining_lessons.count() == 0:
+    if len(completed_lessons) == len(all_lessons):
         for lesson in completed_lessons:
             student.completed_lessons.remove(lesson)
         next_lesson = all_lessons[0]
     else:
-        next_lesson = remaining_lessons[0]
+        for lesson in all_lessons:
+            if lesson not in completed_lessons:
+                next_lesson = lesson
     student.next_lesson_id = next_lesson.id
     student.save()
 
@@ -303,14 +306,14 @@ def delete_completed_exam_total(student, exam_id):
             UserAnswer.objects.get(user = student, question = question).delete()
     except CompletedExam.DoesNotExist:
         pass
-"""
+
 def delete_completed_exam_record(student, exam_id):
     try:
         CompletedExam.objects.get(user = student, exam = exam_id).delete()
         questions = Question.objects.filter(exam = exam_id)
     except CompletedExam.DoesNotExist:
         return "CompletedExam does not exist"
-"""
+
 """
 Assign i to the index of the answer for the highest level on the course.
 Go backwards through the levels.

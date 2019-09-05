@@ -4,24 +4,23 @@
 {% load static %}
 <div class="row">
     <div class="col-sm-8">
+        <h4 style = "color:mediumseagreen">Complete the quiz below to help us decide which lessons you need.</h4>
         <form name = "form" action = "" method="POST">
         {% csrf_token %}
-        <h5>SignUp Quiz</h5>
 
         {% for question in questions %}
-        <strong>{{question.text|safe}}</strong><br/>
-        {% if question.questionimage %}
-            {{question.questionimage|safe}}<br/>
-        {% endif %}
-                {% for answer in question.answer_set.all %}
-                    <input type ='radio' name= "{{question.id}}" id ="answer{{forloop.counter}}" value = "{{answer.text}}" required/>
-                    <label for = "answer{{forloop.counter}}">{{answer.text|safe}}</label>
-                {% endfor %}
-            <br/>
-            <br/>
+            <p></p><strong>{{question.text|safe}}</strong></p>
+            {% if question.questionimage %}
+                <p></p>{{question.questionimage|safe}}</p>
+            {% endif %}
+            {% for answer in question.answer_set.all %}
+                <input type ='radio' name= "{{question.id}}" id ="answer{{forloop.counter}}" value = "{{answer.text}}" required/>
+                <label for = "answer{{forloop.counter}}">{{answer.text|safe}}</label><br/>
             {% endfor %}
-            <a><button class="btn btn-success button-right" type="submit" value="Submit">Submit</button></a>
-            </form>
+            <br/>
+        {% endfor %}
+        <a><button class="btn btn-success button-right" type="submit" value="Submit">Submit</button></a>
+        </form>
     </div>
 </div>
 {% endblock %}

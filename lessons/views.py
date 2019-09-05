@@ -29,8 +29,11 @@ View to move from view_lesson.html on to the next lesson
 @login_required
 @user_passes_test(user_is_student)
 def mark_lesson_as_complete(request):
-    add_lesson_completed(request.user.id)
-    return redirect('complete_lesson')
+    try:
+        add_lesson_completed(request.user.id)
+        return redirect('complete_lesson')
+    except IndexError:
+        return redirect('congratulations')
 
 """
 View to move from view_lesson.html on to the next quiz
