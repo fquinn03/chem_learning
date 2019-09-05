@@ -3,23 +3,25 @@
 {% block content %}
 {% load static %}
 <div class="row">
-<div class="col-sm-8">
-<form name = "form" action = "" method="POST">
-{% csrf_token %}
-<h5>SignUp Quiz</h5>
+    <div class="col-sm-8">
+        <form name = "form" action = "" method="POST">
+        {% csrf_token %}
+        <h5>SignUp Quiz</h5>
 
-{% for question in questions %}
-    <strong>{{question.text|safe}}</strong>
-      {% for answer in question.answer_set.all %}
-        <input type ='radio' name= "{{question.id}}" id ="answer{{forloop.counter}}" value = "{{answer.text}}" required/>
-        <label for = "answer{{forloop.counter}}">{{answer.text|safe}}</label>
-        <br/>
-      {% endfor %}
-{% endfor %}
-<br/>
-<a><button class="btn btn-success button-right" type="submit" value="Submit">Submit</button></a>
-</form>
+        {% for question in questions %}
+        <strong>{{question.text|safe}}</strong><br/>
+        {% if question.questionimage %}
+            {{question.questionimage|safe}}<br/>
+        {% endif %}
+                {% for answer in question.answer_set.all %}
+                    <input type ='radio' name= "{{question.id}}" id ="answer{{forloop.counter}}" value = "{{answer.text}}" required/>
+                    <label for = "answer{{forloop.counter}}">{{answer.text|safe}}</label>
+                {% endfor %}
+            <br/>
+            <br/>
+            {% endfor %}
+            <a><button class="btn btn-success button-right" type="submit" value="Submit">Submit</button></a>
+            </form>
+    </div>
 </div>
-</div>
-
 {% endblock %}
