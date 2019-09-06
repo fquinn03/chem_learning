@@ -7,11 +7,11 @@
 {% if mcq_corrections %}
 <h5>Multiple choice questions you need to review</h5>
 {% for question in mcq_corrections %}
-</br><strong>Q &nbsp</strong>{{question.text}}<br/>
+</br><strong>Q &nbsp</strong>{{question.text|safe}}<br/>
     {% if question.questionimage %}
         <p style="width:60%;height:20%;">{{question.questionimage|safe}}</p>
     {% endif %}
-<strong>A &nbsp</strong>{{question.review}}<br/>
+{{question.review|safe}}<br/>
 {% endfor %}
 {% endif %}
 
@@ -23,7 +23,7 @@
     {% if question.questionimage %}
         <p style="width:60%;height:20%;">{{question.questionimage|safe}}</p><br/>
     {% endif %}
-    <strong>A &nbsp</strong>{{question.review}}<br/>
+     {{question.review|safe}}<br/>
     {% endfor %}
 {% endif %}
 
