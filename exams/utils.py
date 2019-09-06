@@ -120,6 +120,7 @@ def get_corrections_written(user_id, exam_id):
                 except IncorrectAnswer.DoesNotExist:
                     # create a record of the IncorrectAnswer for revision
                     IncorrectAnswer.objects.create(question = question, user = student)
+
     return (written_corrections, mispelled)
 
 """
@@ -130,24 +131,16 @@ so that it is displayed correctly in the review page
 """
 def get_corrections_formula(user_id, exam_id):
     student = StudentProfile.objects.get(user_id = user_id)
-    #Get all the Formula questions on the exam
-    formula_questions = Formula_Question.objects.filter(exam = exam_id)
-    formula_corrections = []
+    formula_questions = Formula_Question.objects.filter(exam = exam_id) #Get all the Formula questions on the exam
+    formula_corrections = {}
     for question in formula_questions:
-        # get user answer
-        student_answer = UserAnswer.objects.get(question = question.id, user = user_id)
-        #get correct answer
-        correct_answer =  Answer.objects.get(question = question.id, correct=True, correct_spelling = True)
+        student_answer = UserAnswer.objects.get(question = question.id, user = user_id) # get user answer
+        correct_answer =  Answer.objects.get(question = question.id, correct=True, correct_spelling = True) #get correct answer
         if student_answer.user_answer != correct_answer.text:
-            #if user answer not correct add to formula_corrections, the answer in the database
-            # that the student answer is compared to must be converted to
-            #H2O to H<sub>2</sub>O so that it displays correctly on the review page, use get_formula
-            formula_corrections.append(question)
+            formula_corrections[question.text] = get_formula(correct_answer.text) #if user answer not correct add to formula_corrections
             try:
-                # check if this IncorrectAnswer has already been saved for revision for this student
                 IncorrectAnswer.objects.get(question = question, user = student)
             except IncorrectAnswer.DoesNotExist:
-                # create a record of the IncorrectAnswer for revision
                 IncorrectAnswer.objects.create(question = question, user = student)
     return formula_corrections
 

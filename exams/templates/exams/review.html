@@ -3,7 +3,9 @@
 {% block content %}
 {% load static %}
 
-<h5>Questions you need to review</h5>
+
+{% if mcq_corrections %}
+<h5>Multiple choice questions you need to review</h5>
 {% for question in mcq_corrections %}
 </br><strong>Q &nbsp</strong>{{question.text}}<br/>
     {% if question.questionimage %}
@@ -11,36 +13,36 @@
     {% endif %}
 <strong>A &nbsp</strong>{{question.review}}<br/>
 {% endfor %}
-
-
-{% for question in written_corrections %}
-</br><strong>Q &nbsp</strong>{{question.text}}<br/>
-{% if question.questionimage %}
-    {{question.questionimage|safe}}<br/>
 {% endif %}
-<strong>A &nbsp</strong>{{question.review}}<br/>
-{% endfor %}
+
+{% if written_corrections_incorrect %}
+<br/>
+<h5>Written questions you need to review</h5>
+    {% for question in written_corrections_incorrect %}
+    <strong>Q &nbsp</strong>{{question.text|safe}}<br/>
+    {% if question.questionimage %}
+        <p style="width:60%;height:20%;">{{question.questionimage|safe}}</p><br/>
+    {% endif %}
+    <strong>A &nbsp</strong>{{question.review}}<br/>
+    {% endfor %}
+{% endif %}
+
 
 {% if formulae_count > 0 %}
+<br/>
 <h5>Formulae you need to review</h5>
-    {% for question in formula_questions %}
-        </br><strong>Q &nbsp</strong>{{question.text}}<br/>
-        {% if question.questionimage %}
-            {{question.questionimage|safe}}<br/>
-        {% endif %}
-        <strong>A &nbsp</strong>{{question.review}}<br/>
-    {% endfor %}
+{% for key, value in formula_corrections.items %}
+{{key|safe}}&nbsp;-&nbsp;{{value|safe}}<br></br>
+{% endfor %}
 {% endif %}
 
+
 {% if mispelled_count > 0 %}
+<br/>
 <h5>Spellings you need to review</h5>
-    {% for question in written_questions_mispelled %}
-        </br><strong>Q &nbsp</strong>{{question.text}}<br/>
-        {% if question.questionimage %}
-            {{question.questionimage|safe}}<br/>
-        {% endif %}
-        <strong>A &nbsp</strong>{{question.review}}<br/>
-    {% endfor %}
+{% for key, value in written_corrections_mispelled.items %}
+{{value|safe}}<br></br>
+{% endfor %}
 {% endif %}
 
 <a href ="{% url 'welcome_student' %}"><button class="btn btn-success button-right" >Continue</button></a><br></br>
