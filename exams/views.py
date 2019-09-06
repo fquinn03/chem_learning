@@ -159,7 +159,7 @@ def revise(request):
     number_of_q = len(incorrect_questions)
     shuffle(incorrect_questions)
     if len(incorrect_questions) > 5:
-        incorrect_questions = incorrect_questions[0:4]
+        incorrect_questions = incorrect_questions[0:5]
     return render(request, 'exams/revise.html', {
     'incorrect_questions':incorrect_questions,
     'number_of_q':number_of_q

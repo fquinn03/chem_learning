@@ -10,6 +10,9 @@
     {% csrf_token %}
     {% for question in mcq_questions %}
         <br/><p><strong>{{question.text|safe}}</strong></p>
+        {% if question.questionimage %}
+            <p></p>{{question.questionimage|safe}}</p>
+        {% endif %}
           {% for answer in question.answer_set.all %}
             <input type ='radio' name= "{{question.id}}" id ="answer{{forloop.counter}}"
             value = "{{answer.text}}" required/>
@@ -20,12 +23,18 @@
     <br/>
     {% for question in written_questions %}
         <br/><p><strong>{{question.text|safe}}</strong></p>
+        {% if question.questionimage %}
+            <p></p>{{question.questionimage|safe}}</p>
+        {% endif %}
         <label for = "answer{{forloop.counter}}">Answer</label>
         <input type ='text' name= "{{question.id}}" id ="answer{{forloop.counter}}"  required />
         <br/>
     {% endfor %}
     {% for question in formula_questions %}
           <br/><p><strong>{{question.text|safe}}</strong></p>
+        {% if question.questionimage %}
+            <p></p>{{question.questionimage|safe}}</p>
+        {% endif %}
           <label for = "answer{{forloop.counter}}">Formula</label>
           <input type ='text' name= "{{question.id}}" id ="answer{{forloop.counter}}" required/>
           <br/>
@@ -35,7 +44,7 @@
     </form>
   </div>
   <div class="col-sm-4">
-    <p ><strong>Formula Checker</strong></p>
+    <p ><strong>Formula Checker <small>e.g. Convert H2O to H<sub>2</sub>O</sub></small></strong></p>
     <label for="Formula input">Enter a formula: </label>
     <input type ='text' class = "formula_input" id = "formula_input" required/>
     <a><button type="button" class="btn btn-success" data-toggle="modal"
@@ -58,7 +67,9 @@
           </div>
         </div>
     </div>
+
     <center><h5>Periodic Table of the Elements</h5>
+    <small>Click on an element to find its information</small>
 <p>
 <form>
 <table cellspacing=2 cellpadding=0 width=500>

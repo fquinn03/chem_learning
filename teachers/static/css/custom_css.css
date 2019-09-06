@@ -182,6 +182,7 @@ strong.fielderror{
   color: #212529;
   border-bottom:1px solid #dee2e6;
   border-left:1px solid #dee2e6;
+  overflow:scroll;
 }
 
 .table th,
@@ -191,11 +192,13 @@ strong.fielderror{
   border-top: 1px solid #dee2e6;
   border-right: 1px solid #dee2e6;
   border-bottom: 1px solid #dee2e6;
+
 }
 
 .table thead th {
   vertical-align: left;
   border-bottom: 2px solid #dee2e6;
+
 }
 
 .table tbody + tbody {
