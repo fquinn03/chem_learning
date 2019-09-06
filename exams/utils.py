@@ -63,12 +63,12 @@ If incorrect add question and correct answer to mcq_corrections dictionary
 def get_corrections_mcq(user_id, exam_id):
     student = StudentProfile.objects.get(user_id = user_id)
     mcq_questions = MCQ_Question.objects.filter(exam = exam_id) #Get all the MCQ questions on the exam
-    mcq_corrections = {}
+    mcq_corrections = []
     for question in mcq_questions:
         student_answer = UserAnswer.objects.get(question = question.id, user = user_id) # get the student's answer
         correct_answer =  Answer.objects.get(question = question.id, correct=True, correct_spelling = True)# get the correct answer
         if student_answer.user_answer != correct_answer.text: # compare answers and if incorrect
-            mcq_corrections[question.text] = correct_answer.text  # add to mcq_corrections dictionary
+            mcq_corrections.append(question)  # add to mcq_corrections dictionary
             try:
                 # check if this IncorrectAnswer has already been saved for revision for this student
                 IncorrectAnswer.objects.get(question = question, user = student)
@@ -87,7 +87,7 @@ If correct but mispelled add question and correct spelling to mispelled dictiona
 def get_corrections_written(user_id, exam_id):
     student = StudentProfile.objects.get(user_id = user_id)
     written_questions = Written_Question.objects.filter(exam = exam_id) # get all the written questions on the exam.
-    written_corrections = {}
+    written_corrections = []
     mispelled = {}
     acceptable_answers =[]
     for question in written_questions:
@@ -113,7 +113,7 @@ def get_corrections_written(user_id, exam_id):
                 mispelled[question.text] = correct_answer.text
             else:
                 # student answer is incorrect
-                written_corrections[question.text] = correct_answer_to_display.text
+                written_corrections.append(question)
                 try:
                     # check if this IncorrectAnswer has already been saved for revision for this student
                     IncorrectAnswer.objects.get(question = question, user = student)
@@ -132,7 +132,7 @@ def get_corrections_formula(user_id, exam_id):
     student = StudentProfile.objects.get(user_id = user_id)
     #Get all the Formula questions on the exam
     formula_questions = Formula_Question.objects.filter(exam = exam_id)
-    formula_corrections = {}
+    formula_corrections = []
     for question in formula_questions:
         # get user answer
         student_answer = UserAnswer.objects.get(question = question.id, user = user_id)
@@ -142,7 +142,7 @@ def get_corrections_formula(user_id, exam_id):
             #if user answer not correct add to formula_corrections, the answer in the database
             # that the student answer is compared to must be converted to
             #H2O to H<sub>2</sub>O so that it displays correctly on the review page, use get_formula
-            formula_corrections[question.text] = get_formula(correct_answer.text)
+            formula_corrections.append(question)
             try:
                 # check if this IncorrectAnswer has already been saved for revision for this student
                 IncorrectAnswer.objects.get(question = question, user = student)

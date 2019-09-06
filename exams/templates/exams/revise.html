@@ -13,6 +13,9 @@
     {% if number_of_q != 0 %}
       {% for question in incorrect_questions %}
       <br/><strong>{{question.question.text|safe}}</strong><br/>
+        {% if question.question.questionimage %}
+            <p style="width:60%;height:20%;">{{question.question.questionimage|safe}}</p>
+        {% endif %}
       {{question.question.review|safe}}<br/>
       {% endfor %}
     {% else %}
