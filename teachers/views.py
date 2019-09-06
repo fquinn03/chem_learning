@@ -49,7 +49,7 @@ def see_student_test(request, exam_id, student_id):
     question_and_answer = {}
     for question in questions:
         answer = UserAnswer.objects.get(question = question.id, user = student.user_id)
-        question_and_answer[question.text] = answer.user_answer
+        question_and_answer[question] = answer
     return render(request, 'teachers/see_student_test.html', {
     'question_and_answer': question_and_answer,
     'student':student,

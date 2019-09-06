@@ -2,7 +2,16 @@
 
 {% block content %}
 <h5>{{student.user.username}} answers to {{exam.title}}</h5>
+
+
 {% for key, value in question_and_answer.items %}
-<br/>{{key|safe}}&nbsp&nbsp{{value|safe}}<br/>
+<strong>Q</strong>{{key.text|safe}}<br/>
+{% if key.questionimage %}<br/>
+{{key.questionimage|safe}}<br/>
+{% endif %}
+Students answer: {{value.user_answer|safe}}
+<br/><br/>
+
 {% endfor %}
+
 {% endblock %}
