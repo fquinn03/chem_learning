@@ -120,7 +120,6 @@ def get_corrections_written(user_id, exam_id):
                 except IncorrectAnswer.DoesNotExist:
                     # create a record of the IncorrectAnswer for revision
                     IncorrectAnswer.objects.create(question = question, user = student)
-
     return (written_corrections, mispelled)
 
 """
@@ -201,8 +200,9 @@ def get_next_lesson(user):
         for lesson in all_lessons:
             if lesson not in completed_lessons:
                 next_lesson = lesson
-    student.next_lesson_id = next_lesson.id
-    student.save()
+                student.next_lesson_id = next_lesson.id
+                student.save()
+                break
 
 """
 Find the next exam for a student and display it on the welcome student screen.
@@ -304,7 +304,7 @@ def delete_completed_exam_record(student, exam_id):
         CompletedExam.objects.get(user = student, exam = exam_id).delete()
         questions = Question.objects.filter(exam = exam_id)
     except CompletedExam.DoesNotExist:
-        return "CompletedExam does not exist"
+        pass
 
 """
 Assign i to the index of the answer for the highest level on the course.

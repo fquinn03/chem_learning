@@ -7,7 +7,7 @@ from lessons.models import Lesson
 from .models import (Answer, Exam, Formula_Question, MCQ_Question, Question,
 UserAnswer, Written_Question, CompletedExam, IncorrectAnswer, IncorrectAnswer)
 from .utils import (calculate_percentage, create_exam_completed_entry,
-create_user_answer, delete_completed_exam_total, get_corrections_formula,
+create_user_answer, delete_completed_exam_record, delete_completed_exam_total, get_corrections_formula,
 get_corrections_mcq, get_corrections_written, get_corrections_written, get_formula,
 get_level, get_next_exam, get_starting_level)
 from .views import dotest, show_result, review
@@ -122,7 +122,7 @@ class ExamsTest(TestCase):
         Lesson.objects.create(level = 1, title = "another lesson")
         Lesson.objects.create(level = 2, title = "a third lesson")
         Lesson.objects.create(level = 3, title = "a fourth lesson")
-        # Create user, question, answer, completed exam to test user is finished 
+        # Create user, question, answer, completed exam to test user is finished
         question4 = Written_Question.objects.create(text = "What is my favourite drink? ", exam = exam7)
         Answer.objects.create(question = question4, text = "Cola",
         correct = True, correct_spelling = True, correct_answer_to_display = True)
@@ -338,7 +338,7 @@ class ExamsTest(TestCase):
     def test_review_get_html(self):
         self.client.login(username ="student3", password="mypass")
         response = self.client.get(reverse('review', args=[1,]), follow = True)
-        self.assertContains(response, "<h5>Questions you need to review</h5>")
+        self.assertContains(response, "<h5>Multiple choice questions you need to review</h5>")
 
     # test review view with 100%
     def test_review_get_response_with_100_response(self):
@@ -386,7 +386,7 @@ class ExamsTest(TestCase):
     def test_do_quiz_signup_get_html(self):
         self.client.login(username ="student1", password="mypass")
         response=self.client.get(reverse('do_signup_quiz'), follow = True)
-        self.assertContains(response, '<h5>SignUp Quiz</h5>')
+        self.assertContains(response, '<h4 style = "color:mediumseagreen">Complete the quiz below to help us decide which lessons you need.</h4>')
 
     def test_do_quiz_signup_post_response(self):
         self.client.login(username ="student1", password="mypass")
@@ -463,18 +463,18 @@ class ExamsTest(TestCase):
     def test_get_corrections_mcq(self):
         questions = Question.objects.all()
         corrections = get_corrections_mcq(self.student2.user_id, 1)
-        self.assertEqual(corrections, {"What is my favourite colour? ": "Green"})
+        self.assertEqual(corrections[0], MCQ_Question.objects.get(id = 1))
 
     #test utils.get_corrections_written helper method
     def test_get_corrections_written_all_correct(self):
         questions = Written_Question.objects.all()
         corrections = get_corrections_written(self.student1.user_id, 1)
-        self.assertEqual(corrections[0], {})
+        self.assertEqual(corrections[0], [])
 
     def test_get_corrections_written_all_correct2(self):
         questions = Written_Question.objects.all()
         corrections = get_corrections_written(11, 7)
-        self.assertEqual(corrections[0], {})
+        self.assertEqual(corrections[0], [])
 
     def test_get_corrections_written_mispelled(self):
         questions = Written_Question.objects.all()
@@ -485,7 +485,7 @@ class ExamsTest(TestCase):
         questions = Written_Question.objects.all()
         student = StudentProfile.objects.get(user_id = 10)
         corrections = get_corrections_written(student, 1)
-        self.assertEqual(corrections[0], {'What is my favourite film? ': 'Shrek'})
+        self.assertEqual(corrections[0][0], Written_Question.objects.get(id = 2) )
 
     # test utils.create_exam_completed_entry
     def test_create_exam_completed_entry_student1(self):
@@ -568,10 +568,16 @@ class ExamsTest(TestCase):
         self.assertEqual(student.next_exam_id, 1)
 
     # test utils.py delete_completed_exam_total
-    def test_delete_exam_record_does_not_exist(self):
+    def test_delete_exam_total_does_not_exist(self):
         delete_completed_exam_total (11, 7)
         with self.assertRaises(CompletedExam.DoesNotExist):
             CompletedExam.objects.get(user_id = 11)
+
+    # test utils.py delete_completed_exam_record
+    def test_delete_exam_record_does_not_exist(self):
+        delete_completed_exam_record (10, 6)
+        with self.assertRaises(CompletedExam.DoesNotExist):
+            CompletedExam.objects.get(user_id = 10, exam_id = 6)
 
     # test utils.get_starting_level
     def test_get_starting_level(self):
@@ -598,3 +604,8 @@ class ExamsTest(TestCase):
         answers = ["False", "True", "True", "False", "True"]
         level = get_starting_level(answers)
         self.assertEqual(level, 2)
+
+    def test_get_starting_level_6(self):
+        answers = ["True", "True", "True", "True", "True"]
+        level = get_starting_level(answers)
+        self.assertEqual(level, 5)
