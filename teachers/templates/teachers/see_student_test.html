@@ -1,8 +1,10 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h5>{{student.user.username}} answers to {{exam.title}}</h5>
-
+<h5>{{student.user.username}} answers to {{exam.title}}
+<a href = "{% url 'show_students' class_name=student.class_id.name %}"><button type="button" class="btn btn-success button-right">
+Back To Student List </button></a>
+</h5>
 
 {% for key, value in question_and_answer.items %}
 <strong>Q</strong>{{key.text|safe}}<br/>
