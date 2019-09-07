@@ -11,6 +11,9 @@
         {% for field in form %}
         {{field.label}}<br/>
         {{field}}<br/>
+        {% for error in field.errors %}
+          <strong class = "fielderror">{{error}}</strong><br/>
+        {% endfor %}
         <br/>
         {% endfor %}
         <a><button type="submit" class="btn btn-success button-right">Update</button></a>

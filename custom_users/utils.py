@@ -1,5 +1,12 @@
 from .models import StudentProfile, TeacherProfile
-from exams.models import CompletedExam
+
+def do_not_have_teacher_details(user):
+    teacher = TeacherProfile.objects.get(user_id = user.id)
+    return not teacher.details_added
+
+def do_not_have_student_details(user):
+    student = StudentProfile.objects.get(user_id = user.id)
+    return not student.details_added
 
 def sign_up_quiz_already_completed(user):
     student = StudentProfile.objects.get(user_id = user.id)

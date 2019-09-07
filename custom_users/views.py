@@ -1,13 +1,12 @@
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import user_passes_test, login_required
-from django.contrib.auth.models import User
-from django.http import HttpResponse
-from django.shortcuts import render, redirect, get_list_or_404, get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404
 from lessons.models import Lesson
 from .forms import AddSchoolForm, StudentForm, TeacherForm, StudentProfileForm, TeacherProfileForm
 from .models import Class_id, School, TeacherProfile, StudentProfile
-from .utils import (get_progress, user_is_teacher, user_is_student, have_student_details, have_teacher_details,
-have_student_signup,is_finished, sign_up_quiz_already_completed)
+from .utils import (do_not_have_student_details, do_not_have_teacher_details,
+get_progress, user_is_teacher, user_is_student, have_student_details,
+have_teacher_details, have_student_signup,is_finished)
 from exams.models import CompletedExam
 
 """
@@ -135,6 +134,7 @@ information to the database.
 """
 @login_required
 @user_passes_test(user_is_student)
+@user_passes_test(do_not_have_student_details, login_url = 'welcome_student')
 def edit_student(request):
     student = StudentProfile.objects.get(user_id = request.user.id)
     if request.method == 'POST':
@@ -146,6 +146,8 @@ def edit_student(request):
             student.details_added = True
             student.save()
             return redirect('student_details_added')
+        else:
+            return render(request, 'custom_users/edit_student.html', {'form': form})
     else:
         form=StudentProfileForm()
         return render(request, 'custom_users/edit_student.html', {'form': form})
@@ -156,6 +158,7 @@ information to the database.
 """
 @login_required
 @user_passes_test(user_is_teacher)
+@user_passes_test(do_not_have_teacher_details, login_url = 'welcome_teacher')
 def edit_teacher(request):
     teacher = TeacherProfile.objects.get(user_id = request.user.id)
     if request.method == 'POST':
@@ -170,6 +173,8 @@ def edit_teacher(request):
             teacher.details_added = True
             teacher.save()
             return render(request, 'custom_users/teacher_details_added.html', {'teacher':teacher})
+        else:
+            return render(request, 'custom_users/edit_teacher.html', {'form': form})
     else:
         form=TeacherProfileForm()
         return render(request, 'custom_users/edit_teacher.html', {'form': form})
@@ -191,6 +196,8 @@ def add_school(request):
             school.save()
             teacher.school = school
             return redirect('edit_teacher')
+        else:
+            return render(request, 'custom_users/add_school.html', {'form': form})
     else:
         form=AddSchoolForm()
         return render(request, 'custom_users/add_school.html', {'form': form})
