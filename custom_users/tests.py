@@ -26,6 +26,7 @@ class CustomUsersTest(TestCase):
         User.objects.create(id = 4, username = "student3", password="student3_pass")
         User.objects.create_user(id = 5, username = "student4", password="my_pass")
         User.objects.create_user(id = 6, username = "student5", password="my_pass")
+        User.objects.create_user(id = 7, username = "teacher1", password="teacher_pass")
         Class_id.objects.create(id = 1, name = "9y3", teacher_id=1)
         teacher = User.objects.get(id = 1)
         student = User.objects.get(id = 2)
@@ -48,6 +49,8 @@ class CustomUsersTest(TestCase):
         class_id = class_id, school_id = school.id, level = 7, attempt = 1, details_added = True,
         signup_quiz_completed = True, next_lesson_id = 1)
         Lesson.objects.create(level = 1, title = "test_lesson_1_1", link = "www.testlink1.com")
+        TeacherProfile.objects.create(user_id = 7, is_teacher = True, is_student = False, details_added = False)
+        teacherprofile=TeacherProfile.objects.get(user_id = 1)
 
     def setUp(self):
         # set up CustomUsers TestCase
@@ -62,6 +65,7 @@ class CustomUsersTest(TestCase):
         self.class_id = Class_id.objects.get(id=1)
         self.user3 = User.objects.get(id = 4)
         self.student2 = StudentProfile.objects.get(user_id = 2)
+        self.teacher1 = TeacherProfile.objects.get(user_id = 7)
 
     """
     Models Tests
@@ -153,7 +157,7 @@ class CustomUsersTest(TestCase):
 
     def test_form_valid(self):
         student = self.sp
-        form = StudentProfileForm({'school': "", 'teacher': "",'class_id': ""}, instance = student)
+        form = StudentProfileForm({'school': 1, 'teacher': 1,'class_id': 1}, instance = student)
         self.assertEqual(form.is_valid(), True)
 
     # check that the dropdown will have the correct data when a school is selected
@@ -425,33 +429,33 @@ class CustomUsersTest(TestCase):
         self.assertContains(response, '<div class="card-headergreen">Student Details Added</div>')
 
     # check edit_teacher view changed the user's school details
-    def test_edit_teacher_post_response_update_details(self):
-        self.client.login(username = "teacher", password="teacher_pass")
-        response=self.client.post(reverse('edit_teacher'), {'name': '2', 'class_name': 'SomeClass'})
-        teacher = TeacherProfile.objects.get(user_id = 1)
-        self.assertEqual(teacher.school.name, "SomeSchool")
+    def test_edit_teacher_get_response(self):
+        teacher = TeacherProfile.objects.get(user_id = 7)
+        teacher.details_added = False
+        self.client.login(username = "teacher1", password="teacher_pass")
+        response=self.client.get(reverse('edit_teacher'))
+        self.assertEqual(response.status_code, 200)
 
     def test_edit_teacher_get_template(self):
-        self.client.login(username = "teacher", password="teacher_pass")
+        teacher = TeacherProfile.objects.get(user_id = 7)
+        teacher.details_added = False
+        self.client.login(username = "teacher1", password="teacher_pass")
         response=self.client.get(reverse('edit_teacher'))
         self.assertTemplateUsed(response, 'custom_users/edit_teacher.html')
 
-    def test_edit_teacher_post_template(self):
-        self.client.login(username = "teacher", password="teacher_pass")
-        teacher = TeacherProfile.objects.get(user_id = 1)
-        response=self.client.post(reverse('edit_teacher'),
-        {'name': '2', 'class_name': 'SomeClass'})
-        self.assertTemplateUsed(response, 'custom_users/teacher_details_added.html')
-
     def test_edit_teacher_get_html(self):
-        self.client.login(username = "teacher", password="teacher_pass")
+        teacher = TeacherProfile.objects.get(user_id = 7)
+        teacher.details_added = False
+        self.client.login(username = "teacher1", password="teacher_pass")
         response=self.client.get(reverse('edit_teacher'))
         self.assertContains(response, '<div class="card-headergreen">Add Teacher Details</div>')
 
-    def test_edit_teacher_post_html(self):
-        self.client.login(username = "teacher", password="teacher_pass")
+    def test_edit_teacher_post_response(self):
+        self.client.login(username = "teacher1", password="teacher_pass")
         response=self.client.post(reverse('edit_teacher'),
-        {'name': '2', 'class_name': 'SomeClass'})
+        {'school': 1, 'class_name': 'class_name'}, follow = True)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'custom_users/teacher_details_added.html')
         self.assertContains(response, '<div class="card-headergreen">Teacher Details Added</div>')
 
     # test add_school view GET and POST requests

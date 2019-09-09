@@ -35,8 +35,10 @@ class TeacherTest(TestCase):
         class_id = class_id, details_added = True, signup_quiz_completed = True,
         next_lesson_id = 1 )
         exam1 = Exam.objects.create(title="exam1", level = 1)
-        question = Written_Question.objects.create(exam = exam1, text = "What is my favourite colour", review = "Green: I'm Irish!!!!")
-        answer = Answer.objects.create(question = question, text = "Green", correct = True, correct_spelling = True, correct_answer_to_display = True)
+        question = Written_Question.objects.create(exam = exam1,
+        text = "What is my favourite colour", review = "Green: I'm Irish!!!!")
+        answer = Answer.objects.create(question = question,
+        text = "Green", correct = True, correct_spelling = True, correct_answer_to_display = True)
         UserAnswer.objects.create(question = question, user_answer = "Blue", user = student1)
 
     def setUp(self):
@@ -147,7 +149,7 @@ class TeacherTest(TestCase):
         student = StudentProfile.objects.get(user_id = 2)
         self.client.login(username = "teacher", password = "mypass")
         response = self.client.get(reverse('see_student_test', args=[exam.id, student.user_id]))
-        self.assertContains(response, "<h5>student1 answers to exam1</h5>")
+        self.assertContains(response, "<h5>student1 answers to exam1")
 
     # test add_class with GET and POST requests and Valid and Invalid data
     def test_add_class_get_response(self):

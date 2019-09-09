@@ -11,7 +11,7 @@
     {% for question in mcq_questions %}
         <br/><p><strong>{{question.text|safe}}</strong></p>
         {% if question.questionimage %}
-            <p></p>{{question.questionimage|safe}}</p>
+            <p>{{question.questionimage|safe}}</p>
         {% endif %}
           {% for answer in question.answer_set.all %}
             <input type ='radio' name= "{{question.id}}" id ="answer{{forloop.counter}}"
@@ -24,7 +24,7 @@
     {% for question in written_questions %}
         <br/><p><strong>{{question.text|safe}}</strong></p>
         {% if question.questionimage %}
-            <p></p>{{question.questionimage|safe}}</p>
+            <p>{{question.questionimage|safe}}</p>
         {% endif %}
         <label for = "answer{{forloop.counter}}">Answer</label>
         <input type ='text' name= "{{question.id}}" id ="answer{{forloop.counter}}"  required />
@@ -33,7 +33,7 @@
     {% for question in formula_questions %}
           <br/><p><strong>{{question.text|safe}}</strong></p>
         {% if question.questionimage %}
-            <p></p>{{question.questionimage|safe}}</p>
+            <p>{{question.questionimage|safe}}</p>
         {% endif %}
           <label for = "answer{{forloop.counter}}">Formula</label>
           <input type ='text' name= "{{question.id}}" id ="answer{{forloop.counter}}" required/>
@@ -44,7 +44,7 @@
     </form>
   </div>
   <div class="col-sm-4">
-    <p ><strong>Formula Checker <small>e.g. Convert H2O to H<sub>2</sub>O</sub></small></strong></p>
+    <p ><strong>Formula Checker <small>e.g. Convert H2O to H<sub>2</sub>O</small></strong></p>
     <label for="Formula input">Enter a formula: </label>
     <input type ='text' class = "formula_input" id = "formula_input" required/>
     <a><button type="button" class="btn btn-success" data-toggle="modal"

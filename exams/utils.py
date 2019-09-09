@@ -1,4 +1,4 @@
-import random
+from random import shuffle
 from django.db import connection, transaction
 from chempy import Substance
 from django.contrib.auth.models import User
@@ -333,3 +333,22 @@ def get_starting_level(answers):
             i -= 1
 
     return 1
+
+"""
+Get a list of the questions the student has previously answered incorrectly.
+Shuffle the list.
+If the list has less that 5 questions display them all
+Else display the first 5 questions in the list
+"""
+def get_revision_resources(user_id):
+    student = StudentProfile.objects.get(user_id = user_id)
+    #get incorrect answers from db
+    incorrect_questions = IncorrectAnswer.objects.filter(user = student.user_id)
+    #convert queryset into a list so it can be shuffled
+    incorrect_questions = list(incorrect_questions)
+    number_of_q = len(incorrect_questions)
+    shuffle(incorrect_questions)
+    if len(incorrect_questions) > 5:
+        incorrect_questions = incorrect_questions[0:5]
+
+    return (incorrect_questions, number_of_q)

@@ -1,6 +1,5 @@
 from django.contrib.auth.decorators import user_passes_test, login_required
 from django.shortcuts import render, redirect
-from random import shuffle
 from custom_users.models import StudentProfile
 from custom_users.utils import (user_is_student, have_student_details,
 have_student_signup, is_finished, sign_up_quiz_already_completed)
@@ -8,7 +7,7 @@ from .models import (Exam, CompletedExam, IncorrectAnswer, Formula_Question,
 MCQ_Question, Question, Written_Question)
 from .utils import (calculate_percentage, create_exam_completed_entry, create_user_answer,
 delete_completed_exam_record, delete_completed_exam_total, get_corrections_formula, get_corrections_mcq,
-get_corrections_written, get_level, get_next_exam, get_next_lesson,
+get_corrections_written, get_level, get_next_exam, get_next_lesson, get_revision_resources,
 get_starting_level)
 
 """
@@ -17,7 +16,7 @@ and answer options.If POST request, use utils.create_user_answer to add a user_a
 the database for each question answered and then display finish_test template
 """
 @login_required
-@user_passes_test(user_is_student)
+@user_passes_test(user_is_student, login_url = 'welcome_teacher')
 @user_passes_test(have_student_details, login_url = 'edit_student',  redirect_field_name = 'get_student_details' )
 @user_passes_test(have_student_signup,  login_url = 'do_signup_quiz', redirect_field_name = 'do_signup_quiz')
 def dotest(request):
@@ -57,7 +56,7 @@ If POST request, go through the answers, assign student level and changed signup
 for student profile.
 """
 @login_required
-@user_passes_test(user_is_student)
+@user_passes_test(user_is_student, login_url = 'welcome_teacher')
 @user_passes_test(have_student_details, login_url = 'edit_student',  redirect_field_name = 'get_student_details' )
 @user_passes_test(sign_up_quiz_already_completed, login_url = 'welcome_student')
 def do_signup_quiz(request):
@@ -80,14 +79,13 @@ def do_signup_quiz(request):
         return render(request, 'custom_users/do_signup_quiz.html', {'questions': questions
         })
 
-
 """
 Use the exam_id to get all the questions for the exam.  Use utils.calculate_percentage to
 check if the user_answer in the database for each question is correct, calculate the user's
 percentage result and then display show_result template.
 """
 @login_required
-@user_passes_test(user_is_student)
+@user_passes_test(user_is_student, login_url = 'welcome_teacher')
 @user_passes_test(have_student_details, login_url = 'edit_student',  redirect_field_name = 'get_student_details' )
 @user_passes_test(have_student_signup,  login_url = 'do_signup_quiz', redirect_field_name = 'do_signup_quiz')
 def show_result(request, exam_id):
@@ -109,7 +107,6 @@ def show_result(request, exam_id):
         'exam':exam,
         })
 
-
 """
 Use the exam_id to get all the questions for the exam.  Check the student's percentage for the exam.
 If 100 just show 100% congratulations image
@@ -117,7 +114,7 @@ Else  go through their answers and use the utils.get_corrections_mcq, get_correc
 functions and show the student their corrections
 """
 @login_required
-@user_passes_test(user_is_student)
+@user_passes_test(user_is_student, login_url = 'welcome_teacher')
 @user_passes_test(have_student_details, login_url = 'edit_student',  redirect_field_name = 'get_student_details' )
 @user_passes_test(have_student_signup,  login_url = 'do_signup_quiz', redirect_field_name = 'do_signup_quiz')
 def review(request, exam_id):
@@ -141,25 +138,18 @@ def review(request, exam_id):
         })
 
 """
-Get a list of the questions the student has previously answered incorrectly.
-Shuffle the list.
-If the list has less that 5 questions display them all
-Else display the first 5 questions in the list
+When the student clicks on revision button on the welcome page
+Display their tailored revision resources chosen from questions they
+have answered incorrectly
 """
 @login_required
 @user_passes_test(user_is_student)
 @user_passes_test(have_student_details, login_url = 'edit_student',  redirect_field_name = 'get_student_details' )
 @user_passes_test(have_student_signup,  login_url = 'do_signup_quiz', redirect_field_name = 'do_signup_quiz')
 def revise(request):
-    student = StudentProfile.objects.get(user_id = request.user.id)
-    #get incorrect answers from db
-    incorrect_questions = IncorrectAnswer.objects.filter(user = student.user_id)
-    #convert queryset into a list
-    incorrect_questions = list(incorrect_questions)
-    number_of_q = len(incorrect_questions)
-    shuffle(incorrect_questions)
-    if len(incorrect_questions) > 5:
-        incorrect_questions = incorrect_questions[0:5]
+    revision_resources = get_revision_resources(request.user.id)
+    incorrect_questions = revision_resources[0]
+    number_of_q = revision_resources[1]
     return render(request, 'exams/revise.html', {
     'incorrect_questions':incorrect_questions,
     'number_of_q':number_of_q

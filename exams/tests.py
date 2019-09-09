@@ -24,7 +24,7 @@ class ExamsTest(TestCase):
     @classmethod
     def setUpTestData(cls):
         # create users objects to make students/teachers
-        user1 = User.objects.create(username ="teacher", password="mypass")
+        user1 = User.objects.create_user(username ="teacher", password="mypass")
         user2 = User.objects.create_user(username ="student1", password="mypass")
         user3 = User.objects.create_user(username ="student2", password="mypass")
         user4 = User.objects.create_user(username ="student3", password="mypass")
@@ -59,6 +59,7 @@ class ExamsTest(TestCase):
         attempt = 1, details_added = True, signup_quiz_completed = False, next_lesson_id = 1)
         student10 = StudentProfile.objects.create(user = user11, teacher = teacher, class_id = class_id, level = 7,
         attempt = 1, details_added = True, signup_quiz_completed = True, next_lesson_id = 1)
+
         # create exams to test next_exam_id
         exam1 = Exam.objects.create(level = 1, title = "Test Exam Title 1")
         exam2 = Exam.objects.create(level = 0, title = "signup_quiz")
@@ -83,6 +84,7 @@ class ExamsTest(TestCase):
         UserAnswer.objects.create(question = question1, user_answer = option2, user = student3)
         UserAnswer.objects.create(question = question1, user_answer = option2, user = student2)
         UserAnswer.objects.create(question = question1, user_answer = option3, user = student9)
+
         question2 = Written_Question.objects.create(text = "What is my favourite film? ", exam = exam1)
         Answer.objects.create(question = question2, text = "Shrek1",
         correct = True, correct_spelling = True, correct_answer_to_display = False)
@@ -94,6 +96,7 @@ class ExamsTest(TestCase):
         UserAnswer.objects.create(question = question2, user_answer = "   Shrak ", user = student1)
         UserAnswer.objects.create(question = question2, user_answer = "Jaws", user = student9)
         UserAnswer.objects.create(question = question2, user_answer = "Jaws", user = student3)
+
         question3 = Formula_Question.objects.create(text = "What is the chemical formula for water? ", exam = exam1)
         Answer.objects.create(question = question3, text = "H2O", correct = True, correct_spelling = True)
         UserAnswer.objects.create(question = question3, user_answer = "h2o", user = student2)
@@ -101,6 +104,8 @@ class ExamsTest(TestCase):
         UserAnswer.objects.create(question = question3, user_answer = "H2O", user = student1)
         UserAnswer.objects.create(question = question3, user_answer = "H2O", user = student4)
         UserAnswer.objects.create(question = question3, user_answer = "CH4", user = student9)
+
+
         # create complete exams to test next_exam_id
         CompletedExam.objects.create(user = student1, exam = exam1, level = 1, percentage =100, attempt = 1)
         CompletedExam.objects.create(user = student1, exam = exam2, level = 0, percentage = 33, attempt = 1)
@@ -117,6 +122,7 @@ class ExamsTest(TestCase):
         CompletedExam.objects.create(user = student9, exam = exam1, level = 1, percentage = 0, attempt = 1)
         CompletedExam.objects.create(user = student9, exam = exam5, level = 1, percentage = 80, attempt = 1)
         CompletedExam.objects.create(user = student9, exam = exam6, level = 1, percentage = 85, attempt = 1)
+
         # lessons to test next_lesson_id
         Lesson.objects.create(level = 1, title = "a lesson")
         Lesson.objects.create(level = 1, title = "another lesson")
@@ -191,18 +197,14 @@ class ExamsTest(TestCase):
 
     """
     Views and Template testing
-
     Each view is tested for expected response using using GET requests
     (and POST requests where relevant).
-
     Template rendered is tested using assertTemplateUsed()
     This checks the correct template is rendered for logged in
     user type and the type of request.
-
     The template and context are tested using assertContains(), to
     ensure the correct template has been rendered with the correct
     context data for logged in user where relevant.
-
     Additional testing for individual views is added and explained
     where necessary.
     """
@@ -265,10 +267,23 @@ class ExamsTest(TestCase):
         self.assertContains(response, "<h5>You scored: 33% on Test Exam Title 1<br><br/></h5>")
 
     # test show_result view.
-    def test_show_result_get_response_code(self):
+    def test_show_result_get_response_student_code(self):
         self.client.login(username ="student2", password="mypass")
-        response = self.client.get(reverse('show_result', args=[1,]))
+        response = self.client.post(reverse('show_result', args=[1,]))
+        student = StudentProfile.objects.get(user_id = 3)
         self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'exams/show_result.html')
+
+    def test_show_result_get_response_teacher_code(self):
+        self.client.login(username ="teacher", password="mypass")
+        response = self.client.get(reverse('show_result', args=[1,]), follow = True)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'custom_users/edit_teacher.html')
+
+    def test_show_result_get_response_anon_code(self):
+        response = self.client.get(reverse('show_result', args=[1,]), follow = True)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'signup.html')
 
     def test_show_result_get_template_used(self):
         self.client.login(username ="student2", password="mypass")
@@ -388,11 +403,31 @@ class ExamsTest(TestCase):
         response=self.client.get(reverse('do_signup_quiz'), follow = True)
         self.assertContains(response, '<h4 style = "color:mediumseagreen">Complete the quiz below to help us decide which lessons you need.</h4>')
 
-    def test_do_quiz_signup_post_response(self):
+    def test_do_quiz_signup_post_student(self):
         self.client.login(username ="student1", password="mypass")
         response=self.client.post(reverse('do_signup_quiz'),
         {'2':'True', '3': 'True', '4': 'False', '5':'False'}, follow = True)
+        student = StudentProfile.objects.get(user_id = 2)
         self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'custom_users/welcome_student.html')
+        self.assertContains(response, 'Current Level:</strong> 2</strong></p>')
+        self.assertContains(response, 'Progress 25%</div>')
+        self.assertEqual(student.next_exam_id, 3)
+        self.assertEqual(student.next_lesson_id, 3)
+
+
+    def test_do_quiz_signup_post_teacher(self):
+        self.client.login(username ="teacher", password="mypass")
+        response=self.client.post(reverse('do_signup_quiz'),
+        {'2':'True', '3': 'True', '4': 'False', '5':'False'}, follow = True)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'custom_users/edit_teacher.html')
+
+    def test_do_quiz_signup_post_anon(self):
+        response=self.client.post(reverse('do_signup_quiz'),
+        {'2':'True', '3': 'True', '4': 'False', '5':'False'}, follow = True)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'signup.html')
 
     def test_do_quiz_signup_post_student_level_2(self):
         self.client.force_login(User.objects.get(id=2))

@@ -1,3 +1,4 @@
+
 {% extends 'base.html' %}
 
 {% block content %}
@@ -8,18 +9,17 @@
       <form method="post" novalidate>
         {% csrf_token %}
         {% for field in form %}
-        <p>
-        <strong>{{field.label}}<br/></strong>
-        {% if field.help_text %}
-        <small class = "fieldhelp">{{field.help_text|safe}}</small><br/>
-        {% endif %}
-        {{field}}
-        {% for error in field.errors %}
-          <strong class = "fielderror">{{error}}</strong><br/>
+          <p>
+            <strong>{{field.label}}<br/></strong>
+            {% if field.help_text %}
+              <small class = "fieldhelp">{{field.help_text|safe}}</small><br/>
+            {% endif %}
+              {{field}}
+            {% for error in field.errors %}
+              <strong class = "fielderror">{{error}}</strong><br/>
+            {% endfor %}
+          </p>
         {% endfor %}
-
-        {% endfor %}
-        </p>
         <a><button type="submit" class="btn btn-success button-right">Add School</button></a>
       </form>
     </div>
