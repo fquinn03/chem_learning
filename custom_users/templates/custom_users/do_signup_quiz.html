@@ -4,7 +4,7 @@
 {% load static %}
 <div class="row">
     <div class="col-sm-8">
-        <h4 style = "color:mediumseagreen">Complete the quiz below to help us decide which lessons you need.</h4>
+        <h4 class = "green_header">Complete the quiz below to help us decide which lessons you need.</h4>
         <form name = "form" action = "" method="POST">
         {% csrf_token %}
         {% for question in questions %}
