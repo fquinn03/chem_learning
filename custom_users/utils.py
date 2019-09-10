@@ -91,7 +91,7 @@ def create_teacher_and_login(request, form):
     login(request, user)
 
 """
-Save student details when the add them at signup
+Save student details when they add them at signup
 """
 def save_student_details(form):
     student = form.save()

@@ -16,7 +16,7 @@ Registering teachers with schools and registering students with schools and teac
 """
 
 """
-Welcome teacher view. Displays the default template for any authenticated teacher user.
+Welcome teacher view. Displays the screen for any authenticated teacher user.
 Gets all of a teachers classes and displays a button for each.
 """
 @login_required
@@ -31,8 +31,8 @@ def welcome_teacher(request):
 
 
 """
-Welcome student view. Displays the default template for any authenticated student user.
-Shows a students next lesson, test and gives overall summary of progress.
+Welcome student view. Displays the screen for any authenticated student user.
+Shows a students next lesson, test, revision option and progress bar.
 """
 @login_required
 @user_passes_test(user_is_student)
@@ -53,17 +53,19 @@ def welcome_student(request):
 
 
 """
-Displays the default template for an unauthenticated user.
+Displays the screen for an unauthenticated user.
 Give option to signup as student/teacher or to login.
 """
 def signup(request):
     return render(request, 'signup.html')
 
 """
-Displays an empty Sign up form for a student user.
-A User and StudentProfile are created from form data at the same time.
+GET request gives blank form for a student user to signup.
+POST request
+If form is valid a User and StudentProfile are created from form data at the same time.
 The new student user is logged in and redirected to add their details
-through the edit_student template.
+through the edit_student template
+Else form is displayed with errors
 """
 def signup_form_student(request):
     if request.method == 'POST':
@@ -79,10 +81,12 @@ def signup_form_student(request):
 
 
 """
-Displays an empty Sign up form for a teacher user.
-A User and TeacherProfile are created from form data at the same time.
+GET request gives blank form for a teacher user to signup.
+POST request
+If form is valid a User and TeacherProfile are created from form data at the same time.
 The new teacher user is logged in and redirected to add their details
-through the edit_teacher template.
+through the edit_teacher template
+Else form is rendered with errors
 """
 def signup_form_teacher(request):
     if request.method == 'POST':
@@ -97,11 +101,9 @@ def signup_form_teacher(request):
         return render(request, 'signup_form_teacher.html', {'form': form})
 
 """
-Default view for authenticated user.
-Displays either welcome_student or welcome_teacher template.
-If the user is unauthenticated they are redirected to the signup template
+Uesr enters home address www.chem_learning.pythonanywhere.com and is
+redirected depending on if they are logged in, a Student or a Teacher
 """
-
 def home(request):
     if request.user.is_authenticated:
         try:
@@ -117,8 +119,10 @@ def home(request):
         return redirect('signup')
 
 """
-Gets form to add student details, validates data and saves valid
-information to the database.
+GET request gives blank form for student users to edit details
+POST request
+If form is valid saves student details after they have filled in the edit_student form
+Else renders forms with errors
 """
 @login_required
 @user_passes_test(user_is_student)
@@ -138,8 +142,10 @@ def edit_student(request):
         return render(request, 'custom_users/edit_student.html', {'form': form})
 
 """
-Gets form to add teacher details, validates data and saves valid
-information to the database.
+GET request gives blank form for teacher users to edit details
+POST request
+If form is valid saves teacher details after they have filled in the edit_teacher form
+Else renders forms with errors
 """
 @login_required
 @user_passes_test(user_is_teacher)
@@ -164,8 +170,11 @@ def edit_teacher(request):
         return render(request, 'custom_users/edit_teacher.html', {'form': form})
 
 """
-Gets form to add a new school, validates data and saves valid
-information to the database.
+GET request gives blank form for a teacher to add their school details
+if their school is not in the dropdown list at signup
+POST request
+if form is valid creates the new School record
+else renders form with errors
 """
 @login_required
 @user_passes_test(user_is_teacher, login_url = 'welcome_student')

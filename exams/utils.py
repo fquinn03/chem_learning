@@ -8,7 +8,7 @@ MCQ_Question, IncorrectAnswer, Question, UserAnswer, Written_Question)
 from lessons.models import Lesson
 
 """
-Iterate through each question in the submitted test and store the user's answer in the database
+Iterate through each question in the submitted test and create a UserAnswer in the database
 """
 def create_user_answer(post_request, user):
     for key, value in post_request.items():

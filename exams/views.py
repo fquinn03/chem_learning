@@ -11,9 +11,15 @@ get_corrections_written, get_level, get_next_exam, get_next_lesson, get_revision
 get_user_answers, get_starting_level, update_student)
 
 """
-Use the exam_id to get all the questions for the exam. If GET request display the questions
-and answer options.If POST request, use utils.create_user_answer to add a user_answer to
-the database for each question answered and then display finish_test template
+Check user is student
+Use the exam_id to get all the questions for the exam.
+If GET request display the questionsand answer options.
+If POST request, use utils.create_user_answer to add a user_answer to
+the database for each question answered and then show the result
+
+
+If there is no exam at that level the user is finished the course
+Show congratulations GIF
 """
 @login_required
 @user_passes_test(user_is_student, login_url = 'welcome_teacher')
@@ -74,9 +80,12 @@ def do_signup_quiz(request):
         })
 
 """
-Use the exam_id to get all the questions for the exam.  Use utils.calculate_percentage to
-check if the user_answer in the database for each question is correct, calculate the user's
-percentage result and then display show_result template.
+Use the exam_id to get all the questions for the exam.
+Use utils.calculate_percentage on the quiz
+Check if the user has already completted the quiz and delete record
+Create new CompletedExam record
+Get new level after quiz
+Get next lesson and next quiz based on new level
 """
 @login_required
 @user_passes_test(user_is_student, login_url = 'welcome_teacher')
@@ -102,9 +111,10 @@ def show_result(request, exam_id):
         })
 
 """
-Use the exam_id to get all the questions for the exam.  Check the student's percentage for the exam.
+Use the exam_id to get all the questions for the exam.
+Check the student's percentage for the exam.
 If 100 just show 100% congratulations image
-Else  go through their answers and use the utils.get_corrections_mcq, get_corrections_written, get_corrections_formula
+Else go through their answers and use the utils.get_corrections_mcq, get_corrections_written, get_corrections_formula
 functions and show the student their corrections
 """
 @login_required
@@ -133,8 +143,8 @@ def review(request, exam_id):
 
 """
 When the student clicks on revision button on the welcome page
-Display their tailored revision resources chosen from questions they
-have answered incorrectly
+Display their 5 questions they have previously answered incorrectly
+and their review data
 """
 @login_required
 @user_passes_test(user_is_student)
@@ -151,7 +161,7 @@ def revise(request):
 
 
 """
-View if student has finished the course
+If the student has finished the course
 Play animated periodic table GIF
 """
 @login_required
@@ -161,7 +171,7 @@ def congratulations(request):
     return render(request, 'exams/congratulations.html')
 
 """
-View if student gets 100% on quiz
+If student scores 100% on quiz
 Shown instead of a quiz review
 """
 @login_required

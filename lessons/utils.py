@@ -3,7 +3,7 @@ from exams.utils import get_next_lesson
 from .models import Lesson
 
 """
-Function to add a lesson to a student's completed lesson list
+Add a lesson to a student's completed lesson list
 and get the lesson.id for the student's next lesson
 """
 def add_lesson_completed(user_id):

@@ -8,8 +8,9 @@ from .forms import AddClassForm
 from .utils import create_new_class, get_questions_and_student_answers
 
 """
-If user is a teacher, a list of their classes is sent to the template
-If not they are redirected to not teacher template
+Checks that the user is a teacher
+Shows them a list of the classes that they teach
+on the welcome_teacher screen
 """
 @login_required
 @user_passes_test(user_is_teacher, login_url = 'welcome_student')
@@ -24,8 +25,9 @@ def class_list(request):
     })
 
 """
-If a teacher clicks on a class in the above class_list view/template
-A list of students in that class is sent to the template.
+Checks the user is a teacher
+Shows them the students in a class they have clicked on from the
+welcome_teacher screen
 """
 @login_required
 @user_passes_test(user_is_teacher)
@@ -40,6 +42,11 @@ def show_students(request, class_name):
     'students': students,
     })
 
+"""
+Checks the user is a teacher
+Shows the questions and students answers to a quiz they have
+clicked on from the class overview screen
+"""
 @login_required
 @user_passes_test(user_is_teacher)
 @user_passes_test(have_teacher_details, login_url = 'edit_teacher',  redirect_field_name = 'get_teacher_details' )
@@ -54,6 +61,11 @@ def see_student_test(request, exam_id, student_id):
     'exam':exam
     })
 
+"""
+Checks the user is a teacher
+Allows a teacher to add a new teaching group to their
+welcome_teacher page
+"""
 @login_required
 @user_passes_test(user_is_teacher)
 @user_passes_test(have_teacher_details, login_url = 'edit_teacher',  redirect_field_name = 'get_teacher_details' )

@@ -7,7 +7,8 @@ from .models import Lesson
 from .utils import add_lesson_completed
 
 """
-View to display a lesson object.
+Check the user is a student
+Display a lesson object for student.
 Lesson objects can be Microsoft office powerpoints,
 youtube videos or similar (referenced by embed link)
 """
@@ -24,7 +25,8 @@ def complete_lesson(request):
         return redirect('congratulations')
 
 """
-View to move from view_lesson on to the next lesson
+Check the user is a student
+Leave the current lesson and move on to the next lesson
 """
 @login_required
 @user_passes_test(user_is_student)
@@ -33,7 +35,7 @@ def mark_lesson_as_complete(request):
     return redirect('complete_lesson')
 
 """
-View to move from view_lesson on to the next quiz
+Leave the current lesson and move on to the next quiz
 """
 @login_required
 @user_passes_test(user_is_student)
@@ -42,7 +44,8 @@ def take_the_next_quiz(request):
     return redirect('dotest')
 
 """
-View to move from view_lesson back to the welcome screen
+Check the user is a student
+Leave the current lesson and go back to the student welcome screen
 """
 @login_required
 @user_passes_test(user_is_student)

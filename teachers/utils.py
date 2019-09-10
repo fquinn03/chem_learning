@@ -2,7 +2,8 @@ from custom_users.models import Class_id
 from exams.models import UserAnswer
 
 """
-Get a user's answers to questions for the teacher to view
+Returns a dictionary containing the questions in a quiz as the keys
+and a student's answers to those questions as the values
 """
 def get_questions_and_student_answers(questions, student):
     question_and_answer = {}
@@ -12,7 +13,7 @@ def get_questions_and_student_answers(questions, student):
     return question_and_answer
 
 """
-Create new class (teaching group) for teacher
+Creates new class (teaching group) for a teacher
 """
 def create_new_class(form, teacher):
     class_name = form.cleaned_data['name']
