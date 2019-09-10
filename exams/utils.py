@@ -221,6 +221,11 @@ def get_next_exam(user):
     student.next_exam_id = next_exam
     student.save()
 
+"""
+Get a list of all a stuent's percentage quiz results at thier
+current level.
+"""
+
 def get_all_exam_results_for_level(student):
     completed_exams = CompletedExam.objects.filter(level = student.level).filter(user = student)
     results = []
@@ -228,6 +233,11 @@ def get_all_exam_results_for_level(student):
     for exam in completed_exams:
         results.append(exam.percentage)
     return results
+
+"""
+Calculate the weighted mean of a student's last two most recent quizes
+if they are available or just return their only percentage.
+"""
 
 def get_weighted_mean(results):
     if len(results) == 0:
@@ -239,6 +249,11 @@ def get_weighted_mean(results):
     else:
         weighted_mean = results[len(results)-1]*0.8 + results[len(results)-2]*0.2
     return weighted_mean
+
+"""
+Use the weighted mean to adjust the stduents level, attempts, progress and needs_help
+This is the basis of the adaptive element of the application 
+"""
 
 def adjust_level_and_attempts(student, weighted_mean):
     if weighted_mean > 80:

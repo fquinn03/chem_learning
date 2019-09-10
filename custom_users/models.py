@@ -2,7 +2,10 @@ from django.db import models
 from django.contrib.auth.models import User
 from lessons.models import Lesson
 
-# School details Name and PostCode Required
+"""
+School's are part of teh link between students
+and teachers.
+"""
 class School(models.Model):
     name = models.CharField(max_length=100, unique = True)
     post_code = models.CharField(max_length=100)
@@ -28,8 +31,10 @@ class TeacherProfile(models.Model):
         return self.user.username
 
 
-
-# One teacher can have many classes, can be named by user.
+"""
+Class_id's (teaching groups) are part of teh link
+between students and teachers. 
+"""
 class Class_id(models.Model):
     name = models.CharField(max_length=100)
     teacher = models.ForeignKey(TeacherProfile, on_delete=models.CASCADE)

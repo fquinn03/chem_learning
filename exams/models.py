@@ -3,9 +3,10 @@ from django.contrib.auth.models import User
 from custom_users.models import StudentProfile
 
 """
-Students have a Level. Exams and Lessons have a level.
-This can be used to match appropriate exam or lesson to
-student.
+These are the models form exams and questions.
+Students have a Level.
+Exams and Lessons also have a level.
+Levels can be used to match appropriate exam or lesson to student.
 """
 #Exams have a level and a title.
 class Exam(models.Model):
@@ -56,7 +57,7 @@ class Answer(models.Model):
     def __str__(self):
         return self.text
 
-# Model for storing a StudentProfile users answers
+# Model for storing a student's answers to the quiz
 class UserAnswer(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
     user_answer = models.CharField(max_length=1000)
@@ -65,7 +66,7 @@ class UserAnswer(models.Model):
     def __str__(self):
         return self.user_answer
 
-# Model to store information about which exams a user has completed
+# Model to store information about which exams a student has completed
 class CompletedExam(models.Model):
     user = models.ForeignKey(StudentProfile, on_delete=models.CASCADE)
     exam = models.ForeignKey(Exam, on_delete=models.CASCADE)
