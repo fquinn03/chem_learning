@@ -173,6 +173,10 @@ a.bluelink {
   opacity: 0.2;
 }
 
+.img-opaque{
+  opacity: 0.2;
+}
+
 .navbar {
     background-color: mediumseagreen;
     color: white;
