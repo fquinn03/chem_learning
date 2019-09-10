@@ -8,9 +8,8 @@
 {% for class in classes %}
 {% load static %}
 <a href ="{% url 'show_students' class_name=class.name %}">
-<img data-toggle="tooltip" data-placement="top" title={{class.name}} class="img-fluid"
- src = "{% static 'images\students-student-svgrepo-com.svg' %}"
- style="width:200px;height:125px;" alt="show_students"/>
+<img data-toggle="tooltip" data-placement="top" title={{class.name}} class="img-fluid-2"
+ src = "{% static 'images\students-student-svgrepo-com.svg' %}" alt="show_students"/>
 </a>
 <p>{{class.name}}</p>
 {% endfor %}

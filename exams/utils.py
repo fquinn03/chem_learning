@@ -200,9 +200,10 @@ def get_next_lesson(user):
         for lesson in all_lessons:
             if lesson not in completed_lessons:
                 next_lesson = lesson
-                student.next_lesson_id = next_lesson.id
-                student.save()
                 break
+    student.next_lesson_id = next_lesson.id
+    student.save()
+
 
 """
 Find the next exam for a student and link to it from the welcome student screen.
