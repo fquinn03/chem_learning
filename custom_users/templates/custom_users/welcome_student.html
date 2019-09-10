@@ -13,18 +13,16 @@
   <div class="col-sm-3">
     <p><strong>Next Lesson</strong></p>
     <a href="complete_lesson">
-    <img data-toggle="tooltip" data-placement="top" title="Next Lesson" class="img-fluid"
-     src = "{% static 'images\learning-svgrepo-com.svg' %}"
-     style="width:200px;height:125px;" alt="complete_lesson"/>
+    <img data-toggle="tooltip" data-placement="top" title="Next Lesson" class="img-fluid2"
+     src = "{% static 'images\learning-svgrepo-com.svg' %}" alt="complete_lesson"/>
     </a>
   </div>
 
   <div class="col-sm-3">
     <p><strong>Next Quiz </strong></p>
     <a href="dotest">
-    <img data-toggle="tooltip" data-placement="top" title="Next Quiz" class="img-fluid"
-    src="{% static 'images\school-material-paper-svgrepo-com.svg' %}"
-    alt="do a Quiz" style="width:200px;height:125px;">
+    <img data-toggle="tooltip" data-placement="top" title="Next Quiz" class="img-fluid2"
+    src="{% static 'images\school-material-paper-svgrepo-com.svg' %}" alt="do a Quiz">
     </a>
   </div>
 
@@ -52,9 +50,8 @@
   <div class="col-sm-3">
     <p><strong> Revise</strong></p>
     <a href="{% url 'revise' %}">
-      <img data-toggle="tooltip" data-placement="top" title="Revise" class="img-fluid"
-      src="{% static 'images\school-material-write-svgrepo-com.svg' %}"
-      alt="Revise" style="width:200px;height:125px;" >
+      <img data-toggle="tooltip" data-placement="top" title="Revise" class="img-fluid2"
+      src="{% static 'images\school-material-write-svgrepo-com.svg' %}" alt="Revise">
     </a>
   </div>
 
@@ -63,15 +60,13 @@
       <p><strong> Help is coming</strong></p>
       <a href = 'cancel_help'>
         <img data-toggle="tooltip" data-placement="top" title="Help Requested"
-        class="img-fluid" src="{% static 'images/help-svgrepo-com.svg' %}"
-        alt="Help Requested" style="width:200px; height:125px; opacity: 0.2;" >
+        class="img-fluid2-opaque" src="{% static 'images/help-svgrepo-com.svg' %}" alt="Help Requested">
       </a>
     {% else %}
       <p><strong> Request help</strong></p>
       <a href= 'get_help'>
         <img data-toggle="tooltip" data-placement="top" title="Request Help"
-        class="img-fluid" src="{% static 'images/help-svgrepo-com.svg' %}"
-        alt="Request Help" style="width:200px;height:125px;" >
+        class="img-fluid2" src="{% static 'images/help-svgrepo-com.svg' %}" alt="Request Help">
       </a>
     {% endif %}
 {% endblock %}

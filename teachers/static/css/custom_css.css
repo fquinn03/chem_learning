@@ -159,6 +159,22 @@ a.bluelink {
   text-align: center;
 }
 
+.img-fluid2{
+  max-width: 100%;
+  height: auto;
+  width:200px;
+  height:125px; 
+}
+
+.img-fluid2-opaque{
+  max-width: 100%;
+  height: auto;
+  width:200px;
+  height:125px;
+  opacity: 0.2;
+}
+
+
 
 .navbar {
     background-color: mediumseagreen;
