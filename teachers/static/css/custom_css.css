@@ -124,6 +124,11 @@ a.bluelink {
   margin-left: auto;
 }
 
+.finished_gif{
+  webkit-user-select: none;
+  margin: auto;
+}
+
 .gold{
   color:#D4AF37;
   text-align:center;
@@ -136,6 +141,12 @@ a.bluelink {
 .hundred_img{
   width:50%;
   height:50%;
+}
+
+.icons_do_lesson{
+  width:75px;
+  height:48px;
+  text-align:center;
 }
 
 
