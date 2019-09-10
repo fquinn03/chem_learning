@@ -105,6 +105,18 @@ a.bluelink {
   border-bottom: 1px solid rgba(0, 0, 0, 0.)
 }
 
+.class_labels{
+  text-align:center;
+  margin-left:auto;
+  margin-right:auto;
+}
+  
+.col-sm-6-table{
+  width:100%;
+  height:200px;
+  overflow:scroll;
+}
+
 .container {
   height: 100%;
   width: 100%;
@@ -112,6 +124,12 @@ a.bluelink {
   margin-right: auto;
   margin-left: auto;
 }
+
+.gold{
+  color:#D4AF37;
+  text-align:center;
+}
+
 
 .iframe-container {
   overflow: hidden;
@@ -133,12 +151,8 @@ a.bluelink {
   padding-top: 75%;
 }
 
-small.fieldhelp{
-  color:grey;
-}
-
-strong.fielderror{
-  color: red;
+.imagecentre {
+  text-align: center;
 }
 
 
@@ -157,6 +171,10 @@ strong.fielderror{
     padding: 0.5rem 1rem;
 }
 
+.progress {
+  height: 40px;
+}
+
 .smallcontainer{
   width: 100%;
   padding-right: 15px;
@@ -167,13 +185,12 @@ strong.fielderror{
   margin-bottom:15px;
 }
 
-.gold{
-  color:#D4AF37;
-  text-align:center;
+small.fieldhelp{
+  color:grey;
 }
 
-.imagecentre {
-  text-align: center;
+strong.fielderror{
+  color: red;
 }
 
 .table {

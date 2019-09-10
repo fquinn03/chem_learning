@@ -5,23 +5,20 @@
 
 <h5><strong>Welcome Student:</strong> {{student.user.get_username}}</h5>
 <p><strong><strong>Current Level:</strong> {{student.level}}</strong></p>
-
-<div class="progress" style="height: 40px;">
-  <div class="progress-bar bg-success" role="progressbar"
-  style="width: {{progress}}%" aria-valuemin="0" aria-valuemax="100">Progress {{progress}}%</div>
+<div class="progress" >
+  <div class="progress-bar bg-success" role="progressbar" style="width: {{progress}}%" aria-valuemin="0" aria-valuemax="100">Progress {{progress}}%</div>
 </div>
 <br/>
 <div class="row">
   <div class="col-sm-3">
     <p><strong>Next Lesson</strong></p>
-
     <a href="complete_lesson">
     <img data-toggle="tooltip" data-placement="top" title="Next Lesson" class="img-fluid"
      src = "{% static 'images\learning-svgrepo-com.svg' %}"
      style="width:200px;height:125px;" alt="complete_lesson"/>
     </a>
-
   </div>
+
   <div class="col-sm-3">
     <p><strong>Next Quiz </strong></p>
     <a href="dotest">
@@ -30,7 +27,8 @@
     alt="do a Quiz" style="width:200px;height:125px;">
     </a>
   </div>
-  <div class="col-sm-6" style="width:100%;height:200px;overflow:scroll;">
+
+  <div class="col-sm-6-table">
     <p><strong> Completed Quizzes </strong></p>
     <table class = "table" >
       <thead class = "thead-light" >
@@ -58,7 +56,6 @@
       src="{% static 'images\school-material-write-svgrepo-com.svg' %}"
       alt="Revise" style="width:200px;height:125px;" >
     </a>
-
   </div>
 
   <div class="col-sm-3">

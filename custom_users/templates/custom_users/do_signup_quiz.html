@@ -7,17 +7,16 @@
         <h4 style = "color:mediumseagreen">Complete the quiz below to help us decide which lessons you need.</h4>
         <form name = "form" action = "" method="POST">
         {% csrf_token %}
-
         {% for question in questions %}
-            <p><strong>{{question.text|safe}}</strong></p>
-            {% if question.questionimage %}
-                <p>{{question.questionimage|safe}}</p>
-            {% endif %}
-            {% for answer in question.answer_set.all %}
-                <input type ='radio' name= "{{question.id}}" id ="answer{{forloop.counter}}" value = "{{answer.text}}" required/>
-                <label for = "answer{{forloop.counter}}">{{answer.text|safe}}</label><br/>
-            {% endfor %}
-            <br/>
+          <p><strong>{{question.text|safe}}</strong></p>
+          {% if question.questionimage %}
+              <p>{{question.questionimage|safe}}</p>
+          {% endif %}
+          {% for answer in question.answer_set.all %}
+              <input type ='radio' name= "{{question.id}}" id ="answer{{forloop.counter}}" value = "{{answer.text}}" required/>
+              <label for = "answer{{forloop.counter}}">{{answer.text|safe}}</label><br/>
+          {% endfor %}
+          <br/>
         {% endfor %}
         <a><button class="btn btn-success button-right" type="submit" value="Submit">Submit</button></a>
         </form>
