@@ -178,6 +178,14 @@ a.bluelink {
   opacity: 0.2;
 }
 
+.img-fluid-2-welcome_sign{
+  max-width: 100%;
+  height: auto;
+  width:90px;
+  height:55px;
+  margin-left:80%
+}
+
 .img-opaque{
   opacity: 0.2;
 }
@@ -263,12 +271,6 @@ strong.fielderror{
 .table tbody + tbody {
   border-top: 2px solid #dee2e6;
 
-}
-
-.welcome_sign{
-   width:90px;
-   height:55px;
-   margin-left:80%
 }
 
 .eqrow {
