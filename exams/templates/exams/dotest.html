@@ -6,7 +6,7 @@
 <h5>{{exam.title}}</h5>
 <div class="row">
   <div class="col-sm-6">
-    <form name = "form" action = "" method="POST" style ="overflow: auto; text-align:left;">
+    <form name = "form" action = "" method="POST" class="quiz_form">
     {% csrf_token %}
     {% for question in mcq_questions %}
         <br/><p><strong>{{question.text|safe}}</strong></p>

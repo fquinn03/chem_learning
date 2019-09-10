@@ -9,7 +9,7 @@
 {% for question in mcq_corrections %}
 </br><strong>Q &nbsp</strong>{{question.text|safe}}<br/>
     {% if question.questionimage %}
-        <p style="width:60%;height:20%;">{{question.questionimage|safe}}</p>
+        <p class="question_img">{{question.questionimage|safe}}</p>
     {% endif %}
 {{question.review|safe}}<br/>
 {% endfor %}
@@ -21,7 +21,7 @@
     {% for question in written_corrections_incorrect %}
     <strong>Q &nbsp</strong>{{question.text|safe}}<br/>
     {% if question.questionimage %}
-        <p style="width:60%;height:20%;">{{question.questionimage|safe}}</p><br/>
+        <p class="question_img">{{question.questionimage|safe}}</p><br/>
     {% endif %}
      {{question.review|safe}}<br/>
     {% endfor %}

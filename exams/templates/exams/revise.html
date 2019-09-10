@@ -7,14 +7,14 @@
     <a id="welcome_student" href="go_back_to_welcome_student" >
       <img data-toggle="tooltip" data-placement="top" title="Back To Welcome Student"
       class="img-fluid"src="{% static 'images\welcome-svgrepo-com.svg' %}"
-      alt="welcome_student" style="width:90px;height:55px;margin-left:80%">
+      alt="welcome_student" class="welcome_sign">
     </a>
 </h4>
     {% if number_of_q != 0 %}
       {% for question in incorrect_questions %}
       <br/><strong>{{question.question.text|safe}}</strong><br/>
         {% if question.question.questionimage %}
-            <p style="width:60%;height:20%;">{{question.question.questionimage|safe}}</p>
+            <p class="question_img"">{{question.question.questionimage|safe}}</p>
         {% endif %}
       {{question.question.review|safe}}<br/>
       {% endfor %}
