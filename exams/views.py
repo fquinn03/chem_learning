@@ -8,7 +8,7 @@ MCQ_Question, Question, Written_Question)
 from .utils import (calculate_percentage, create_exam_completed_entry, create_user_answer,
 delete_completed_exam_record, delete_completed_exam_total, get_corrections_formula, get_corrections_mcq,
 get_corrections_written, get_level, get_next_exam, get_next_lesson, get_revision_resources,
-get_starting_level)
+get_user_answers, get_starting_level, update_student)
 
 """
 Use the exam_id to get all the questions for the exam. If GET request display the questions
@@ -62,18 +62,12 @@ for student profile.
 def do_signup_quiz(request):
     exam = Exam.objects.get(title = "signup_quiz")
     questions = Question.objects.filter(exam = exam.id)
-    answers = []
     if request.method == 'POST':
-        for key, value in request.POST.items():
-            if key != 'csrfmiddlewaretoken':
-                answers.append(value)
+        answers = get_user_answers(request)
         level = get_starting_level(answers)
-        student = StudentProfile.objects.get(user_id = request.user.id)
-        student.level = level
-        student.signup_quiz_completed = True
-        student.save()
-        get_next_lesson(student.user_id)
-        get_next_exam(student.user_id)
+        update_student(level, request.user)
+        get_next_lesson(request.user.id)
+        get_next_exam(request.user.id)
         return redirect('welcome_student')
     else:
         return render(request, 'custom_users/do_signup_quiz.html', {'questions': questions

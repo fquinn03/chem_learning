@@ -327,7 +327,7 @@ def delete_completed_exam_total(student, exam_id):
             UserAnswer.objects.get(user = student, question = question).delete()
     except CompletedExam.DoesNotExist:
         pass
-        
+
 """
 Deletes the completed exam record and creates a new one when the Teacher
 clicks on a students quiz to see their answers.
@@ -387,3 +387,23 @@ def get_revision_resources(user_id):
         incorrect_questions = incorrect_questions[0:5]
 
     return (incorrect_questions, number_of_q)
+
+"""
+Go through the answers to the signup quiz and add them to list
+"""
+def get_user_answers(request):
+    answers = []
+    for key, value in request.POST.items():
+        if key != 'csrfmiddlewaretoken':
+            answers.append(value)
+    return answers
+
+"""
+Update student level and signup_quiz_completed after they
+complete the signup quiz
+"""
+def update_student(level, user):
+    student = StudentProfile.objects.get(user_id = user.id)
+    student.level = level
+    student.signup_quiz_completed = True
+    student.save()
