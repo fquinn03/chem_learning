@@ -415,7 +415,6 @@ class ExamsTest(TestCase):
         self.assertEqual(student.next_exam_id, 3)
         self.assertEqual(student.next_lesson_id, 3)
 
-
     def test_do_quiz_signup_post_teacher(self):
         self.client.login(username ="teacher", password="mypass")
         response=self.client.post(reverse('do_signup_quiz'),

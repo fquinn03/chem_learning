@@ -185,7 +185,7 @@ def get_level(user_id):
 
 
 """
-Find the next lesson for a student and display it on the welcome student screen.
+Find the next lesson for a student and link to it from the welcome student screen.
 Get the students current level. Find the next lesson object for that level.
 """
 def get_next_lesson(user):
@@ -205,7 +205,7 @@ def get_next_lesson(user):
                 break
 
 """
-Find the next exam for a student and display it on the welcome student screen.
+Find the next exam for a student and link to it from the welcome student screen.
 Get the students current level. Find the next lesson object for that level.
 """
 def get_next_exam(user):
@@ -234,9 +234,9 @@ def get_weighted_mean(results):
     elif len(results) == 1:
         weighted_mean = results[0] * 1
     elif len(results) == 2:
-        weighted_mean = results[1]*0.95 + results[0]*0.05
+        weighted_mean = results[1]*0.8 + results[0]*0.2
     else:
-        weighted_mean = results[len(results)-1]*0.9 + results[len(results)-2]*0.1
+        weighted_mean = results[len(results)-1]*0.8 + results[len(results)-2]*0.2
     return weighted_mean
 
 def adjust_level_and_attempts(student, weighted_mean):
