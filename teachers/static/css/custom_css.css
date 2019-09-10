@@ -83,6 +83,10 @@ a.bluelink {
   border-radius: 0.25rem;
 }
 
+.card_left{
+  text-align: left;
+}
+
 .cardlogin {
   position: relative;
   display: -ms-flexbox;
@@ -111,11 +115,6 @@ a.bluelink {
   margin-right:auto;
 }
 
-.quiz_table{
-  width:100%;
-  height:200px;
-  overflow:scroll;
-}
 
 .container {
   height: 100%;
@@ -163,7 +162,7 @@ a.bluelink {
   max-width: 100%;
   height: auto;
   width:200px;
-  height:125px; 
+  height:125px;
 }
 
 .img-fluid2-opaque{
@@ -173,8 +172,6 @@ a.bluelink {
   height:125px;
   opacity: 0.2;
 }
-
-
 
 .navbar {
     background-color: mediumseagreen;
@@ -193,6 +190,13 @@ a.bluelink {
 
 .progress {
   height: 40px;
+}
+
+
+.quiz_table{
+  width:100%;
+  height:200px;
+  overflow:scroll;
 }
 
 .smallcontainer{
