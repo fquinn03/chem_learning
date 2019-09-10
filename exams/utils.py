@@ -225,7 +225,6 @@ def get_next_exam(user):
 Get a list of all a stuent's percentage quiz results at thier
 current level.
 """
-
 def get_all_exam_results_for_level(student):
     completed_exams = CompletedExam.objects.filter(level = student.level).filter(user = student)
     results = []
@@ -238,7 +237,6 @@ def get_all_exam_results_for_level(student):
 Calculate the weighted mean of a student's last two most recent quizes
 if they are available or just return their only percentage.
 """
-
 def get_weighted_mean(results):
     if len(results) == 0:
         weighted_mean = -1
@@ -251,10 +249,10 @@ def get_weighted_mean(results):
     return weighted_mean
 
 """
-Use the weighted mean to adjust the stduents level, attempts, progress and needs_help
-This is the basis of the adaptive element of the application 
+Use the weighted mean to adjust the student's
+level, attempts, progress and needs_help
+This is the basis of the adaptive element of the application
 """
-
 def adjust_level_and_attempts(student, weighted_mean):
     if weighted_mean > 80:
         student.level += 1
@@ -285,6 +283,9 @@ def adjust_level_and_attempts(student, weighted_mean):
 
     student.save()
 
+"""
+Get all the exams a student could possible do at this level
+"""
 def get_all_available_exam_ids(student):
     all_exams = Exam.objects.filter(level = student.level)
     all_exam_ids = []
@@ -292,6 +293,10 @@ def get_all_available_exam_ids(student):
         all_exam_ids.append(exam.id)
     return all_exam_ids
 
+
+"""
+Get all the exams a student has already done at this level
+"""
 def get_all_completed_exam_ids(student):
     completed_exams = CompletedExam.objects.select_related().filter(user = student).filter(level = student.level)
     all_completed_exam_ids = []
@@ -299,6 +304,9 @@ def get_all_completed_exam_ids(student):
         all_completed_exam_ids.append(exam.exam.id)
     return all_completed_exam_ids
 
+"""
+Get all the exams a student has yet to do at this level
+"""
 def get_remaining_exams(all_exam_ids, all_completed_exam_ids):
     remaining_exams = []
     for id in all_exam_ids:
@@ -306,6 +314,11 @@ def get_remaining_exams(all_exam_ids, all_completed_exam_ids):
             remaining_exams.append(id)
     return remaining_exams
 
+"""
+If a student has completed the same test already.
+Delete the CompltedExam record and
+their UserAnswer for each question
+"""
 def delete_completed_exam_total(student, exam_id):
     try:
         CompletedExam.objects.get(user = student, exam = exam_id).delete()
@@ -314,7 +327,13 @@ def delete_completed_exam_total(student, exam_id):
             UserAnswer.objects.get(user = student, question = question).delete()
     except CompletedExam.DoesNotExist:
         pass
-
+        
+"""
+Deletes the completed exam record and creates a new one when the Teacher
+clicks on a students quiz to see their answers.
+If this didn't happen there is an error as the database contains multiple
+copies of a students CompltedExam records
+"""
 def delete_completed_exam_record(student, exam_id):
     try:
         CompletedExam.objects.get(user = student, exam = exam_id).delete()

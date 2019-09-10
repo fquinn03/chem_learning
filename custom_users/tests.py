@@ -588,7 +588,7 @@ class CustomUsersTest(TestCase):
         self.client.login(username = "student2", password="student2_pass")
         response = self.client.get(reverse('get_help'),follow=True)
         # the image will be opaque
-        self.assertContains(response, 'style="width:200px; height:125px; opacity: 0.2;"')
+        self.assertContains(response, 'class="img-fluid2-opaque"')
 
     #tests help_unclick
     def test_get_help_unclick_response(self):
@@ -606,7 +606,7 @@ class CustomUsersTest(TestCase):
         self.client.login(username = "student2", password="student2_pass")
         response = self.client.get(reverse('get_help'),follow=True)
         #full image
-        self.assertContains(response,  'style="width:200px; height:125px; opacity: 0.2;"')
+        self.assertContains(response,  'class="img-fluid2-opaque"')
 
     #tests help_clicked
     def test_get_cancel_help_click_response(self):
@@ -624,7 +624,7 @@ class CustomUsersTest(TestCase):
         self.client.login(username = "student2", password="student2_pass")
         response = self.client.get(reverse('cancel_help'), follow=True)
         # the image will be opaque
-        self.assertContains(response, 'style="width:200px;height:125px;')
+        self.assertContains(response, '"img-fluid2"')
 
     #tests help_unclick
     def test_get_cancel_help_unclick_response(self):
@@ -641,7 +641,7 @@ class CustomUsersTest(TestCase):
         self.client.login(username = "student2", password="student2_pass")
         response = self.client.get(reverse('cancel_help'),follow=True)
         #full image not opaque
-        self.assertContains(response,  'style="width:200px;height:125px;')
+        self.assertContains(response,  '"img-fluid2"')
 
     # test that get_progress does not return over 100%
     def test_progress_100(self):

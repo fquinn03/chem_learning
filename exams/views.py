@@ -155,12 +155,21 @@ def revise(request):
     'number_of_q':number_of_q
     })
 
+
+"""
+View if student has finished the course
+Play animated periodic table GIF
+"""
 @login_required
 @user_passes_test(user_is_student)
 @user_passes_test(is_finished)
 def congratulations(request):
     return render(request, 'exams/congratulations.html')
 
+"""
+View if student gets 100% on quiz
+Shown instead of a quiz review
+"""
 @login_required
 @user_passes_test(user_is_student)
 def hundred(request):

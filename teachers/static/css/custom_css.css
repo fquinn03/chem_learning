@@ -8,6 +8,11 @@ a.bluelink {
   color:blue;
 }
 
+.align_center{
+  margin-left:auto;
+  margin-right:auto;
+}
+
 .bg-success {
   background-color: mediumseagreen !important;
 }
@@ -282,6 +287,10 @@ strong.fielderror{
 .table tbody + tbody {
   border-top: 2px solid #dee2e6;
 
+}
+
+.txt_center{
+  text-align: center;
 }
 
 .eqrow {

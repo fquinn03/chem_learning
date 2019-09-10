@@ -1,4 +1,5 @@
-from .models import StudentProfile, TeacherProfile
+from django.contrib.auth import login, authenticate
+from .models import Class_id, School, StudentProfile, TeacherProfile
 
 """
 Code for user_passes_test tests
@@ -58,10 +59,50 @@ def is_finished(user):
 Code to get width of progress bar
 Needs to be changed depending on number of levels
 """
-
 def get_progress(user):
     student = StudentProfile.objects.get(user_id = user)
     progress = ((student.level-1)*25) #hardcoded depending on how many levels
     if progress > 100:
         progress = 100
     return progress
+
+"""
+create student in the database and log them in
+"""
+def create_student_and_login(request, form):
+    user = form.save()
+    user.refresh_from_db()
+    user.save()
+    student = StudentProfile.objects.create(user=user)
+    raw_password = form.cleaned_data.get('password1')
+    user = authenticate(username=user.username, password=raw_password)
+    login(request, user)
+
+"""
+create teacher in the database and log them
+"""
+def create_teacher_and_login(request, form):
+    user = form.save()
+    user.refresh_from_db()
+    user.save()
+    TeacherProfile.objects.create(user=user)
+    raw_password = form.cleaned_data.get('password1')
+    user = authenticate(username=user.username, password=raw_password)
+    login(request, user)
+
+"""
+Save student details when the add them at signup
+"""
+def save_student_details(form):
+    student = form.save()
+    student.details_added = True
+    student.save()
+
+"""
+Save school details when teacher creates new school if theirs is
+missing at signup
+"""
+def save_school_details(form):
+    school = form.save()
+    school.refresh_from_db()
+    school.save()

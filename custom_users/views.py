@@ -4,9 +4,9 @@ from django.shortcuts import render, redirect, get_object_or_404
 from lessons.models import Lesson
 from .forms import AddSchoolForm, StudentForm, TeacherForm, StudentProfileForm, TeacherProfileForm
 from .models import Class_id, School, TeacherProfile, StudentProfile
-from .utils import (do_not_have_student_details, do_not_have_teacher_details,
-get_progress, user_is_teacher, user_is_student, have_student_details,
-have_teacher_details, have_student_signup,is_finished)
+from .utils import (create_student_and_login, create_teacher_and_login, do_not_have_student_details,
+do_not_have_teacher_details, get_progress, user_is_teacher, user_is_student, have_student_details,
+have_teacher_details, have_student_signup,is_finished, save_school_details, save_student_details)
 from exams.models import CompletedExam
 
 """
@@ -69,13 +69,7 @@ def signup_form_student(request):
     if request.method == 'POST':
         form = StudentForm(request.POST)
         if form.is_valid():
-            user = form.save()
-            user.refresh_from_db()
-            user.save()
-            student = StudentProfile.objects.create(user=user)
-            raw_password = form.cleaned_data.get('password1')
-            user = authenticate(username=user.username, password=raw_password)
-            login(request, user)
+            create_student_and_login(request, form)
             return redirect('edit_student')
         else:
             return render(request, 'signup_form_student.html', {'form': form})
@@ -94,13 +88,7 @@ def signup_form_teacher(request):
     if request.method == 'POST':
         form = TeacherForm(request.POST)
         if form.is_valid():
-            user = form.save()
-            user.refresh_from_db()
-            user.save()
-            TeacherProfile.objects.create(user=user)
-            raw_password = form.cleaned_data.get('password1')
-            user = authenticate(username=user.username, password=raw_password)
-            login(request, user)
+            create_teacher_and_login(request, form)
             return redirect('edit_teacher')
         else:
             return render(request, 'signup_form_teacher.html', {'form': form})
@@ -138,13 +126,10 @@ information to the database.
 def edit_student(request):
     student = StudentProfile.objects.get(user_id = request.user.id)
     if request.method == 'POST':
-        user = request.user
-        student = get_object_or_404(StudentProfile, user_id = user.id)
+        student = get_object_or_404(StudentProfile, user_id = request.user.id)
         form = StudentProfileForm(request.POST, instance = student)
         if form.is_valid():
-            student = form.save()
-            student.details_added = True
-            student.save()
+            save_student_details(form)
             return redirect('student_details_added')
         else:
             return render(request, 'custom_users/edit_student.html', {'form': form})
@@ -163,7 +148,6 @@ def edit_teacher(request):
     teacher = TeacherProfile.objects.get(user_id = request.user.id)
     if request.method == 'POST':
         user = request.user
-        teacher = get_object_or_404(TeacherProfile, user_id = user.id)
         form=TeacherProfileForm(request.POST)
         if form.is_valid():
             school = School.objects.get(id = request.POST['name'])
@@ -191,10 +175,7 @@ def add_school(request):
         teacher = TeacherProfile.objects.get(user_id = user.id)
         form = AddSchoolForm(request.POST)
         if form.is_valid():
-            school = form.save()
-            school.refresh_from_db()
-            school.save()
-            teacher.school = school
+            save_school_details(form)
             return redirect('edit_teacher')
         else:
             return render(request, 'custom_users/add_school.html', {'form': form})

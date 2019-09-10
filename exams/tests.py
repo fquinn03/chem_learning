@@ -401,7 +401,7 @@ class ExamsTest(TestCase):
     def test_do_quiz_signup_get_html(self):
         self.client.login(username ="student1", password="mypass")
         response=self.client.get(reverse('do_signup_quiz'), follow = True)
-        self.assertContains(response, '<h4 style = "color:mediumseagreen">Complete the quiz below to help us decide which lessons you need.</h4>')
+        self.assertContains(response, '<h4 class = "green_header">Complete the quiz below to help us decide which lessons you need.</h4>')
 
     def test_do_quiz_signup_post_student(self):
         self.client.login(username ="student1", password="mypass")
