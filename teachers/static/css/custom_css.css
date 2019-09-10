@@ -110,7 +110,7 @@ a.bluelink {
   margin-left:auto;
   margin-right:auto;
 }
-  
+
 .col-sm-6-table{
   width:100%;
   height:200px;
@@ -128,6 +128,10 @@ a.bluelink {
 .gold{
   color:#D4AF37;
   text-align:center;
+}
+
+.green_header{
+  color:mediumseagreen;
 }
 
 
