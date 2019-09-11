@@ -8,13 +8,13 @@ Back To Class Lists</button></a>
 <table class = "table" id = "mytable">
   <thead class = "thead-light">
     <tr>
-      <th style = "width: 20%;">Student</th>
+      <th style = "width: 15%;">Student</th>
       <th style = "width: 10%;">Starting Level</th>
       <th style = "width: 10%;">Needs Help</th>
       <th style = "width: 10%;">Current Level</th>
       <th style = "width: 10%;">Progress</th>
-      <th style = "width: 27%;">Quizzes</th>
-      <th style = "width: 13%;">Percentage</th>
+      <th style = "width: 35%;">Quizzes</th>
+      <th style = "width: 10%;">Percentage</th>
     </tr>
   </thead>
 {% for student in students %}
@@ -26,7 +26,11 @@ Back To Class Lists</button></a>
 {% else %}
 <td> </td>
 {% endif %}
-<td>{{student.level}}</td>
+{% if student.level < 17 %}
+    <td>{{student.level}}</td>
+{% else%}
+    <td>Finished</td>
+{% endif %}
 {% if student.progress == 1 %}
 <td><svg height="22" width="22">
   <circle cx="11" cy="11" r="10" stroke="white" stroke-width="3" fill="green" />
