@@ -175,7 +175,7 @@ class ExamsTest(TestCase):
     """
     Utils testing
     """
-
+    
     # check the utils.create_user_answer method adds a UserAnswer to the database
     def test_create_user_answer(self):
         request = {'csrfmiddlewaretoken': 'mihQP', '1': '1'}
