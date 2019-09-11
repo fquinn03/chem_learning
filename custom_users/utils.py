@@ -53,7 +53,7 @@ def user_is_teacher(user):
 # returns True if the student has completed all lcvels
 def is_finished(user):
     student = StudentProfile.objects.get(user_id = user.id)
-    return student.level > 4 #hardcoded final level number
+    return student.level > 16 #hardcoded final level number
 
 """
 Code to get width of progress bar
@@ -61,7 +61,7 @@ Needs to be changed depending on number of levels
 """
 def get_progress(user):
     student = StudentProfile.objects.get(user_id = user)
-    progress = ((student.level-1)*25) #hardcoded depending on how many levels
+    progress = ((student.level-1)*6.25) #hardcoded depending on how many levels
     if progress > 100:
         progress = 100
     return progress
