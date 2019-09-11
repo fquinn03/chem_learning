@@ -22,7 +22,7 @@ SECRET_KEY = ')+h8cgd&kr67q4%)t%r(n!gki_7sr5!e_*@!*6ose3psg19#v8'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['127.0.0.1',]
+ALLOWED_HOSTS = ['chemlearning.pythonanywhere.com',]
 
 # Application definition
 
