@@ -237,10 +237,13 @@ a.bluelink {
   text-align:left;
 }
 
-.quiz_table{
-  width:100%;
-  height:200px;
-  overflow:scroll;
+.col-sm-6-quiz_table{
+    -ms-flex: 0 0 50%;
+    flex: 0 0 50%;
+    max-width: 50%;
+    width:100%;
+    height:200px;
+    overflow:scroll;
 }
 
 .question_img{
