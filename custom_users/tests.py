@@ -70,6 +70,16 @@ class CustomUsersTest(TestCase):
         self.student2 = StudentProfile.objects.get(user_id = 2)
         self.teacher1 = TeacherProfile.objects.get(user_id = 7)
 
+
+    """
+    custom_users.utils.py tests
+    """
+    # test that get_progress does not return over 100%
+    def test_progress_100(self):
+        progress = get_progress(6)
+        self.assertEqual(100, progress)
+
+
     """
     Models Tests
     """
@@ -122,36 +132,44 @@ class CustomUsersTest(TestCase):
     """
 
     # test welcome student view
-    def test_welcome_student_response(self):
+    def test_welcome_student_as_student(self):
         self.client.login(username = "student2", password="student2_pass")
         response=self.client.get(reverse('welcome_student'))
         self.assertEqual(response.status_code, 200)
-
-    def test_welcome_student_template(self):
-        self.client.login(username = "student2", password="student2_pass")
-        response=self.client.get(reverse('welcome_student'))
         self.assertTemplateUsed(response, "custom_users/welcome_student.html")
-
-    def test_welcome_student_html(self):
-        self.client.login(username = "student2", password="student2_pass")
-        response=self.client.get(reverse('welcome_student'))
         self.assertContains(response, "<h5><strong>Welcome Student:</strong> student2</h5>")
 
+    def test_welcome_student_as_teacher(self):
+        self.client.login(username = "teacher", password="teacher_pass")
+        response=self.client.get(reverse('welcome_student'), follow = True)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "custom_users/welcome_teacher.html")
+        self.assertContains(response, "<h5>Welcome Teacher: teacher</h5>")
+
+    def test_welcome_student_as_anon(self):
+        response=self.client.get(reverse('welcome_student'), follow = True)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "signup.html")
+        self.assertContains(response, '<h3 class="green_header">Welcome to ChemLearning</h3>')
+
     # test welcome teacher view
-    def test_welcome_teacher_response(self):
+    def test_welcome_teacher_as_teacher(self):
         self.client.login(username = "teacher", password="teacher_pass")
         response=self.client.get(reverse('welcome_teacher'))
         self.assertEqual(response.status_code, 200)
-
-    def test_welcome_teacher_template(self):
-        self.client.login(username = "teacher", password="teacher_pass")
-        response=self.client.get(reverse('welcome_teacher'))
         self.assertTemplateUsed(response, "custom_users/welcome_teacher.html")
-
-    def test_welcome_teacher_html(self):
-        self.client.login(username = "teacher", password="teacher_pass")
-        response=self.client.get(reverse('welcome_teacher'))
         self.assertContains(response, "<h5>Welcome Teacher: teacher</h5>")
+
+    def test_welcome_teacher_as_student(self):
+        self.client.login(username = "student2", password="student2_pass")
+        response=self.client.get(reverse('welcome_teacher'), follow = True)
+        self.assertTemplateUsed(response, "custom_users/welcome_student.html")
+        self.assertContains(response, "<h5><strong>Welcome Student:</strong> student2</h5>")
+
+    def test_welcome_teacher_as_anon(self):
+        response=self.client.get(reverse('welcome_teacher'), follow = True)
+        self.assertTemplateUsed(response, "signup.html")
+        self.assertContains(response, '<h3 class="green_header">Welcome to ChemLearning</h3>')
 
     # test the StudentProfile form with valid and invalid data
     def test_form_not_valid(self):
@@ -179,16 +197,24 @@ class CustomUsersTest(TestCase):
         self.assertEqual(form.fields['class_id'].queryset[0], Class_id.objects.get(teacher_id = teacher_id))
 
     #tests for signup view
-    def test_signup_response(self):
+    def test_signup_as_anon(self):
         response = self.client.get(reverse('signup'))
         self.assertEqual(response.status_code, 200)
-
-    def test_signup_template(self):
-        response = self.client.get(reverse('signup'))
         self.assertTemplateUsed(response, 'signup.html')
+        self.assertContains(response, '<h3>Sign up for a free account</h3>')
 
-    def test_signup_html(self):
+    def test_signup_as_teacher(self):
+        self.client.login(username = "teacher", password="teacher_pass")
         response = self.client.get(reverse('signup'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'signup.html')
+        self.assertContains(response, '<h3>Sign up for a free account</h3>')
+
+    def test_signup_as_student(self):
+        self.client.login(username = "student2", password="student2_pass")
+        response = self.client.get(reverse('signup'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'signup.html')
         self.assertContains(response, '<h3>Sign up for a free account</h3>')
 
     #test for signup_form_student view, GET and POST requests
@@ -353,15 +379,7 @@ class CustomUsersTest(TestCase):
         self.client.login(username = "student2", password="student2_pass")
         response=self.client.get(reverse('home'), follow=True)
         self.assertEqual(response.status_code, 200)
-
-    def test_home_student_template(self):
-        self.client.login(username = "student2", password="student2_pass")
-        response=self.client.get(reverse('home'), follow=True)
         self.assertTemplateUsed(response, 'custom_users/welcome_student.html')
-
-    def test_home_student_html(self):
-        self.client.login(username = "student2", password="student2_pass")
-        response=self.client.get(reverse('home'), follow=True)
         self.assertContains(response, '<h5><strong>Welcome Student:</strong> student2</h5>')
 
     # test home view when teacher user logged in
@@ -369,29 +387,17 @@ class CustomUsersTest(TestCase):
         self.client.login(username = "teacher", password="teacher_pass")
         response=self.client.get(reverse('home'))
         self.assertEqual(response.status_code, 200)
-
-    def test_home_teacher_template(self):
-        self.client.login(username = "teacher", password="teacher_pass")
-        response=self.client.get(reverse('home'))
         self.assertTemplateUsed(response, 'custom_users/welcome_teacher.html')
-
-    def test_home_teacher_html(self):
-        self.client.login(username = "teacher", password="teacher_pass")
-        response=self.client.get(reverse('home'))
         self.assertContains(response, '<h5>Welcome Teacher: teacher</h5>')
 
     # test home view when user not logged in
     def test_home_anon_response(self):
-        response=self.client.get(reverse('home'))
-        self.assertEqual(response.status_code, 302)
-
-    def test_home_anon_template(self):
         response=self.client.get(reverse('home'), follow = True)
+        self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'signup.html')
-
-    def test_home_anon_html(self):
-        response=self.client.get(reverse('home'), follow = True)
         self.assertContains(response, '<h3>Sign up for a free account</h3>')
+    def test_home_anon_template(self):
+        response=self.client.get(reverse('home'))
 
     # test edit_student view GET and POST requests
     def test_edit_student_get_response(self):
@@ -403,6 +409,13 @@ class CustomUsersTest(TestCase):
         self.client.login(username = "student6", password="mypass")
         response=self.client.get(reverse('edit_student'), {'school': '1', 'teacher': '1', 'class_id':'1' })
         self.assertEqual(response.status_code, 200)
+
+    def test_edit_student_post_invalid_data(self):
+        self.client.login(username = "student6", password="mypass")
+        response=self.client.post(reverse('edit_student'), {'school': 'nine', 'teacher': '1', 'class_id':'1'  })
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'custom_users/edit_student.html')
+        self.assertContains(response, '<div class="card-headergreen"><h5>Add Student Details</h5></div>')
 
     def test_edit_student_get_template(self):
         self.client.login(username = "student6", password="mypass")
@@ -446,13 +459,21 @@ class CustomUsersTest(TestCase):
         response=self.client.get(reverse('edit_teacher'))
         self.assertContains(response, '<div class="card-headergreen">Add Teacher Details</div>')
 
-    def test_edit_teacher_post_response(self):
+    def test_edit_teacher_post_as_teacher(self):
         self.client.login(username = "teacher1", password="teacher_pass")
         response=self.client.post(reverse('edit_teacher'),
         {'name': '1', 'class_name': 'class_name'}, follow = True)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'custom_users/teacher_details_added.html')
         self.assertContains(response, '<div class="card-headergreen">Teacher Details Added</div>')
+
+    def test_edit_teacher_post_invalid_data(self):
+        self.client.login(username = "teacher1", password="teacher_pass")
+        response=self.client.post(reverse('edit_teacher'),
+        {'name': 'One', 'class_name': ''}, follow = True)
+        self.assertEqual(response.status_code, 200)
+        response=self.client.get(reverse('edit_teacher'))
+        self.assertContains(response, '<div class="card-headergreen">Add Teacher Details</div>')
 
     # test add_school view GET and POST requests
     def test_add_school_get_response_teacher(self):
@@ -471,10 +492,17 @@ class CustomUsersTest(TestCase):
         , follow = True)
         self.assertTemplateUsed(response, 'custom_users/edit_teacher.html')
 
+    def test_add_school_post_invalid_data(self):
+        self.client.login(username = "teacher1", password="teacher_pass")
+        response=self.client.post(reverse('add_school'), {'name': '', 'post_code': 'my_postcode'}, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'custom_users/add_school.html')
+        self.assertContains(response, '<div class="card-headergreen">Add School</div>')
+
     def test_add_school_get_response_student(self):
         self.client.login(username = "student2", password="student2_pass")
-        response=self.client.get(reverse('add_school'), follow = True)
-        self.assertEqual(response.status_code, 200)
+        response=self.client.get(reverse('add_school'))
+        self.assertEqual(response.status_code, 302)
 
     def test_add_school_get_template(self):
         self.client.login(username = "student2", password="student2_pass")
@@ -580,7 +608,7 @@ class CustomUsersTest(TestCase):
 
     def test_get_help_click_template(self):
         self.client.login(username = "student2", password="student2_pass")
-        response = self.client.get(reverse('get_help'),follow=True)
+        response = self.client.get(reverse('get_help'), follow=True)
         self.assertTemplateUsed(response, 'custom_users/welcome_student.html')
 
     def test_get_help_click_html(self):
@@ -642,8 +670,3 @@ class CustomUsersTest(TestCase):
         response = self.client.get(reverse('cancel_help'),follow=True)
         #full image not opaque
         self.assertContains(response,  '"img-fluid2"')
-
-    # test that get_progress does not return over 100%
-    def test_progress_100(self):
-        progress = get_progress(6)
-        self.assertEqual(100, progress)

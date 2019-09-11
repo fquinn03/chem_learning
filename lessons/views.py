@@ -13,7 +13,7 @@ Lesson objects can be Microsoft office powerpoints,
 youtube videos or similar (referenced by embed link)
 """
 @login_required
-@user_passes_test(user_is_student)
+@user_passes_test(user_is_student, login_url = 'welcome_teacher')
 def complete_lesson(request):
     student = StudentProfile.objects.get(user_id = request.user.id)
     try:
@@ -29,7 +29,7 @@ Check the user is a student
 Leave the current lesson and move on to the next lesson
 """
 @login_required
-@user_passes_test(user_is_student)
+@user_passes_test(user_is_student, login_url = 'welcome_teacher')
 def mark_lesson_as_complete(request):
     add_lesson_completed(request.user.id)
     return redirect('complete_lesson')
@@ -38,7 +38,7 @@ def mark_lesson_as_complete(request):
 Leave the current lesson and move on to the next quiz
 """
 @login_required
-@user_passes_test(user_is_student)
+@user_passes_test(user_is_student, login_url = 'welcome_teacher')
 def take_the_next_quiz(request):
     add_lesson_completed(request.user.id)
     return redirect('dotest')
@@ -48,7 +48,7 @@ Check the user is a student
 Leave the current lesson and go back to the student welcome screen
 """
 @login_required
-@user_passes_test(user_is_student)
+@user_passes_test(user_is_student, login_url = 'welcome_teacher')
 def go_back_to_welcome_student(request):
     add_lesson_completed(request.user.id)
     return redirect('welcome_student')
