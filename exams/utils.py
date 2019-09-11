@@ -1,5 +1,4 @@
 from random import shuffle
-from django.db import connection, transaction
 from chempy import Substance
 from django.contrib.auth.models import User
 from custom_users.models import Class_id, StudentProfile, TeacherProfile, User
@@ -254,7 +253,7 @@ level, attempts, progress and needs_help
 This is the basis of the adaptive element of the application
 """
 def adjust_level_and_attempts(student, weighted_mean):
-    if weighted_mean > 80:
+    if weighted_mean >= 80:
         student.level += 1
         student.attempt = 0
         student.progress = 1
@@ -407,3 +406,6 @@ def update_student(level, user):
     student.level = level
     student.signup_quiz_completed = True
     student.save()
+
+
+
