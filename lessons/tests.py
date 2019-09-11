@@ -159,6 +159,7 @@ class LessonsTest(TestCase):
     context data for logged in user where relevant.
 
     """
+
     # test complete_lesson view
     def test_complete_lesson_as_student(self):
         self.client.login(username = "student1", password="student1_pass")
@@ -205,6 +206,7 @@ class LessonsTest(TestCase):
         self.assertContains(response, '<h3 class="green_header">Welcome to ChemLearning</h3>')
 
     # test take_the_next_quiz view
+
     def test_take_the_next_quiz_as_student(self):
         response = self.client.get(reverse('take_the_next_quiz'))
         self.assertEqual(response.status_code, 302)
