@@ -83,51 +83,50 @@ class TeacherTest(TestCase):
     """
 
     # test show_students view
-    def test_show_students_response(self):
+    def test_show_students_as_teacher(self):
         self.client.login(username = "teacher", password = "mypass")
         response = self.client.get(reverse('show_students', args=['9y3']))
         self.assertEqual(response.status_code, 200)
-
-    def test_show_students_template(self):
-        self.client.login(username = "teacher", password = "mypass")
-        response = self.client.get(reverse('show_students', args=['9y3']))
         self.assertTemplateUsed(response, "teachers/show_students.html")
-
-    def test_show_students_html(self):
-        self.client.login(username = "teacher", password = "mypass")
-        response = self.client.get(reverse('show_students', args=['9y3']))
         self.assertContains(response, "<h5>Class: 9y3")
 
+    def test_show_students_as_student(self):
+        self.client.login(username ="student1", password="mypass")
+        response = self.client.get(reverse('show_students', args=['9y3']), follow = True)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "custom_users/welcome_student.html")
+        self.assertContains(response, "<h5><strong>Welcome Student:</strong> student1</h5>")
+
+    def test_show_students_as_anon(self):
+        response = self.client.get(reverse('show_students', args=['9y3']), follow = True)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "signup.html")
+        self.assertContains(response, '<h3 class="green_header">Welcome to ChemLearning</h3>')
+
     # test class_list view. Logged in as Teacher and Student
-    def test_class_list_teacher_response(self):
+    def test_class_list_as_teacher(self):
         self.client.login(username = "teacher", password = "mypass")
         response = self.client.get(reverse('class_list'))
         self.assertEqual(response.status_code, 200)
-
-    def test_class_list_teacher_template(self):
-        self.client.login(username = "teacher", password = "mypass")
-        response = self.client.get(reverse('class_list'))
         self.assertTemplateUsed(response, "teachers/class_list.html")
-
-    def test_class_list_teacher_html(self):
-        self.client.login(username = "teacher", password = "mypass")
-        response = self.client.get(reverse('class_list' ))
         self.assertContains(response, "<h5>Welcome teacher </h5>")
 
-    def test_class_list_student_response(self):
+    def test_class_list_as_student_response(self):
         self.client.login(username = "student1", password = "mypass")
         response = self.client.get(reverse('class_list'))
         self.assertTrue(response.status_code, 302)
 
-    def test_class_list_student_template(self):
+    def test_class_list_as_student_template_html(self):
         self.client.login(username = "student1", password = "mypass")
         response = self.client.get(reverse('class_list'), follow = True)
         self.assertTemplateUsed(response, "custom_users/welcome_student.html")
-
-    def test_class_list_student_html(self):
-        self.client.login(username = "student1", password = "mypass")
-        response = self.client.get(reverse('class_list'), follow = True)
         self.assertContains(response, "<h5><strong>Welcome Student:</strong> student1</h5>")
+
+    def test_class_list_anon(self):
+        response = self.client.get(reverse('show_students', args=['9y3']), follow = True)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "signup.html")
+        self.assertContains(response, '<h3 class="green_header">Welcome to ChemLearning</h3>')
 
     # test see_student_test
     def test_see_student_test_student_response(self):
@@ -152,20 +151,25 @@ class TeacherTest(TestCase):
         self.assertContains(response, "<h5>student1 answers to exam1")
 
     # test add_class with GET and POST requests and Valid and Invalid data
-    def test_add_class_get_response(self):
+    def test_add_class_get_as_teacher(self):
         self.client.login(username = "teacher", password = "mypass")
         response = self.client.get(reverse('add_class'))
         self.assertTrue(response.status_code, 200)
-
-    def test_add_class_get_template(self):
-        self.client.login(username = "teacher", password = "mypass")
-        response = self.client.get(reverse('add_class'))
         self.assertTemplateUsed(response, "teachers/add_class.html")
-
-    def test_add_class_get_html(self):
-        self.client.login(username = "teacher", password = "mypass")
-        response = self.client.get(reverse('add_class'))
         self.assertContains(response, '<div class="card-headergreen">Add Class</div>')
+
+    def test_add_class_get_as_student(self):
+        self.client.login(username = "student1", password = "mypass")
+        response = self.client.get(reverse('add_class'), follow = True)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "custom_users/welcome_student.html")
+        self.assertContains(response, "<h5><strong>Welcome Student:</strong> student1</h5>")
+
+    def test_add_class_get_as_anon(self):
+        response = self.client.get(reverse('add_class'), follow = True)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "signup.html")
+        self.assertContains(response, '<h3 class="green_header">Welcome to ChemLearning</h3>')
 
     def test_add_class_post_valid_response(self):
         self.client.login(username = "teacher", password = "mypass")

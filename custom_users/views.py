@@ -20,7 +20,7 @@ Welcome teacher view. Displays the screen for any authenticated teacher user.
 Gets all of a teachers classes and displays a button for each.
 """
 @login_required
-@user_passes_test(user_is_teacher)
+@user_passes_test(user_is_teacher, login_url = 'welcome_student')
 @user_passes_test(have_teacher_details, login_url = 'edit_teacher',  redirect_field_name = 'get_teacher_details' )
 def welcome_teacher(request):
     teacher = TeacherProfile.objects.get(user_id = request.user.id)
@@ -35,7 +35,7 @@ Welcome student view. Displays the screen for any authenticated student user.
 Shows a students next lesson, test, revision option and progress bar.
 """
 @login_required
-@user_passes_test(user_is_student)
+@user_passes_test(user_is_student, login_url = 'welcome_teacher')
 @user_passes_test(have_student_details, login_url = 'edit_student',  redirect_field_name = 'get_student_details' )
 @user_passes_test(have_student_signup,  login_url = 'do_signup_quiz', redirect_field_name = 'do_signup_quiz')
 def welcome_student(request):

@@ -172,304 +172,6 @@ class ExamsTest(TestCase):
         self.incorrectanswer = IncorrectAnswer.objects.get(id =1)
         self.question = Question.objects.get(id = 2)
 
-
-    """
-    Models Tests
-    """
-    # test the __str__ methods for all the models in exams
-    def test_exam_str(self):
-        self.assertEqual(self.exam1.__str__(), "1 Test Exam Title 1")
-
-    def test_question_str(self):
-        self.assertEqual(self.question1.__str__(), "What is my favourite colour? ")
-
-    def test_answer_str(self):
-        self.assertEqual(self.option1.__str__(), "Yellow")
-
-    def test_useranswer_str(self):
-        self.assertEqual(self.user_answer.__str__(), "Green")
-
-    def test_completed_exam_str(self):
-        self.assertEqual(CompletedExam.objects.get(id = 1).__str__(), "student1 Test Exam Title 1" )
-
-    def test_incomplete_answer_str(self):
-        self.assertEqual(self.incorrectanswer.__str__(), "student9 What is my favourite film? ")
-
-    """
-    Views and Template testing
-    Each view is tested for expected response using using GET requests
-    (and POST requests where relevant).
-    Template rendered is tested using assertTemplateUsed()
-    This checks the correct template is rendered for logged in
-    user type and the type of request.
-    The template and context are tested using assertContains(), to
-    ensure the correct template has been rendered with the correct
-    context data for logged in user where relevant.
-    Additional testing for individual views is added and explained
-    where necessary.
-    """
-    # test dotest view. GET and POST requests
-    def test_do_test_get_response_code(self):
-        self.client.login(username ="student2", password="mypass")
-        response = self.client.get(reverse('dotest'))
-        self.assertEqual(response.status_code, 200)
-
-    def test_do_test_get_template_used(self):
-        self.client.login(username ="student2", password="mypass")
-        response = self.client.get(reverse('dotest'))
-        self.assertTemplateUsed(response, 'exams/dotest.html')
-
-    def test_do_test_get_html(self):
-        self.client.login(username ="student2", password="mypass")
-        response = self.client.get(reverse('dotest'))
-        self.assertContains(response, "<p><strong>What is my favourite colour? </strong></p>")
-
-    def test_do_test_get_response_student_finished_code(self):
-        student = StudentProfile.objects.get(user_id = 12)
-        student.next_exam_id = 9
-        student.level = 5
-        student.save()
-        self.client.login(username ="student11", password="mypass")
-        response = self.client.get(reverse('dotest'))
-        self.assertEqual(response.status_code, 302)
-
-    def test_do_test_get_template_used_student_finished_(self):
-        student = StudentProfile.objects.get(user_id = 12)
-        student.next_exam_id = 9
-        student.level = 5
-        student.save()
-        self.client.login(username ="student11", password="mypass")
-        response = self.client.get(reverse('dotest'), follow = True)
-        self.assertTemplateUsed(response, 'exams/congratulations.html')
-
-    def test_do_test_get_student_finished_html(self):
-        student = StudentProfile.objects.get(user_id = 12)
-        student.next_exam_id = 9
-        student.level = 5
-        student.save()
-        self.client.login(username ="student11", password="mypass")
-        response = self.client.get(reverse('dotest'), follow = True)
-        self.assertContains(response, "<h1 class='gold .animation-lightSpeedin'>")
-
-    def test_do_test_post_response_code(self):
-        self.client.login(username ="student2", password="mypass")
-        response = self.client.post(reverse('dotest'))
-        self.assertEqual(response.status_code, 302)
-
-    def test_do_test_post_template_used(self):
-        self.client.login(username ="student2", password="mypass")
-        response = self.client.post(reverse('dotest'), follow=True)
-        self.assertTemplateUsed(response, 'exams/show_result.html')
-
-    def test_do_test_post_html(self):
-        self.client.login(username ="student2", password="mypass")
-        response = self.client.post(reverse('dotest'), follow=True)
-        self.assertContains(response, "<h5>You scored: 33% on Test Exam Title 1<br><br/></h5>")
-
-    # test show_result view.
-    def test_show_result_get_response_student_code(self):
-        self.client.login(username ="student2", password="mypass")
-        response = self.client.post(reverse('show_result', args=[1,]))
-        student = StudentProfile.objects.get(user_id = 3)
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'exams/show_result.html')
-
-    def test_show_result_get_response_teacher_code(self):
-        self.client.login(username ="teacher", password="mypass")
-        response = self.client.get(reverse('show_result', args=[1,]), follow = True)
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'custom_users/edit_teacher.html')
-
-    def test_show_result_get_response_anon_code(self):
-        response = self.client.get(reverse('show_result', args=[1,]), follow = True)
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'signup.html')
-
-    def test_show_result_get_template_used(self):
-        self.client.login(username ="student2", password="mypass")
-        response = self.client.get(reverse('show_result', args=[1,]))
-        self.assertTemplateUsed(response, 'exams/show_result.html')
-
-    def test_show_result_get_html(self):
-        self.client.login(username ="student2", password="mypass")
-        response = self.client.get(reverse('show_result', args=[1,]))
-        self.assertContains(response, "<h5>You scored: 33% on Test Exam Title 1<br><br/></h5>")
-
-    # test show result when student is finished
-    def test_show_result_get_response_student_finished_code(self):
-        student = StudentProfile.objects.get(user_id = 3)
-        student.next_exam_id = 8
-        student.level = 5
-        student.save()
-        self.client.login(username ="student2", password="mypass")
-        response = self.client.get(reverse('show_result', args=[1,]))
-        self.assertEqual(response.status_code, 200)
-
-    def test_show_result_get_template_used_student_finished_(self):
-        student = StudentProfile.objects.get(user_id = 3)
-        student.next_exam_id = 8
-        student.level = 5
-        student.save()
-        self.client.login(username ="student2", password="mypass")
-        response = self.client.get(reverse('show_result', args=[1,]))
-        self.assertTemplateUsed(response, 'exams/show_result.html')
-
-    def test_show_result_get_student_finished_html(self):
-        student = StudentProfile.objects.get(user_id = 3)
-        student.next_exam_id = 8
-        student.level = 5
-        student.save()
-        self.client.login(username ="student2", password="mypass")
-        response = self.client.get(reverse('show_result', args=[1,]))
-        self.assertContains(response, "<h5>You scored: 33% on Test Exam Title 1<br><br/></h5>")
-
-    # test show_result view finished all levels.
-    def test_show_result_get_response_finished(self):
-        self.client.login(username ="student10", password="mypass")
-        response = self.client.get(reverse('welcome_student'))
-        self.assertEqual(response.status_code, 302)
-
-    def test_show_result_get_template_used_finished(self):
-        self.client.login(username ="student10", password="mypass")
-        response = self.client.get(reverse('welcome_student'), follow=True)
-        self.assertTemplateUsed(response, 'exams/congratulations.html')
-
-    def test_show_result_get_html_finished(self):
-        self.client.login(username ="student10", password="mypass")
-        response = self.client.get(reverse('welcome_student'), follow=True)
-        self.assertContains(response,
-        "<h1 class='gold .animation-lightSpeedin'>Congratulations you have completed ChemLearning</h1>")
-    # test review view
-    def test_review_get_response_code(self):
-        self.client.login(username ="student3", password="mypass")
-        response = self.client.get(reverse('review', args=[1,]))
-        self.assertEqual(response.status_code, 200)
-
-    def test_review_get_template_used(self):
-        self.client.login(username ="student3", password="mypass")
-        response = self.client.get(reverse('review', args=[1,]), follow = True)
-        self.assertTemplateUsed(response, 'exams/review.html')
-
-    def test_review_get_html(self):
-        self.client.login(username ="student3", password="mypass")
-        response = self.client.get(reverse('review', args=[1,]), follow = True)
-        self.assertContains(response, "<h5>Multiple choice questions you need to review</h5>")
-
-    # test review view with 100%
-    def test_review_get_response_with_100_response(self):
-        self.client.login(username ="student4", password="mypass")
-        response = self.client.get(reverse('review', args=[1,]))
-        self.assertEqual(response.status_code, 302)
-
-    def test__review_get_response_with_100_template(self):
-        self.client.login(username ="student4", password="mypass")
-        response = self.client.get(reverse('review', args=[1,]), follow = True)
-        self.assertTemplateUsed(response, 'exams/hundred.html')
-
-    def test_review_get_htmlwith_100(self):
-        self.client.login(username ="student4", password="mypass")
-        response = self.client.get(reverse('review', args=[1,]), follow = True)
-        self.assertContains(response, '<div class="span12 imagecentre">')
-
-    # test test_do_quiz_signup view. GET and POST requests
-    def test_do_quiz_signup_get_already_completed_response(self):
-        self.client.login(username ="student2", password="mypass")
-        response=self.client.get(reverse('do_signup_quiz'))
-        self.assertEqual(response.status_code, 302)
-
-    def test_do_quiz_signup_get_already_completed_template(self):
-        self.client.login(username ="student2", password="mypass")
-        response=self.client.get(reverse('do_signup_quiz'), follow = True)
-        self.assertTemplateUsed(response, 'custom_users/welcome_student.html')
-
-    def test_do_quiz_signup_get_already_completed_html(self):
-        self.client.login(username ="student2", password="mypass")
-        response=self.client.get(reverse('do_signup_quiz'), follow = True)
-        self.assertContains(response, '<h5><strong>Welcome Student:</strong> student2</h5>')
-
-    # test test_do_quiz_signup view. GET and POST requests
-    def test_do_quiz_signup_get_response(self):
-        self.client.login(username ="student1", password="mypass")
-        response=self.client.get(reverse('do_signup_quiz'))
-        self.assertEqual(response.status_code, 200)
-
-    def test_do_quiz_signup_get_template(self):
-        self.client.login(username ="student1", password="mypass")
-        response=self.client.get(reverse('do_signup_quiz'), follow = True)
-        self.assertTemplateUsed(response, 'custom_users/do_signup_quiz.html')
-
-    def test_do_quiz_signup_get_html(self):
-        self.client.login(username ="student1", password="mypass")
-        response=self.client.get(reverse('do_signup_quiz'), follow = True)
-        self.assertContains(response, '<h4 class = "green_header">Complete the quiz below to help us decide which lessons you need.</h4>')
-
-    def test_do_quiz_signup_post_student(self):
-        self.client.login(username ="student1", password="mypass")
-        response=self.client.post(reverse('do_signup_quiz'),
-        {'2':'True', '3': 'True', '4': 'False', '5':'False'}, follow = True)
-        student = StudentProfile.objects.get(user_id = 2)
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'custom_users/welcome_student.html')
-        self.assertContains(response, 'Current Level:</strong> 2</strong></p>')
-        self.assertContains(response, 'Progress 25%</div>')
-        self.assertEqual(student.next_exam_id, 3)
-        self.assertEqual(student.next_lesson_id, 3)
-
-    def test_do_quiz_signup_post_teacher(self):
-        self.client.login(username ="teacher", password="mypass")
-        response=self.client.post(reverse('do_signup_quiz'),
-        {'2':'True', '3': 'True', '4': 'False', '5':'False'}, follow = True)
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'custom_users/edit_teacher.html')
-
-    def test_do_quiz_signup_post_anon(self):
-        response=self.client.post(reverse('do_signup_quiz'),
-        {'2':'True', '3': 'True', '4': 'False', '5':'False'}, follow = True)
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'signup.html')
-
-    def test_do_quiz_signup_post_student_level_2(self):
-        self.client.force_login(User.objects.get(id=2))
-        response=self.client.post(reverse('do_signup_quiz'),
-        {'2':'True', '3': 'True', '4': 'False', '5':'False'}, follow = True)
-        student = StudentProfile.objects.get(user_id = 2)
-        self.assertEqual(student.level, 2)
-
-    def test_do_quiz_signup_post_student_level_3(self):
-        self.client.force_login(User.objects.get(id=2))
-        response=self.client.post(reverse('do_signup_quiz'),
-        {'2':'True', '3': 'True', '4': 'True', '5':'False'}, follow = True)
-        student = StudentProfile.objects.get(user_id = 2)
-        self.assertEqual(student.level, 3)
-
-    def test_do_quiz_signup_post_template(self):
-        self.client.force_login(User.objects.get(id=2))
-        response=self.client.post(reverse('do_signup_quiz'),
-        {'2':'True', '3': 'True', '4': 'False', '5':'False'}, follow = True)
-        self.assertTemplateUsed(response, 'custom_users/welcome_student.html')
-
-    def test_do_quiz_signup_post_html(self):
-        self.client.force_login(User.objects.get(id=2))
-        response=self.client.post(reverse('do_signup_quiz'),
-        {'2':'True', '3': 'True', '4': 'False'}, follow = True)
-        self.assertContains(response, "<h5><strong>Welcome Student:</strong> student1</h5>")
-
-    # test revise with less than 5 incorrect answers
-    def test_revision_get_response_code(self):
-        self.client.login(username ="student11", password="mypass")
-        response = self.client.get(reverse('revise'))
-        self.assertEqual(response.status_code, 200)
-
-    def test_revision_get_template_used(self):
-        self.client.login(username ="student11", password="mypass")
-        response = self.client.get(reverse('revise'))
-        self.assertTemplateUsed(response, 'exams/revise.html')
-
-    def test_revision_get_html(self):
-        self.client.login(username ="student11", password="mypass")
-        response = self.client.get(reverse('revise'))
-        self.assertContains(response, "<h4>Revision")
-
     """
     Utils testing
     """
@@ -643,3 +345,305 @@ class ExamsTest(TestCase):
         answers = ["True", "True", "True", "True", "True"]
         level = get_starting_level(answers)
         self.assertEqual(level, 5)
+
+    """
+    Models Tests
+    """
+    # test the __str__ methods for all the models in exams
+    def test_exam_str(self):
+        self.assertEqual(self.exam1.__str__(), "1 Test Exam Title 1")
+
+    def test_question_str(self):
+        self.assertEqual(self.question1.__str__(), "What is my favourite colour? ")
+
+    def test_answer_str(self):
+        self.assertEqual(self.option1.__str__(), "Yellow")
+
+    def test_useranswer_str(self):
+        self.assertEqual(self.user_answer.__str__(), "Green")
+
+    def test_completed_exam_str(self):
+        self.assertEqual(CompletedExam.objects.get(id = 1).__str__(), "student1 Test Exam Title 1" )
+
+    def test_incomplete_answer_str(self):
+        self.assertEqual(self.incorrectanswer.__str__(), "student9 What is my favourite film? ")
+
+    """
+    Views and Template testing
+    Each view is tested for expected response using using GET requests
+    (and POST requests where relevant).
+    Template rendered is tested using assertTemplateUsed()
+    This checks the correct template is rendered for logged in
+    user type and the type of request.
+    The template and context are tested using assertContains(), to
+    ensure the correct template has been rendered with the correct
+    context data for logged in user where relevant.
+    Additional testing for individual views is added and explained
+    where necessary.
+    """
+    # test dotest view. GET and POST requests
+    def test_do_test_get_as_student(self):
+        self.client.login(username ="student2", password="mypass")
+        response = self.client.get(reverse('dotest'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'exams/dotest.html')
+        self.assertContains(response, "<p><strong>What is my favourite colour? </strong></p>")
+
+    def test_do_test_get_as_teacher(self):
+        self.client.login(username ="teacher", password="mypass")
+        response = self.client.get(reverse('dotest'), follow = True)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "custom_users/edit_teacher.html")
+        self.assertContains(response, '<div class="card-headergreen">Add Teacher Details</div>')
+
+    def test_do_test_as_anon(self):
+        response = self.client.get(reverse('dotest'), follow = True)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "signup.html")
+        self.assertContains(response, '<h3 class="green_header">Welcome to ChemLearning</h3>')
+
+    def test_do_test_get_response_student_finished_code(self):
+        student = StudentProfile.objects.get(user_id = 12)
+        student.next_exam_id = 9
+        student.level = 5
+        student.save()
+        self.client.login(username ="student11", password="mypass")
+        response = self.client.get(reverse('dotest'))
+        self.assertEqual(response.status_code, 302)
+
+    def test_do_test_get_template_used_student_finished_(self):
+        student = StudentProfile.objects.get(user_id = 12)
+        student.next_exam_id = 9
+        student.level = 5
+        student.save()
+        self.client.login(username ="student11", password="mypass")
+        response = self.client.get(reverse('dotest'), follow = True)
+        self.assertTemplateUsed(response, 'exams/congratulations.html')
+
+    def test_do_test_get_student_finished_html(self):
+        student = StudentProfile.objects.get(user_id = 12)
+        student.next_exam_id = 9
+        student.level = 5
+        student.save()
+        self.client.login(username ="student11", password="mypass")
+        response = self.client.get(reverse('dotest'), follow = True)
+        self.assertContains(response, "<h1 class='gold .animation-lightSpeedin'>")
+
+    def test_do_test_post_response_code(self):
+        self.client.login(username ="student2", password="mypass")
+        response = self.client.post(reverse('dotest'))
+        self.assertEqual(response.status_code, 302)
+
+    def test_do_test_post_template_used(self):
+        self.client.login(username ="student2", password="mypass")
+        response = self.client.post(reverse('dotest'), follow=True)
+        self.assertTemplateUsed(response, 'exams/show_result.html')
+
+    def test_do_test_post_html(self):
+        self.client.login(username ="student2", password="mypass")
+        response = self.client.post(reverse('dotest'), follow=True)
+        self.assertContains(response, "<h5>You scored: 33% on Test Exam Title 1<br><br/></h5>")
+
+    # test show_result view.
+    def test_show_result_get_as_student(self):
+        self.client.login(username ="student2", password="mypass")
+        response = self.client.post(reverse('show_result', args=[1,]))
+        student = StudentProfile.objects.get(user_id = 3)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'exams/show_result.html')
+        self.assertContains(response, '<h5>You scored: 33% on Test Exam Title 1<br><br/></h5>')
+
+    def test_show_result_get_as_teacher_code(self):
+        self.client.login(username ="teacher", password="mypass")
+        response = self.client.get(reverse('show_result', args=[1,]), follow = True)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'custom_users/edit_teacher.html')
+        self.assertContains(response, '<div class="card-headergreen">Add Teacher Details</div>')
+
+    def test_show_result_get_as_anon(self):
+        response = self.client.get(reverse('show_result', args=[1,]), follow = True)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'signup.html')
+        self.assertContains(response, '<h3 class="green_header">Welcome to ChemLearning</h3>')
+
+    # test show result when student is finished
+    def test_show_result_get_response_student_finished_code(self):
+        student = StudentProfile.objects.get(user_id = 3)
+        student.next_exam_id = 8
+        student.level = 5
+        student.save()
+        self.client.login(username ="student2", password="mypass")
+        response = self.client.get(reverse('show_result', args=[1,]))
+        self.assertEqual(response.status_code, 200)
+
+    def test_show_result_get_template_used_student_finished_(self):
+        student = StudentProfile.objects.get(user_id = 3)
+        student.next_exam_id = 8
+        student.level = 5
+        student.save()
+        self.client.login(username ="student2", password="mypass")
+        response = self.client.get(reverse('show_result', args=[1,]))
+        self.assertTemplateUsed(response, 'exams/show_result.html')
+
+    def test_show_result_get_student_finished_html(self):
+        student = StudentProfile.objects.get(user_id = 3)
+        student.next_exam_id = 8
+        student.level = 5
+        student.save()
+        self.client.login(username ="student2", password="mypass")
+        response = self.client.get(reverse('show_result', args=[1,]))
+        self.assertContains(response, "<h5>You scored: 33% on Test Exam Title 1<br><br/></h5>")
+
+    # test show_result view finished all levels.
+    def test_show_result_get_response_finished(self):
+        self.client.login(username ="student10", password="mypass")
+        response = self.client.get(reverse('welcome_student'))
+        self.assertEqual(response.status_code, 302)
+
+    def test_show_result_get_template_used_finished(self):
+        self.client.login(username ="student10", password="mypass")
+        response = self.client.get(reverse('welcome_student'), follow=True)
+        self.assertTemplateUsed(response, 'exams/congratulations.html')
+
+    def test_show_result_get_html_finished(self):
+        self.client.login(username ="student10", password="mypass")
+        response = self.client.get(reverse('welcome_student'), follow=True)
+        self.assertContains(response,
+        "<h1 class='gold .animation-lightSpeedin'>Congratulations you have completed ChemLearning</h1>")
+
+    # test review view
+    def test_review_get_response_code(self):
+        self.client.login(username ="student3", password="mypass")
+        response = self.client.get(reverse('review', args=[1,]))
+        self.assertEqual(response.status_code, 200)
+
+    def test_review_get_template_used(self):
+        self.client.login(username ="student3", password="mypass")
+        response = self.client.get(reverse('review', args=[1,]), follow = True)
+        self.assertTemplateUsed(response, 'exams/review.html')
+
+    def test_review_get_html(self):
+        self.client.login(username ="student3", password="mypass")
+        response = self.client.get(reverse('review', args=[1,]), follow = True)
+        self.assertContains(response, "<h5>Multiple choice questions you need to review</h5>")
+
+    # test review view with 100%
+    def test_review_get_response_with_100_response(self):
+        self.client.login(username ="student4", password="mypass")
+        response = self.client.get(reverse('review', args=[1,]))
+        self.assertEqual(response.status_code, 302)
+
+    def test__review_get_response_with_100_template(self):
+        self.client.login(username ="student4", password="mypass")
+        response = self.client.get(reverse('review', args=[1,]), follow = True)
+        self.assertTemplateUsed(response, 'exams/hundred.html')
+
+    def test_review_get_htmlwith_100(self):
+        self.client.login(username ="student4", password="mypass")
+        response = self.client.get(reverse('review', args=[1,]), follow = True)
+        self.assertContains(response, '<div class="span12 imagecentre">')
+
+    # test test_do_quiz_signup view. GET and POST requests
+    def test_do_quiz_signup_get_already_completed_response(self):
+        self.client.login(username ="student2", password="mypass")
+        response=self.client.get(reverse('do_signup_quiz'))
+        self.assertEqual(response.status_code, 302)
+
+    def test_do_quiz_signup_get_already_completed_template(self):
+        self.client.login(username ="student2", password="mypass")
+        response=self.client.get(reverse('do_signup_quiz'), follow = True)
+        self.assertTemplateUsed(response, 'custom_users/welcome_student.html')
+
+    def test_do_quiz_signup_get_already_completed_html(self):
+        self.client.login(username ="student2", password="mypass")
+        response=self.client.get(reverse('do_signup_quiz'), follow = True)
+        self.assertContains(response, '<h5><strong>Welcome Student:</strong> student2</h5>')
+
+    # test test_do_quiz_signup view. GET and POST requests
+    def test_do_quiz_signup_get_response(self):
+        self.client.login(username ="student1", password="mypass")
+        response=self.client.get(reverse('do_signup_quiz'))
+        self.assertEqual(response.status_code, 200)
+
+    def test_do_quiz_signup_get_template(self):
+        self.client.login(username ="student1", password="mypass")
+        response=self.client.get(reverse('do_signup_quiz'), follow = True)
+        self.assertTemplateUsed(response, 'custom_users/do_signup_quiz.html')
+
+    def test_do_quiz_signup_get_html(self):
+        self.client.login(username ="student1", password="mypass")
+        response=self.client.get(reverse('do_signup_quiz'), follow = True)
+        self.assertContains(response, '<h4 class = "green_header">Complete the quiz below to help us decide which lessons you need.</h4>')
+
+    def test_do_quiz_signup_post_student(self):
+        self.client.login(username ="student1", password="mypass")
+        response=self.client.post(reverse('do_signup_quiz'),
+        {'2':'True', '3': 'True', '4': 'False', '5':'False'}, follow = True)
+        student = StudentProfile.objects.get(user_id = 2)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'custom_users/welcome_student.html')
+        self.assertContains(response, 'Current Level:</strong> 2</strong></p>')
+        self.assertContains(response, 'Progress 25%</div>')
+        self.assertEqual(student.next_exam_id, 3)
+        self.assertEqual(student.next_lesson_id, 3)
+
+    def test_do_quiz_signup_post_teacher(self):
+        self.client.login(username ="teacher", password="mypass")
+        response=self.client.post(reverse('do_signup_quiz'),
+        {'2':'True', '3': 'True', '4': 'False', '5':'False'}, follow = True)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'custom_users/edit_teacher.html')
+
+    def test_do_quiz_signup_post_anon(self):
+        response=self.client.post(reverse('do_signup_quiz'),
+        {'2':'True', '3': 'True', '4': 'False', '5':'False'}, follow = True)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'signup.html')
+
+    def test_do_quiz_signup_post_student_level_2(self):
+        self.client.force_login(User.objects.get(id=2))
+        response=self.client.post(reverse('do_signup_quiz'),
+        {'2':'True', '3': 'True', '4': 'False', '5':'False'}, follow = True)
+        student = StudentProfile.objects.get(user_id = 2)
+        self.assertEqual(student.level, 2)
+
+    def test_do_quiz_signup_post_student_level_3(self):
+        self.client.force_login(User.objects.get(id=2))
+        response=self.client.post(reverse('do_signup_quiz'),
+        {'2':'True', '3': 'True', '4': 'True', '5':'False'}, follow = True)
+        student = StudentProfile.objects.get(user_id = 2)
+        self.assertEqual(student.level, 3)
+
+    def test_do_quiz_signup_post_template(self):
+        self.client.force_login(User.objects.get(id=2))
+        response=self.client.post(reverse('do_signup_quiz'),
+        {'2':'True', '3': 'True', '4': 'False', '5':'False'}, follow = True)
+        self.assertTemplateUsed(response, 'custom_users/welcome_student.html')
+
+    def test_do_quiz_signup_post_html(self):
+        self.client.force_login(User.objects.get(id=2))
+        response=self.client.post(reverse('do_signup_quiz'),
+        {'2':'True', '3': 'True', '4': 'False'}, follow = True)
+        self.assertContains(response, "<h5><strong>Welcome Student:</strong> student1</h5>")
+
+    # test revise with less than 5 incorrect answers
+    def test_revision_get_as_student(self):
+        self.client.login(username ="student11", password="mypass")
+        response = self.client.get(reverse('revise'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'exams/revise.html')
+        self.assertContains(response, "<h4>Revision")
+
+    def test_revision__get_as_teacher(self):
+        self.client.login(username ="teacher", password="mypass")
+        response = self.client.get(reverse('revise'), follow = True)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "custom_users/welcome_teacher.html")
+        self.assertContains(response, "<h5>Welcome Teacher: teacher</h5>")
+
+
+    def test_revision_get_as_anon(self):
+        response = self.client.get(reverse('revise'), follow = True)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "signup.html")
+        self.assertContains(response, '<h3 class="green_header">Welcome to ChemLearning</h3>')
