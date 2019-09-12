@@ -57,7 +57,7 @@ class ExamsTest(TestCase):
         attempt = 1, details_added = True, signup_quiz_completed = False, next_lesson_id = 1)
         student9 = StudentProfile.objects.create(user = user10, teacher = teacher, class_id = class_id, level = 1,
         attempt = 1, details_added = True, signup_quiz_completed = False, next_lesson_id = 1)
-        student10 = StudentProfile.objects.create(user = user11, teacher = teacher, class_id = class_id, level = 7,
+        student10 = StudentProfile.objects.create(user = user11, teacher = teacher, class_id = class_id, level = 17,
         attempt = 1, details_added = True, signup_quiz_completed = True, next_lesson_id = 1)
 
         # create exams to test next_exam_id
@@ -175,7 +175,7 @@ class ExamsTest(TestCase):
     """
     Utils testing
     """
-    
+
     # check the utils.create_user_answer method adds a UserAnswer to the database
     def test_create_user_answer(self):
         request = {'csrfmiddlewaretoken': 'mihQP', '1': '1'}
@@ -405,7 +405,7 @@ class ExamsTest(TestCase):
     def test_do_test_get_response_student_finished_code(self):
         student = StudentProfile.objects.get(user_id = 12)
         student.next_exam_id = 9
-        student.level = 5
+        student.level = 17
         student.save()
         self.client.login(username ="student11", password="mypass")
         response = self.client.get(reverse('dotest'))
@@ -414,7 +414,7 @@ class ExamsTest(TestCase):
     def test_do_test_get_template_used_student_finished_(self):
         student = StudentProfile.objects.get(user_id = 12)
         student.next_exam_id = 9
-        student.level = 5
+        student.level = 17
         student.save()
         self.client.login(username ="student11", password="mypass")
         response = self.client.get(reverse('dotest'), follow = True)
@@ -423,7 +423,7 @@ class ExamsTest(TestCase):
     def test_do_test_get_student_finished_html(self):
         student = StudentProfile.objects.get(user_id = 12)
         student.next_exam_id = 9
-        student.level = 5
+        student.level = 17
         student.save()
         self.client.login(username ="student11", password="mypass")
         response = self.client.get(reverse('dotest'), follow = True)
@@ -467,28 +467,28 @@ class ExamsTest(TestCase):
         self.assertContains(response, '<h3 class="green_header">Welcome to ChemLearning</h3>')
 
     # test show result when student is finished
-    def test_show_result_get_response_student_finished_code(self):
+    def test_show_result_get_response_student(self):
         student = StudentProfile.objects.get(user_id = 3)
         student.next_exam_id = 8
-        student.level = 5
+        student.level = 17
         student.save()
         self.client.login(username ="student2", password="mypass")
         response = self.client.get(reverse('show_result', args=[1,]))
         self.assertEqual(response.status_code, 200)
 
-    def test_show_result_get_template_used_student_finished_(self):
+    def test_show_result_get_template_used_student(self):
         student = StudentProfile.objects.get(user_id = 3)
         student.next_exam_id = 8
-        student.level = 5
+        student.level = 17
         student.save()
         self.client.login(username ="student2", password="mypass")
         response = self.client.get(reverse('show_result', args=[1,]))
         self.assertTemplateUsed(response, 'exams/show_result.html')
 
-    def test_show_result_get_student_finished_html(self):
+    def test_show_result_get_student_html(self):
         student = StudentProfile.objects.get(user_id = 3)
         student.next_exam_id = 8
-        student.level = 5
+        student.level = 17
         student.save()
         self.client.login(username ="student2", password="mypass")
         response = self.client.get(reverse('show_result', args=[1,]))
@@ -533,7 +533,7 @@ class ExamsTest(TestCase):
         response = self.client.get(reverse('review', args=[1,]))
         self.assertEqual(response.status_code, 302)
 
-    def test__review_get_response_with_100_template(self):
+    def test_review_get_response_with_100_template(self):
         self.client.login(username ="student4", password="mypass")
         response = self.client.get(reverse('review', args=[1,]), follow = True)
         self.assertTemplateUsed(response, 'exams/hundred.html')
@@ -583,7 +583,7 @@ class ExamsTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'custom_users/welcome_student.html')
         self.assertContains(response, 'Current Level:</strong> 2</strong></p>')
-        self.assertContains(response, 'Progress 25%</div>')
+        self.assertContains(response, 'Progress&nbsp6.25%</div>')
         self.assertEqual(student.next_exam_id, 3)
         self.assertEqual(student.next_lesson_id, 3)
 

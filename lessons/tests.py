@@ -40,7 +40,7 @@ class LessonsTest(TestCase):
         StudentProfile.objects.create(user = studentuser3, level = 2, attempt = 3 )
         StudentProfile.objects.create(user = studentuser4, level = 1, attempt = 2 )
         StudentProfile.objects.create(user = studentuser5, level = 1, attempt = 2 )
-        StudentProfile.objects.create(user = studentuser7, level = 5, next_lesson_id = 7,
+        StudentProfile.objects.create(user = studentuser7, level = 17, next_lesson_id = 7,
         signup_quiz_completed = True, details_added = True, )
         TeacherProfile.objects.create(user_id = 9, details_added = True)
         student1 = StudentProfile.objects.get(user_id = 2)
