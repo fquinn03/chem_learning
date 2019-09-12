@@ -360,7 +360,7 @@ def get_starting_level(answers):
             if answers[i-1] == "True" and answers[i-2]== "True":
                 return i+1
         i -= 1
-    else:
+    while i > 0:
         if answers[i] == "True":
             return i+1
         else:
@@ -406,4 +406,6 @@ def update_student(level, user):
     student = StudentProfile.objects.get(user_id = user.id)
     student.signup_quiz_completed = True
     student.level = level
+    student.starting_level = level
     student.save()
+
