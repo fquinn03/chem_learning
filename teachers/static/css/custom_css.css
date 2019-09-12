@@ -48,7 +48,7 @@ a.bluelink {
   background-color: MediumSeaGreen;
   width:115px;
   margin-bottom: 4%;
-  margin-left:65%;
+  margin-left:100%;
 }
 
 
@@ -221,6 +221,11 @@ a.bluelink {
 
 .img-opaque{
   opacity: 0.2;
+}
+
+.models_img{
+   width:35%;
+   height:10%;
 }
 
 .navbar {

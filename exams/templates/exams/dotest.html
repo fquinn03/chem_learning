@@ -11,7 +11,7 @@
     {% for question in mcq_questions %}
         <br/><p><strong>{{question.text|safe}}</strong></p>
           {% if question.questionimage %}
-              <p><img style = "width:55%; height:15%;"src = "{{question.questionimage}}"/></p>
+              <p><img class = "question_img" src = "{{question.questionimage}}"/></p>
           {% elif question.questionscript %}
             <p>{{question.questionscript|safe}}</p>
           {% endif %}
@@ -26,7 +26,7 @@
     {% for question in written_questions %}
         <br/><p><strong>{{question.text|safe}}</strong></p>
           {% if question.questionimage %}
-              <p><img style = "width:55%; height:15%;"src = "{{question.questionimage}}"/></p>
+              <p><img class = "question_img" src = "{{question.questionimage}}"/></p>
           {% elif question.questionscript %}
             <p>{{question.questionscript|safe}}</p>
           {% endif %}

@@ -10,25 +10,28 @@
       alt="welcome_student">
     </a>
 </h4>
-    {% if number_of_q != 0 %}
-      {% for question in incorrect_questions %}
-      <br/><strong>{{question.question.text|safe}}</strong><br/>
-        {% if question.question.questionimage %}
-            <p class="question_img"><img style = "width:55%; height:15%;" src = "{{question.question.questionimage}}"/></p>
-        {% elif question.questionscript %}
-            <p class="question_img"><{{question.question.questionscript|safe}}></p>
+<div class = "row">
+    <div class = "col-sm-6">
+        {% if number_of_q != 0 %}
+          {% for question in incorrect_questions %}
+          <br/><strong>{{question.question.text|safe}}</strong><br/>
+            {% if question.question.questionimage %}
+                <p><img class="question_img" src = "{{question.question.questionimage}}"/></p>
+            {% elif question.questionscript %}
+                <p><{{question.question.questionscript|safe}}></p>
+            {% endif %}
+            {{question.question.review|safe}}<br/>
+            {% if question.question.questionreview %}
+                <p><img class="question_img" src = "{{question.question.questionreview}}"/></p>
+            {% elif question.question.questionreviewscript %}
+                <p><{{question.question.questionscript|safe}}></p>
+            {% endif %}
+          {% endfor %}
+          <br/>
+          <br/>
+        {% else %}
+          <p> You have nothing to revise </p>
         {% endif %}
-        {{question.question.review|safe}}<br/>
-        {% if question.question.questionreview %}
-            <p class="question_img"><img style = "width:55%; height:15%;"src = "{{question.question.questionreview}}"/></p>
-        {% elif question.question.questionreviewscript %}
-            <p class="question_img"><{{question.question.questionscript|safe}}></p>
-        {% endif %}
-      {% endfor %}
-      <br/>
-      <br/>
-    {% else %}
-      <p> You have nothing to revise </p>
-    {% endif %}
-
+    </div>
+</div>
 {% endblock %}
