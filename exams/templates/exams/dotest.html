@@ -10,9 +10,11 @@
     {% csrf_token %}
     {% for question in mcq_questions %}
         <br/><p><strong>{{question.text|safe}}</strong></p>
-        {% if question.questionimage %}
-            <p>{{question.questionimage|safe}}</p>
-        {% endif %}
+          {% if question.questionimage %}
+              <p><img style = "width:55%; height:15%;"src = "{{question.questionimage}}"/></p>
+          {% elif question.questionscript %}
+            <p>{{question.questionscript|safe}}</p>
+          {% endif %}
           {% for answer in question.answer_set.all %}
             <input type ='radio' name= "{{question.id}}" id ="answer{{forloop.counter}}"
             value = "{{answer.text}}" required/>
@@ -23,18 +25,22 @@
     <br/>
     {% for question in written_questions %}
         <br/><p><strong>{{question.text|safe}}</strong></p>
-        {% if question.questionimage %}
-            <p>{{question.questionimage|safe}}</p>
-        {% endif %}
+          {% if question.questionimage %}
+              <p><img style = "width:55%; height:15%;"src = "{{question.questionimage}}"/></p>
+          {% elif question.questionscript %}
+            <p>{{question.questionscript|safe}}</p>
+          {% endif %}
         <label for = "answer{{forloop.counter}}">Answer</label>
         <input type ='text' name= "{{question.id}}" id ="answer{{forloop.counter}}"  required />
         <br/>
     {% endfor %}
     {% for question in formula_questions %}
           <br/><p><strong>{{question.text|safe}}</strong></p>
-        {% if question.questionimage %}
-            <p>{{question.questionimage|safe}}</p>
-        {% endif %}
+          {% if question.questionimage %}
+              <p><img style = "width:55%; height:15%;"src = "{{question.questionimage}}"/></p>
+          {% elif question.questionscript %}
+            <p>{{question.questionscript|safe}}</p>
+          {% endif %}
           <label for = "answer{{forloop.counter}}">Formula</label>
           <input type ='text' name= "{{question.id}}" id ="answer{{forloop.counter}}" required/>
           <br/>

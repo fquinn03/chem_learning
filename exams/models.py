@@ -21,7 +21,11 @@ class Question(models.Model):
     exam = models.ForeignKey(Exam, on_delete=models.CASCADE)
     text = models.CharField(max_length=250, unique = True)
     questionimage = models.CharField(max_length=250, null=True, blank = True)
+    questionscript = models.CharField(max_length=250, null=True, blank = True)
     review = models.CharField(max_length=1000)
+    questionreviewimage = models.CharField(max_length=250, null=True, blank = True)
+    questionreviewscript = models.CharField(max_length=250, null=True, blank = True)
+
     def __str__(self):
         return self.text
 

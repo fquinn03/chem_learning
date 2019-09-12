@@ -14,9 +14,16 @@
       {% for question in incorrect_questions %}
       <br/><strong>{{question.question.text|safe}}</strong><br/>
         {% if question.question.questionimage %}
-            <p class="question_img"">{{question.question.questionimage|safe}}</p>
+            <p class="question_img"><img style = "width:55%; height:15%;" src = "{{question.question.questionimage}}"/></p>
+        {% elif question.questionscript %}
+            <p class="question_img"><{{question.question.questionscript|safe}}></p>
         {% endif %}
-      {{question.question.review|safe}}<br/>
+        {{question.question.review|safe}}<br/>
+        {% if question.question.questionreview %}
+            <p class="question_img"><img style = "width:55%; height:15%;"src = "{{question.question.questionreview}}"/></p>
+        {% elif question.question.questionreviewscript %}
+            <p class="question_img"><{{question.question.questionscript|safe}}></p>
+        {% endif %}
       {% endfor %}
       <br/>
       <br/>

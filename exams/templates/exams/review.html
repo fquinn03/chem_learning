@@ -9,9 +9,17 @@
 {% for question in mcq_corrections %}
 </br><strong>Q &nbsp</strong>{{question.text|safe}}<br/>
     {% if question.questionimage %}
-        <p class="question_img">{{question.questionimage|safe}}</p>
+        <p class="question_img"><img style = "width:55%; height:15%;"src = "{{question.questionimage}}"/></p>
+    {% elif question.questionscript %}
+        <p class="question_img"><{{question.questionscript}}></p>
     {% endif %}
-{{question.review|safe}}<br/>
+    {{question.review|safe }}<br/>
+    {% if question.reviewimage %}
+        <p class="question_img"><img style = "width:55%; height:15%;"src = "{{question.questionreview}}"/></p>
+    {% elif question.reviewscript %}
+        <p class="question_img"><{{question.questionscript|safe}}></p>
+    {% endif %}
+
 {% endfor %}
 {% endif %}
 
@@ -20,10 +28,17 @@
 <h5>Written questions you need to review</h5>
     {% for question in written_corrections_incorrect %}
     <strong>Q &nbsp</strong>{{question.text|safe}}<br/>
-    {% if question.questionimage %}
-        <p class="question_img">{{question.questionimage|safe}}</p><br/>
-    {% endif %}
-     {{question.review|safe}}<br/>
+        {% if question.questionimage %}
+            <p class="question_img"><img style = "width:55%; height:15%;"src = "{{question.questionimage}}"/></p>
+        {% elif question.questionscript %}
+            <p class="question_img"><{{question.questionscript}}></p>
+        {% endif %}
+        {{ question.review|safe }}<br/>
+        {% if question.reviewimage %}
+            <p class="question_img"><img style = "width:55%; height:15%;"src = "{{question.questionreview}}"/></p>
+        {% elif question.reviewscript %}
+            <p class="question_img"><{{question.questionscript|safe}}></p>
+        {% endif %}
     {% endfor %}
 {% endif %}
 

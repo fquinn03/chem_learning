@@ -361,12 +361,14 @@ def get_starting_level(answers):
                 return i+1
         i -= 1
     else:
-        if answers[i] == "True":
-            return i+1
-        else:
-            i -= 1
-
+        while i > 0:
+            if answers[i] == "True":
+                return i+1
+            else:
+                i -= 1
     return 1
+
+
 
 """
 Get a list of the questions the student has previously answered incorrectly.
@@ -403,7 +405,6 @@ complete the signup quiz
 """
 def update_student(level, user):
     student = StudentProfile.objects.get(user_id = user.id)
-    student.level = level
     student.signup_quiz_completed = True
     student.save()
 
