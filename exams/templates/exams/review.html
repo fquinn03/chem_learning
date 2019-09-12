@@ -11,13 +11,13 @@
     {% if question.questionimage %}
         <p class="question_img"><img style = "width:55%; height:15%;"src = "{{question.questionimage}}"/></p>
     {% elif question.questionscript %}
-        <p class="question_img"><{{question.questionscript}}></p>
+        <p class="question_img">{{question.questionscript|safe}}</p>
     {% endif %}
     {{question.review|safe }}<br/>
-    {% if question.reviewimage %}
+    {% if question.questionreviewimage %}
         <p class="question_img"><img style = "width:55%; height:15%;"src = "{{question.questionreview}}"/></p>
-    {% elif question.reviewscript %}
-        <p class="question_img"><{{question.questionscript|safe}}></p>
+    {% elif question.questionreviewscript %}
+        <p class="question_img">{{question.questionreviewscript|safe}}</p>
     {% endif %}
 
 {% endfor %}
@@ -31,13 +31,13 @@
         {% if question.questionimage %}
             <p class="question_img"><img style = "width:55%; height:15%;"src = "{{question.questionimage}}"/></p>
         {% elif question.questionscript %}
-            <p class="question_img"><{{question.questionscript}}></p>
+            <p class="question_img">{{question.questionscript|safe}}</p>
         {% endif %}
         {{ question.review|safe }}<br/>
-        {% if question.reviewimage %}
+        {% if question.questionreviewimage %}
             <p class="question_img"><img style = "width:55%; height:15%;"src = "{{question.questionreview}}"/></p>
-        {% elif question.reviewscript %}
-            <p class="question_img"><{{question.questionscript|safe}}></p>
+        {% elif question.questionreviewscript %}
+            <p class="question_img">{{question.questionreviewscript|safe}}</p>
         {% endif %}
     {% endfor %}
 {% endif %}
