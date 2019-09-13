@@ -24,8 +24,9 @@ class Question(models.Model):
     questiongif = models.CharField(max_length=250, null=True, blank = True)
     questionscript = models.CharField(max_length=250, null=True, blank = True)
     review = models.CharField(max_length=1000)
-    questionreviewimage = models.CharField(max_length=250, null=True, blank = True)
-    questionreviewscript = models.CharField(max_length=250, null=True, blank = True)
+    reviewimage = models.CharField(max_length=250, null=True, blank = True)
+    reviewgif = models.CharField(max_length=250, null=True, blank = True)
+    reviewscript = models.CharField(max_length=250, null=True, blank = True)
 
     def __str__(self):
         return self.text

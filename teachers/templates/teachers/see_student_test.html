@@ -6,19 +6,23 @@
 Back To Student List </button></a>
 </h5>
 
-
 {% for key, value in question_and_answer.items %}
     {% if key.get_type == exams.Written_Question %}
         <strong>Q&nbsp</strong>{{key.text|safe}}<br/>
-        {% if key.questionimage %}<br/>
-            <p><img class = "question_img" src = "{{key.questionimage|safe}}"/></p>
+        {% if key.questionimage %}
+            <br/><img class="question_img_full" src = "{{key.questionimage}}"/><br/>
+        {% elif key.questiongif %}
+            <br/><img class="question_gif_full" src = "{{key.questiongif}}"/><br/>
+        {% elif question.questionscript %}
+            <br/>{{key.questionscript|safe}}<br/>
         {% endif %}
+        <!--DO NOT MARK USER INPUT AS SAFE-->
         Students answer: {{value.user_answer}}
         <br/><br/>
     {% else %}
         <strong>Q&nbsp</strong>{{key.text|safe}}<br/>
         {% if key.questionimage %}<br/>
-            <p><img class = "question_img" src = "{{key.questionimage|safe}}"/></p>
+            <br/><img class = "question_img_full" src = "{{key.questionimage|safe}}"/><br/>
         {% endif %}
         Students answer: {{value.user_answer|safe}}
         <br/><br/>

@@ -3,67 +3,67 @@
 {% block content %}
 {% load static %}
 
-<div class="row">
-  <div class="col-sm-8">
+{% if mcq_corrections %}
+<h5>Multiple choice questions you need to review</h5>
+{% for question in mcq_corrections %}
+</br><strong>Q &nbsp</strong>{{question.text|safe}}<br/>
+    {% if question.questionimage %}
+        <br/><img class="question_img_full" src = "{{question.questionimage}}"/><br/>
+    {% elif question.questiongif %}
+        <br/><img class="question_gif_full" src = "{{question.questiongif}}"/><br/>
+    {% elif question.questionscript %}
+        <br/>{{question.questionscript|safe}}<br/>
+    {% endif %}
+    {{question.review|safe }}<br/>
+    {% if question.questionreviewimage %}
+        <p><img class="model_img" src = "{{question.questionreview}}"/></p>
+    {% elif question.questionreviewscript %}
+        <p>{{question.questionreviewscript|safe}}</p>
+    {% endif %}
 
-        {% if mcq_corrections %}
-        <h5>Multiple choice questions you need to review</h5>
-        {% for question in mcq_corrections %}
-        </br><strong>Q &nbsp</strong>{{question.text|safe}}<br/>
-            {% if question.questionimage %}
-                <p ><img class="question_img" src = "{{question.questionimage}}"/></p>
-            {% elif question.questionscript %}
-                <p>{{question.questionscript|safe}}</p>
-            {% endif %}
-            {{question.review|safe }}<br/>
-            {% if question.questionreviewimage %}
-                <p><img class="model_img" src = "{{question.questionreview}}"/></p>
-            {% elif question.questionreviewscript %}
-                <p>{{question.questionreviewscript|safe}}</p>
-            {% endif %}
+{% endfor %}
+{% endif %}
 
-        {% endfor %}
+{% if written_corrections_incorrect %}
+<br/>
+<h5>Written questions you need to review</h5>
+    {% for question in written_corrections_incorrect %}
+    <strong>Q &nbsp</strong>{{question.text|safe}}<br/>
+        {% if question.questionimage %}
+            <p><img class="question_img" src = "{{question.questionimage}}"/></p>
+        {% elif question.questiongif %}
+            <p>{{question.questiongif|safe}}</p>
+        {% elif question.questionscript %}
+            <p>{{question.questionscript|safe}}</p>
         {% endif %}
-
-        {% if written_corrections_incorrect %}
-        <br/>
-        <h5>Written questions you need to review</h5>
-            {% for question in written_corrections_incorrect %}
-            <strong>Q &nbsp</strong>{{question.text|safe}}<br/>
-                {% if question.questionimage %}
-                    <p><img class="question_img" src = "{{question.questionimage}}"/></p>
-                {% elif question.questionscript %}
-                    <p>{{question.questionscript|safe}}</p>
-                {% endif %}
-                {{ question.review|safe }}<br/>
-                {% if question.questionreviewimage %}
-                    <p><img class="model_img" src = "{{question.questionreview}}"/></p>
-                {% elif question.questionreviewscript %}
-                    <p>{{question.questionreviewscript|safe}}</p>
-                {% endif %}
-            {% endfor %}
+        {{ question.review|safe }}<br/>
+        {% if question.questionreviewimage %}
+            <p><img class="model_img" src = "{{question.questionreview}}"/></p>
+        {% elif question.questionreviewscript %}
+            <p>{{question.questionreviewscript|safe}}</p>
         {% endif %}
+    {% endfor %}
+{% endif %}
 
 
-        {% if formulae_count > 0 %}
-        <br/>
-        <h5>Formulae you need to review</h5>
-        {% for key, value in formula_corrections.items %}
-        {{key|safe}}&nbsp;-&nbsp;{{value|safe}}<br></br>
-        {% endfor %}
-        {% endif %}
+{% if formulae_count > 0 %}
+<br/>
+<h5>Formulae you need to review</h5>
+{% for key, value in formula_corrections.items %}
+{{key|safe}}&nbsp;-&nbsp;{{value|safe}}<br></br>
+{% endfor %}
+{% endif %}
 
 
-        {% if mispelled_count > 0 %}
-        <br/>
-        <h5>Spellings you need to review</h5>
-        {% for key, value in written_corrections_mispelled.items %}
-        {{value|safe}}<br></br>
-        {% endfor %}
-        {% endif %}
+{% if mispelled_count > 0 %}
+<br/>
+<h5>Spellings you need to review</h5>
+{% for key, value in written_corrections_mispelled.items %}
+{{value|safe}}<br></br>
+{% endfor %}
+{% endif %}
 
-        <a href ="{% url 'welcome_student' %}"><button class="btn btn-success-center" >Continue</button></a><br></br>
-    </div>
-</div>
+<a href ="{% url 'welcome_student' %}"><button class="btn btn-success-center" >Continue</button></a><br></br>
+
 
 {% endblock %}
