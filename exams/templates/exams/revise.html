@@ -15,6 +15,7 @@
       {% for question in incorrect_questions %}
       <br/>
       <br/><strong>{{question.question.text|safe}}</strong><br/>
+
         {% if question.question.questionimage %}
             <br/><img class="question_img_full" src = "{{question.question.questionimage}}"/><br/>
         {% endif %}
@@ -38,6 +39,9 @@
         {% endif %}
 
       {% endfor %}
+      <br/>
+      <br/>
+      <br/>
     {% else %}
       <p> You have nothing to revise </p>
     {% endif %}

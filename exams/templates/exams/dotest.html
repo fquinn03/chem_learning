@@ -28,15 +28,15 @@
     {% endfor %}
     <br/>
     {% for question in written_questions %}
-        <br/><p><strong>{{question.text|safe}}</strong></p>
+        <p><strong>{{question.text|safe}}</strong></p>
             {% if question.questionimage %}
-              <br/><img class = "question_img_quiz" src = "{{question.questionimage}}"/><br/>
+              <img class = "question_img_quiz" src = "{{question.questionimage}}"/><br/>
             {% endif %}
             {% if question.questiongif %}
-              <br/><img class = "question_gif_quiz" src = "{{question.questiongif}}"/><br/>
+              <img class = "question_gif_quiz" src = "{{question.questiongif}}"/><br/>
             {% endif %}
             {% if question.questionscript %}
-              <br/>{{question.questionscript|safe}}</br/>
+              {{question.questionscript|safe}}</br/>
             {% endif %}
         <label for = "answer{{forloop.counter}}">Answer</label>
         <input type ='text' name= "{{question.id}}" id ="answer{{forloop.counter}}"  required />
