@@ -51,7 +51,13 @@ a.bluelink {
   margin-left:100%;
 }
 
-
+.btn-success-review{
+    color: #ffffff;
+    background-color: MediumSeaGreen;
+    width:115px;
+    margin-bottom: 4%;
+    margin-left:55%;
+}
 
 .btn-success:hover {
   color: MediumSeaGreen;
@@ -261,15 +267,26 @@ a.bluelink {
     overflow:scroll;
 }
 
-.question_img{
+.question_img_quiz{
    width:60%;
    height:20%;
 }
 
-.question_img_teacher_review{
+.question_gif_quiz{
+   width:20%;
+   height:10%;
+}
+
+.question_img_full{
    width:30%;
    height:10%;
 }
+
+.question_gif_full{
+   width:10%;
+   height:5%;
+}
+
 
 
 .smallcontainer{

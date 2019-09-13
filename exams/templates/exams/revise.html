@@ -10,28 +10,36 @@
       alt="welcome_student">
     </a>
 </h4>
-<div class = "row">
-    <div class = "col-sm-6">
-        {% if number_of_q != 0 %}
-          {% for question in incorrect_questions %}
-          <br/><strong>{{question.question.text|safe}}</strong><br/>
-            {% if question.question.questionimage %}
-                <p><img class="question_img" src = "{{question.question.questionimage}}"/></p>
-            {% elif question.questionscript %}
-                <p><{{question.question.questionscript|safe}}></p>
-            {% endif %}
-            {{question.question.review|safe}}<br/>
-            {% if question.question.questionreview %}
-                <p><img class="question_img" src = "{{question.question.questionreview}}"/></p>
-            {% elif question.question.questionreviewscript %}
-                <p><{{question.question.questionscript|safe}}></p>
-            {% endif %}
-          {% endfor %}
-          <br/>
-          <br/>
-        {% else %}
-          <p> You have nothing to revise </p>
+
+    {% if number_of_q != 0 %}
+      {% for question in incorrect_questions %}
+      <br/>
+      <br/><strong>{{question.question.text|safe}}</strong><br/>
+        {% if question.question.questionimage %}
+            <br/><img class="question_img_full" src = "{{question.question.questionimage}}"/><br/>
         {% endif %}
-    </div>
-</div>
+        {% if question.question.questiongif %}
+            <br/><img class="question_gif_full" src = "{{question.question.questiongif}}"/><br/>
+        {% endif %}
+        {% if question.question.questionscript %}
+            <br/><p><{{question.question.questionscript|safe}}><br/>
+        {% endif %}
+        {% if question.question.review %}
+            {{question.question.review|safe}}
+        {% endif %}
+        {% if question.question.reviewimage %}
+            <br/><img class="question_img_full" src = "{{question.question.reviewimage}}"/><br/>
+        {% endif %}
+        {% if question.question.reviewgif %}
+            <br/><p><img class="question_gif_full" src = "{{question.question.reviewgif}}"/><br/>
+        {% endif %}
+        {% if question.question.reviewscript %}
+            <br/>{{question.question.reviewscript|safe}}<br/>
+        {% endif %}
+
+      {% endfor %}
+    {% else %}
+      <p> You have nothing to revise </p>
+    {% endif %}
+
 {% endblock %}
