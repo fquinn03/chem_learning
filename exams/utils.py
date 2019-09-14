@@ -1,4 +1,4 @@
-from random import shuffle
+from random import shuffle, randint
 from chempy import Substance
 from django.contrib.auth.models import User
 from custom_users.models import Class_id, StudentProfile, TeacherProfile, User
@@ -214,11 +214,19 @@ def get_next_exam(user):
     all_completed_exam_ids = get_all_completed_exam_ids(student)
     remaining_exams = get_remaining_exams(all_exam_ids, all_completed_exam_ids)
     if len(remaining_exams) == 0:
-        next_exam = all_exam_ids[0]
+        x = random_num(len(all_exam_ids))
+        next_exam = all_exam_ids[x]
     else:
         next_exam = remaining_exams[0]
     student.next_exam_id = next_exam
     student.save()
+
+"""
+Generate a random number between 0 and the number of exams
+"""
+def random_num(num_of_quizzes):
+    x = randint(0, num_of_quizzes)
+    return x
 
 """
 Get a list of all a stuent's percentage quiz results at thier

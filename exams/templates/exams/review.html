@@ -14,7 +14,7 @@
             <br/><img class="question_gif_full" src = "{{question.questiongif}}"/><br/>
         {% endif %}
         {% if question.questionscript %}
-            <br/><p><{{question.questionscript|safe}}><br/>
+            {{question.questionscript|safe}}
         {% endif %}
         {% if question.review %}
             {{question.review|safe}}
@@ -45,7 +45,7 @@
             <br/><img class="question_gif_full" src = "{{question.questiongif}}"/>
         {% endif %}
         {% if question.questionscript %}
-            <br/><p><{{question.questionscript|safe}}>
+            <br/><p>{{question.questionscript|safe}}
         {% endif %}
         {% if question.review %}
            <br/>{{question.review|safe}}

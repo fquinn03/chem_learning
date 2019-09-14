@@ -5,13 +5,13 @@
 
 <h5>{{exam.title}}</h5>
 <div class="row">
-  <div class="col-sm-6">
+  <div class="col-sm-7">
     <form name = "form" action = "" method="POST" class="quiz_form">
     {% csrf_token %}
     {% for question in mcq_questions %}
         <br/><p><strong>{{question.text|safe}}</strong></p>
-            {% if question.questionimage %}
-              <br/><img class = "question_img_quiz" src = "{{question.questionimage}}"/><br/>
+            {% if question.questionimage %}<br/>
+              <img class = "question_img_quiz" src = "{{question.questionimage}}"/><br/>
             {% endif %}
             {% if question.questiongif %}
               <br/><img class = "question_gif_quiz" src = "{{question.questiongif}}"/><br/>
@@ -28,7 +28,7 @@
     {% endfor %}
     <br/>
     {% for question in written_questions %}
-        <p><strong>{{question.text|safe}}</strong></p>
+        <br/><p><strong>{{question.text|safe}}</strong></p>
             {% if question.questionimage %}
               <img class = "question_img_quiz" src = "{{question.questionimage}}"/><br/>
             {% endif %}
@@ -45,13 +45,13 @@
     {% for question in formula_questions %}
           <br/><p><strong>{{question.text|safe}}</strong></p>
             {% if question.questionimage %}
-              <br/><img class = "question_img_quiz" src = "{{question.questionimage}}"/><br/>
+              <img class = "question_img_quiz" src = "{{question.questionimage}}"/><br/>
             {% endif %}
             {% if question.questiongif %}
-              <br/><img class = "question_gif_quiz" src = "{{question.questiongif}}"/><br/>
+              <img class = "question_gif_quiz" src = "{{question.questiongif}}"/><br/>
             {% endif %}
             {% if question.questionscript %}
-              <br/>{{question.questionscript|safe}}</br/>
+              {{question.questionscript|safe}}</br/>
             {% endif %}
           <label for = "answer{{forloop.counter}}">Formula</label>
           <input type ='text' name= "{{question.id}}" id ="answer{{forloop.counter}}" required/>

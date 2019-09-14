@@ -23,7 +23,7 @@
             <br/><img class="question_gif_full" src = "{{question.question.questiongif}}"/><br/>
         {% endif %}
         {% if question.question.questionscript %}
-            <br/><p><{{question.question.questionscript|safe}}><br/>
+            <br/>{{question.question.questionscript|safe}}<br/>
         {% endif %}
         {% if question.question.review %}
             {{question.question.review|safe}}
